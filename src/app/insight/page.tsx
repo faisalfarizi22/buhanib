@@ -230,7 +230,7 @@ export default function InsightPage() {
           {step === 0  && !isSubmitting && <LeadCaptureStep formData={formData} onChange={handleFormChange} onNext={handleSubmitLead} onPrev={prevStep} />}
           {step === 1  && !isSubmitting && <InstructionStep onNext={nextStep} onPrev={prevStep} />}
           {step >= 2 && step <= 8 && !isSubmitting && <QuestionsStep step={step} answers={answers} onAnswer={handleAnswer} />}
-          {step === 9  && !isSubmitting && <OpenQuestionsStep formData={formData} onChange={handleFormChange} onSubmit={handleSubmitFinal} onPrev={prevStep} isSubmitting={isSubmitting} />}
+          {step === 9  && <OpenQuestionsStep formData={formData} onChange={handleFormChange} onSubmit={handleSubmitFinal} onPrev={prevStep} isSubmitting={isSubmitting} />}
           {step === 10 && !isSubmitting && <SuccessStep name={formData.name} company={formData.company} />}
         </AnimatePresence>
 
@@ -249,14 +249,14 @@ export default function InsightPage() {
         >
           <button
             onClick={prevStep}
-            className="h-12 px-6 rounded-full border border-black/10 bg-white shadow-sm flex items-center text-black/60 hover:text-black hover:border-black/30 hover:bg-black/[0.02] transition-all text-xs font-medium uppercase tracking-widest"
+            className="h-12 px-6 rounded-xl border border-black/10 bg-white shadow-sm flex items-center text-black/60 hover:text-black hover:border-black/30 hover:bg-black/[0.02] transition-all text-xs font-medium uppercase tracking-widest"
           >
             <span><ArrowLeft size={16} className="mr-2 inline" /> KEMBALI</span>
           </button>
           <button
             onClick={nextStep}
             disabled={!isQuestionPageValid()}
-            className="h-12 px-8 rounded-full bg-[#0A1A3A] text-white flex items-center gap-2 font-medium text-xs tracking-widest uppercase transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black shadow-md shadow-black/20"
+            className="h-12 px-8 rounded-xl bg-[#0A1A3A] text-white flex items-center gap-2 font-medium text-xs tracking-widest uppercase transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black shadow-md shadow-black/20"
           >
             <span>
               {step === 8 ? "LANJUT KE PENUTUP" : "HALAMAN BERIKUTNYA"}

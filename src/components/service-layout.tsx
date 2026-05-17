@@ -48,7 +48,7 @@ export default function ServiceLayout({ data }: { data: ServiceData }) {
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: accentColor }} />
             Ekosistem BinaHub
           </div>
-          <h1 className="text-5xl md:text-7xl font-light tracking-tight leading-[1.1] mb-6">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-light tracking-tight leading-[1.1] mb-6">
             {data.title}
           </h1>
           <h2 className="text-xl md:text-2xl font-light text-black/50 tracking-wide">
@@ -70,7 +70,7 @@ export default function ServiceLayout({ data }: { data: ServiceData }) {
             transition={{ delay: 0.1 }}
             className="md:col-span-5 space-y-12"
           >
-            <div className="bg-white p-8 md:p-10 rounded-[32px] border border-black/[0.04] shadow-xl shadow-black/[0.02]">
+            <div className="bg-white p-6 md:p-10 rounded-[24px] md:rounded-[32px] border border-black/[0.04] shadow-xl shadow-black/[0.02]">
               <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mb-8 border border-red-100">
                 <AlertCircle size={24} />
               </div>
@@ -99,7 +99,7 @@ export default function ServiceLayout({ data }: { data: ServiceData }) {
             className="md:col-span-7 space-y-8"
           >
             {/* Benefits */}
-            <div className="bg-[#0A1A3A] text-white p-8 md:p-10 rounded-[32px] border border-black/[0.04] relative overflow-hidden group">
+            <div className="bg-[#0A1A3A] text-white p-6 md:p-10 rounded-[24px] md:rounded-[32px] border border-black/[0.04] relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-64 h-64 blur-[80px] rounded-full translate-x-20 -translate-y-20 opacity-20" style={{ backgroundColor: accentColor }} />
               <div className="relative z-10">
                 <div className="w-12 h-12 rounded-2xl bg-white/10 text-white flex items-center justify-center mb-8 border border-white/10 backdrop-blur-sm">
@@ -118,7 +118,7 @@ export default function ServiceLayout({ data }: { data: ServiceData }) {
             </div>
 
             {/* Results */}
-            <div className="bg-white p-8 md:p-10 rounded-[32px] border border-black/[0.04] shadow-xl shadow-black/[0.02]">
+            <div className="bg-white p-6 md:p-10 rounded-[24px] md:rounded-[32px] border border-black/[0.04] shadow-xl shadow-black/[0.02]">
               <div className="w-12 h-12 rounded-2xl bg-[#F8F9FB] flex items-center justify-center mb-8 border border-black/5 text-black">
                 <TrendingUp size={24} />
               </div>
@@ -143,7 +143,7 @@ export default function ServiceLayout({ data }: { data: ServiceData }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-20 text-center bg-white p-12 md:p-20 rounded-[48px] border border-black/[0.03] shadow-2xl shadow-black/[0.02]"
+          className="mt-20 text-center bg-white p-6 md:p-20 rounded-[32px] md:rounded-[48px] border border-black/[0.03] shadow-2xl shadow-black/[0.02]"
         >
           <div className="w-16 h-16 rounded-full bg-[#F8F9FB] mx-auto flex items-center justify-center mb-8 text-[#D4AF37]">
             <Sparkles size={32} />

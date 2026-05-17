@@ -62,14 +62,14 @@ export function OpenQuestionsStep({
           <button
             type="button"
             onClick={onPrev}
-            className="flex-1 h-14 border border-black/10 rounded-xl text-[11px] font-medium tracking-widest text-black/40 hover:bg-black/5 hover:text-black transition-all uppercase flex items-center justify-center gap-2"
+            className="flex-1 h-14 border border-[#0A1A3A]/10 bg-white rounded-2xl text-[11px] font-bold tracking-widest text-[#0A1A3A]/60 hover:bg-black/[0.03] hover:text-[#0A1A3A] transition-all uppercase flex items-center justify-center gap-2"
           >
             <ArrowLeft size={16} /> KEMBALI
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-[2] h-14 bg-[#0A1A3A] text-white rounded-xl text-[11px] font-medium tracking-widest hover:bg-black transition-all flex items-center justify-center gap-3 disabled:opacity-70 uppercase shadow-lg shadow-[#0A1A3A]/10 group"
+            className="flex-[2] h-14 bg-[#0A1A3A] text-white rounded-2xl text-[11px] font-bold tracking-widest hover:bg-black transition-all flex items-center justify-center gap-3 disabled:opacity-70 uppercase shadow-lg shadow-[#0A1A3A]/10 group"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-3">

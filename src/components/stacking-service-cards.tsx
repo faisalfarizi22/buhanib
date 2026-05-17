@@ -88,7 +88,7 @@ export function StackingServiceCards() {
                 )}
 
                 {/* Text content */}
-                <div className="relative z-10 p-8">
+                <div className="relative z-10 p-6 md:p-8">
                   <div className="md:max-w-[60%]">
                     <div className="flex items-start justify-between mb-6">
                       <Tag>{service.label}</Tag>
@@ -96,7 +96,7 @@ export function StackingServiceCards() {
                     <h3 className="text-xl font-light mb-3">{service.title}</h3>
                     <p className="text-sm text-black/45 leading-relaxed mb-8 max-w-sm">{service.desc}</p>
                   </div>
-                  <div className="flex gap-8 pt-6 border-t border-black/[0.06] md:max-w-[60%]">
+                  <div className="flex flex-wrap gap-x-8 gap-y-4 pt-6 border-t border-black/[0.06] md:max-w-[60%]">
                     {service.stats.map((s) => (
                       <div key={s.l}>
                         <div className="text-2xl font-light">{s.v}</div>

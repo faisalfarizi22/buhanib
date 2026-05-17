@@ -34,25 +34,25 @@ const SILVER = '#8A9BB0';
 
 const styles = StyleSheet.create({
   page: { backgroundColor: ICE, color: '#1A2332', fontFamily: 'Inter', padding: 0 },
-  
+
   // Header Section (Full-bleed style)
-  header: { position: 'relative', backgroundColor: NAVY, height: 185, padding: '30 44', color: '#FFFFFF' },
+  header: { position: 'relative', backgroundColor: '#FFFFFF', height: 185, padding: '30 44', color: '#1A2332' },
   headerAccent: { position: 'absolute', bottom: -6, left: 0, right: 0, height: 6, backgroundColor: GOLD },
   headerMotif: { position: 'absolute', top: -30, right: -40, opacity: 0.1 },
-  
+
   logoBox: { width: 100, height: 28, marginBottom: 15 },
   logoImage: { width: '100%', height: '100%', objectFit: 'contain' },
 
-  
+
   headerTitleBlock: { marginTop: 8 },
   headerLabel: { color: GOLD, fontSize: 8, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 },
   headerTitle: { fontSize: 22, fontWeight: 700, lineHeight: 1 },
-  headerSubtitle: { fontSize: 22, fontWeight: 700, color: GOLD_LIGHT, marginTop: 8 },
-  
+  headerSubtitle: { fontSize: 22, fontWeight: 700, color: NAVY, marginTop: 8 },
+
   metaRow: { flexDirection: 'row', marginTop: 25, gap: 40 },
   metaItem: { flexDirection: 'column' },
-  metaLabel: { fontSize: 6.5, color: SILVER, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 },
-  metaValue: { fontSize: 8, color: '#FFFFFF', fontWeight: 600 },
+  metaLabel: { fontSize: 6.5, color: '#64748B', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 },
+  metaValue: { fontSize: 8, color: NAVY, fontWeight: 600 },
 
   // KPI Row
   kpiRow: { flexDirection: 'row', padding: '0 44', marginTop: 10, gap: 12, zIndex: 10 },
@@ -112,37 +112,37 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
   }).map(p => `${p.x},${p.y}`).join(' ');
 
   const date = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-  const logoSrc = logoPath || "https://assessment.binahub.id/full-logo.png"; // Using local or URL fallback
+  const logoSrc = logoPath || "https://buhanib.vercel.app/full-logo.png"; // Using local or URL fallback
 
 
   return (
     <Document title={`Laporan Diagnostik - ${formData.company}`}>
       <Page size="A4" style={styles.page}>
-        
+
         {/* HEADER SECTION */}
         <View style={styles.header}>
           <Svg style={styles.headerMotif} width="200" height="200">
-            <Circle cx="150" cy="50" r="100" fill="white" fillOpacity="0.1" />
-            <Circle cx="170" cy="70" r="70" fill="white" fillOpacity="0.1" />
+            <Circle cx="150" cy="50" r="100" fill={NAVY} fillOpacity="0.03" />
+            <Circle cx="170" cy="70" r="70" fill={NAVY} fillOpacity="0.03" />
           </Svg>
-          
+
           <View style={styles.logoBox}>
             <Image src={logoSrc} style={styles.logoImage} />
           </View>
-          
+
           <View style={styles.headerTitleBlock}>
             <Text style={styles.headerLabel}>Assessment Performance Report</Text>
             <Text style={styles.headerTitle}>Human Synergy &</Text>
             <Text style={styles.headerSubtitle}>Strategic Maturity Diagnostic</Text>
           </View>
-          
+
           <View style={styles.metaRow}>
             <View style={styles.metaItem}><Text style={styles.metaLabel}>TAHUN FISKAL</Text><Text style={styles.metaValue}>2024 – 2025</Text></View>
             <View style={styles.metaItem}><Text style={styles.metaLabel}>DISUSUN UNTUK</Text><Text style={styles.metaValue}>{formData.name.toUpperCase()}</Text></View>
             <View style={styles.metaItem}><Text style={styles.metaLabel}>PERUSAHAAN</Text><Text style={styles.metaValue}>{formData.company.toUpperCase()}</Text></View>
             <View style={styles.metaItem}><Text style={styles.metaLabel}>TANGGAL ISYU</Text><Text style={styles.metaValue}>{date.toUpperCase()}</Text></View>
           </View>
-          
+
           <View style={styles.headerAccent} />
         </View>
 
@@ -185,32 +185,32 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
               <Text style={styles.visualTitle}>Distribusi Keseimbangan</Text>
               <Svg width="130" height="130" viewBox="0 0 130 130" style={{ alignSelf: 'center' }}>
                 {[0.25, 0.5, 0.75, 1].map((scale, idx) => {
-                    const pts = DIMENSIONS.map((_, i) => {
-                        const r = 45 * scale;
-                        const angle = i * angleStep - Math.PI / 2;
-                        return `${65 + r * Math.cos(angle)},${65 + r * Math.sin(angle)}`;
-                    }).join(' ');
-                    return <Polygon key={idx} points={pts} fill="none" stroke="#E2E8F0" strokeWidth="0.5" />;
+                  const pts = DIMENSIONS.map((_, i) => {
+                    const r = 45 * scale;
+                    const angle = i * angleStep - Math.PI / 2;
+                    return `${65 + r * Math.cos(angle)},${65 + r * Math.sin(angle)}`;
+                  }).join(' ');
+                  return <Polygon key={idx} points={pts} fill="none" stroke="#E2E8F0" strokeWidth="0.5" />;
                 })}
                 <Polygon points={radarPoints} fill="rgba(212, 175, 55, 0.15)" stroke={GOLD} strokeWidth="2" />
               </Svg>
               <View style={{ marginTop: 10, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 6 }}>
-                  {DIMENSIONS.slice(0, 4).map(d => <Text key={d} style={{fontSize: 6, color: SILVER}}>{d.toUpperCase()}: {scores[d]}</Text>)}
+                {DIMENSIONS.slice(0, 4).map(d => <Text key={d} style={{ fontSize: 6, color: SILVER }}>{d.toUpperCase()}: {scores[d]}</Text>)}
               </View>
             </View>
 
             {/* BAR CHART */}
             <View style={[styles.visualBox, { flex: 1.4 }]}>
-               <Text style={styles.visualTitle}>Performance Scoreboard</Text>
-               {DIMENSIONS.map(dim => (
-                 <View key={dim} style={styles.barRow}>
-                   <Text style={styles.barLabel}>{dim}</Text>
-                   <View style={styles.barTrack}>
-                     <View style={[styles.barFill, { width: `${scores[dim] || 0}%`, backgroundColor: (scores[dim]||0) >= 80 ? GOLD : NAVY }]} />
-                   </View>
-                   <Text style={styles.barValue}>{scores[dim]}</Text>
-                 </View>
-               ))}
+              <Text style={styles.visualTitle}>Performance Scoreboard</Text>
+              {DIMENSIONS.map(dim => (
+                <View key={dim} style={styles.barRow}>
+                  <Text style={styles.barLabel}>{dim}</Text>
+                  <View style={styles.barTrack}>
+                    <View style={[styles.barFill, { width: `${scores[dim] || 0}%`, backgroundColor: (scores[dim] || 0) >= 80 ? GOLD : NAVY }]} />
+                  </View>
+                  <Text style={styles.barValue}>{scores[dim]}</Text>
+                </View>
+              ))}
             </View>
           </View>
 
@@ -230,23 +230,25 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
 
       <Page size="A4" style={styles.page}>
         <View style={[styles.header, { height: 70, padding: '15 44' }]}>
-           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
-              <View style={[styles.logoBox, { width: 34, height: 34, marginBottom: 0 }]}><Text style={{ fontSize: 14, color: NAVY, fontWeight: 700 }}>B</Text></View>
-              <View>
-                 <Text style={{ fontSize: 12, fontWeight: 700, color: '#FFFFFF' }}>Diagnostic Strategic Overview</Text>
-                 <Text style={{ fontSize: 7, color: SILVER }}>Detailed Transformation Roadmap · FY 2024–2025</Text>
-              </View>
-           </View>
-           <View style={styles.headerAccent} />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
+            <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: NAVY, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 12, color: '#FFFFFF', fontWeight: 800 }}>B</Text>
+            </View>
+            <View>
+              <Text style={{ fontSize: 12, fontWeight: 700, color: NAVY }}>Diagnostic Strategic Overview</Text>
+              <Text style={{ fontSize: 7, color: '#64748B' }}>Detailed Transformation Roadmap · FY 2024–2025</Text>
+            </View>
+          </View>
+          <View style={styles.headerAccent} />
         </View>
 
         <View style={styles.content}>
           <View style={styles.sectionHeader}>
-             <View style={styles.sectionBar} />
-             <View>
-               <Text style={styles.sectionTitle}>Rekomendasi Tindakan & Roadmap Strategis</Text>
-               <Text style={styles.sectionSubtitle}>Prioritas perbaikan berdasarkan hasil diagnostik 7 dimensi BinaHub</Text>
-             </View>
+            <View style={styles.sectionBar} />
+            <View>
+              <Text style={styles.sectionTitle}>Rekomendasi Tindakan & Roadmap Strategis</Text>
+              <Text style={styles.sectionSubtitle}>Prioritas perbaikan berdasarkan hasil diagnostik 7 dimensi BinaHub</Text>
+            </View>
           </View>
 
           <View style={styles.recGrid}>
@@ -262,10 +264,10 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
 
           {/* Bottom Insights Callout (simulating the python example) */}
           <View style={{ marginTop: 40, backgroundColor: '#E2E8F0', padding: 20, borderRadius: 8, borderTopWidth: 4, borderTopColor: NAVY }}>
-             <Text style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 8 }}>KUNCI STRATEGIS DARI TIM KONSULTAN</Text>
-             <Text style={{ fontSize: 9, color: '#4A5568', lineHeight: 1.6 }}>
-                Berdasarkan data yang diserahkan, prioritas utama Anda dalam 90 hari ke depan adalah penguatan pada dimensi {DIMENSIONS.find(d => (scores[d]||0) === Math.min(...DIMENSIONS.map(dx=>scores[dx]||100)))} untuk mencegah *bottleneck* operasional. Tim BinaHub siap mendampingi proses implementasi roadmap ini.
-             </Text>
+            <Text style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 8 }}>KUNCI STRATEGIS DARI TIM KONSULTAN</Text>
+            <Text style={{ fontSize: 9, color: '#4A5568', lineHeight: 1.6 }}>
+              Berdasarkan data yang diserahkan, prioritas utama Anda dalam 90 hari ke depan adalah penguatan pada dimensi {DIMENSIONS.find(d => (scores[d] || 0) === Math.min(...DIMENSIONS.map(dx => scores[dx] || 100)))} untuk mencegah *bottleneck* operasional. Tim BinaHub siap mendampingi proses implementasi roadmap ini.
+            </Text>
           </View>
         </View>
 
@@ -280,8 +282,8 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
 
 export async function generatePDFBuffer(formData: AssessmentData, result: AssessmentResult): Promise<Buffer> {
   const { renderToBuffer } = await import('@react-pdf/renderer');
-  
-  let logoBase64 = "https://assessment.binahub.id/full-logo.png"; // Fallback URL
+
+  let logoBase64 = "https://buhanib.vercel.app/full-logo.png"; // Fallback URL
   try {
     const fs = await import('fs');
     const path = await import('path');

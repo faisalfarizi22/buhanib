@@ -52,7 +52,7 @@ export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
   return (
     <section
       id="workflow"
-      className="py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06] overflow-hidden"
+      className="py-16 md:py-32 px-6 md:px-12 lg:px-20 border-t border-black/[0.06] overflow-hidden"
     >
       <div className="max-w-6xl mx-auto">
         <div className="mb-16">
@@ -76,7 +76,7 @@ export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
               className="cursor-pointer group/card"
             >
               <BentoCard
-                className="relative overflow-hidden flex flex-col min-h-[400px] h-full"
+                className="relative overflow-hidden flex flex-col min-h-[320px] md:min-h-[400px] h-full"
                 delay={step.delay}
               >
                 <div className="relative z-10 p-7">
@@ -131,7 +131,7 @@ export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="bg-[#F8F9FB] border border-black/[0.08] rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl pointer-events-auto flex flex-col md:flex-row shadow-black/5"
+                className="bg-[#F8F9FB] border border-black/[0.08] rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl pointer-events-auto flex flex-col md:flex-row shadow-black/5 max-h-[90vh] overflow-y-auto custom-scrollbar md:overflow-visible"
               >
                 {/* Close Button */}
                 <button 
@@ -151,7 +151,7 @@ export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
                 </div>
 
                 {/* Right Side: Text */}
-                <div className="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center">
+                <div className="w-full md:w-1/2 p-6 md:p-14 flex flex-col justify-center">
                   <span className="text-[11px] text-[#D4AF37] tracking-widest font-mono mb-4 block">
                     STEP {selectedStep.n}
                   </span>

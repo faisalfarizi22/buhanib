@@ -33,7 +33,7 @@ interface PlatformSectionProps {
 
 export function PlatformSection({ onMouseMove }: PlatformSectionProps) {
   return (
-    <section id="platform" className="py-32 px-6 md:px-12 lg:px-20">
+    <section id="platform" className="py-16 md:py-32 px-6 md:px-12 lg:px-20">
       <div className="max-w-6xl mx-auto">
         <div className="mb-16">
           <PixelIcon type="about" size={40} />

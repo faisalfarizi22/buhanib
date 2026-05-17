@@ -90,7 +90,7 @@ export async function sendAssessmentEmail(
           Kunci Jadwal Konsultasi (Calendly)
         </a>
         <div style="margin-top:25px;">
-          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://assessment.binahub.id'}?chat=open&name=${encodeURIComponent(formData.name)}&company=${encodeURIComponent(formData.company)}&score=${result.scores.overall}" 
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || ''}?chat=open&name=${encodeURIComponent(formData.name)}&company=${encodeURIComponent(formData.company)}&score=${result.scores.overall}" 
              style="color:${navy};font-size:13px;font-weight:600;text-decoration:underline;">
             Pelajari lebih lanjut & Konsultasi Interaktif
           </a>

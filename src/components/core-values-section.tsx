@@ -29,7 +29,7 @@ export function CoreValuesSection() {
   const value = CORE_VALUES[active];
 
   return (
-    <section id="values" className="py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06] bg-[#F8F9FB]">
+    <section id="values" className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-t border-black/[0.06] bg-[#F8F9FB]">
       <div className="max-w-6xl mx-auto">
         <div className="mb-16">
           <PixelIcon type="core" size={40} />
@@ -84,7 +84,7 @@ export function CoreValuesSection() {
 
           {/* Detail panel */}
           <div
-            className="lg:col-span-3 rounded-2xl border border-black/[0.06] p-8 md:p-12 flex flex-col items-center justify-center text-center relative overflow-hidden"
+            className="lg:col-span-3 rounded-2xl border border-black/[0.06] p-6 md:p-12 flex flex-col items-center justify-center text-center relative overflow-hidden"
             style={{ background: "rgba(255,255,255,1)", boxShadow: "0 4px 20px rgba(0,0,0,0.02)", minHeight: "360px" }}
           >
             {/* Faded background icon */}

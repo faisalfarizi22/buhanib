@@ -16,7 +16,7 @@ export default function EcosystemPage() {
     <div className="min-h-screen bg-[#F8F9FB] text-[#0F172A] font-sans overflow-x-hidden">
 
       {/* Immersive Hero Section - Reconstructed for High Visibility */}
-      <section className="w-full px-4 md:px-8 pt-26 mb-16">
+      <section className="w-full px-4 md:px-8 pt-20 md:pt-26 mb-8 md:mb-16">
         <div className="relative w-full h-[80vh] md:h-[85vh] rounded-[32px] md:rounded-[48px] bg-[#030712] overflow-hidden flex items-center justify-center border border-white/5 shadow-2xl">
           
           {/* 1. Technical Grid Lines (High Visibility) */}
@@ -136,7 +136,7 @@ export default function EcosystemPage() {
                 <Tag className="text-white/40 bg-white/5 border border-white/10 px-6 py-2 uppercase tracking-[0.3em]">THE INTEGRATED HUB</Tag>
               </div>
 
-              <h1 className="text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter leading-[0.85] text-white mb-10">
+              <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter leading-[0.85] text-white mb-10">
                 People. Learning. <br />
                 <span className="text-[#D4AF37] font-normal italic">Elevated.</span>
               </h1>
@@ -150,7 +150,7 @@ export default function EcosystemPage() {
       </section>
 
       {/* The "Cycle Breaker" Section */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 bg-white">
+      <section className="py-16 md:py-32 px-6 md:px-12 lg:px-20 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-stretch">
             {/* The Failure Path */}
@@ -158,7 +158,7 @@ export default function EcosystemPage() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-[#F8F9FB] p-12 md:p-16 rounded-[48px] border border-black/[0.03]"
+              className="bg-[#F8F9FB] p-6 md:p-16 rounded-[32px] md:rounded-[48px] border border-black/[0.03]"
             >
               <h3 className="text-3xl font-light mb-10 text-[#0A1A3A]">Mengapa Program <br /><span className="font-bold text-red-500 underline decoration-red-500/30 underline-offset-8">Sering Gagal?</span></h3>
               <div className="space-y-6">
@@ -184,7 +184,7 @@ export default function EcosystemPage() {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-[#0A1A3A] p-12 md:p-16 rounded-[48px] text-white relative overflow-hidden flex flex-col justify-center border border-[#D4AF37]/20 shadow-2xl"
+              className="bg-[#0A1A3A] p-6 md:p-16 rounded-[32px] md:rounded-[48px] text-white relative overflow-hidden flex flex-col justify-center border border-[#D4AF37]/20 shadow-2xl"
             >
               {/* Background Ornaments (Increased Visibility) */}
               <div className="absolute inset-0 z-0 opacity-40 pointer-events-none" 
@@ -207,7 +207,7 @@ export default function EcosystemPage() {
                 <p className="text-white/90 font-light leading-relaxed mb-10 text-lg">
                   Setiap pilar BinaHub dirancang untuk saling melengkapi, memastikan transformasi yang berkesinambungan dari penggalian akar masalah hingga akselerasi kinerja nyata.
                 </p>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-4 md:gap-6">
                   <div className="bg-white/10 p-6 rounded-3xl border border-white/10 backdrop-blur-md">
                     <div className="text-[#D4AF37] font-bold text-4xl tracking-tighter mb-2">8</div>
                     <div className="text-[10px] tracking-[0.2em] uppercase text-white/60 font-bold">Integrated Pillars</div>
@@ -224,11 +224,11 @@ export default function EcosystemPage() {
       </section>
 
       {/* Interactive Ecosystem Bento Grid */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 bg-[#F8F9FB]">
+      <section className="py-16 md:py-32 px-6 md:px-12 lg:px-20 bg-[#F8F9FB]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
+          <div className="text-center mb-16 md:mb-24">
             <Tag>EXPLORE THE HUB</Tag>
-            <h2 className="text-5xl md:text-7xl font-light tracking-tight mt-10 text-[#0A1A3A]">8 Pilar Transformasi.</h2>
+            <h2 className="text-3xl md:text-5xl lg:text-7xl font-light tracking-tight mt-6 md:mt-10 text-[#0A1A3A]">8 Pilar Transformasi.</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -241,7 +241,7 @@ export default function EcosystemPage() {
                 transition={{ delay: i * 0.05 }}
                 layoutId={product.id}
                 onClick={() => setSelectedProduct(product)}
-                className="group bg-white p-10 rounded-[40px] border border-black/[0.04] cursor-pointer hover:shadow-2xl hover:shadow-black/10 transition-all duration-500 relative overflow-hidden"
+                className="group bg-white p-6 md:p-10 rounded-[32px] md:rounded-[40px] border border-black/[0.04] cursor-pointer hover:shadow-2xl hover:shadow-black/10 transition-all duration-500 relative overflow-hidden"
               >
                 <div className="relative z-10">
                   <div className="mb-10 group-hover:scale-110 transition-transform duration-500">
@@ -276,11 +276,11 @@ export default function EcosystemPage() {
 
             <motion.div
               layoutId={selectedProduct.id}
-              className="relative w-full max-w-6xl bg-white rounded-[48px] overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh]"
+              className="relative w-full max-w-6xl bg-white rounded-[32px] md:rounded-[48px] overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh]"
             >
               {/* Product Header Side - Now Navy */}
               <div
-                className="md:w-1/3 p-12 text-white flex flex-col justify-between relative overflow-hidden shrink-0 bg-[#0A1A3A]"
+                className="w-full md:w-1/3 p-6 md:p-12 text-white flex flex-col justify-between relative overflow-hidden shrink-0 bg-[#0A1A3A]"
               >
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full translate-x-10 -translate-y-10" />
                 <div className="relative z-10">
@@ -302,7 +302,7 @@ export default function EcosystemPage() {
               </div>
 
               {/* Product Content Side */}
-              <div className="flex-1 p-12 md:p-20 overflow-y-auto custom-scrollbar bg-white">
+              <div className="flex-1 p-6 md:p-20 overflow-y-auto custom-scrollbar bg-white">
                 <div className="space-y-20">
                   {/* Context */}
                   <div>
@@ -312,7 +312,7 @@ export default function EcosystemPage() {
                     </p>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-16">
+                  <div className="grid md:grid-cols-2 gap-8 md:gap-16">
                     {/* Challenges */}
                     <div>
                       <h4 className="text-[10px] font-bold tracking-[0.5em] text-black/30 uppercase mb-8">Tantangan yang Dijawab</h4>
@@ -345,7 +345,7 @@ export default function EcosystemPage() {
                   </div>
 
                   {/* Results */}
-                  <div className="bg-[#F8F9FB] p-12 rounded-[48px] border border-black/[0.04] shadow-sm">
+                  <div className="bg-[#F8F9FB] p-6 md:p-12 rounded-[32px] md:rounded-[48px] border border-black/[0.04] shadow-sm">
                     <h4 className="text-[10px] font-bold tracking-[0.5em] text-black/30 uppercase mb-10">Hasil & Output Nyata</h4>
                     <div className="grid sm:grid-cols-2 gap-x-12 gap-y-6">
                       {selectedProduct.results.map((r: string, i: number) => (

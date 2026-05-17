@@ -61,9 +61,9 @@ export function HeroSection({ heroReady }: HeroSectionProps) {
         <PixelBackground ready={heroReady} />
 
         {/* Hero Content */}
-        <div className="absolute inset-x-0 bottom-0 z-30 flex flex-col px-10 md:px-16 pb-16 max-w-5xl">
+        <div className="absolute inset-x-0 bottom-0 z-30 flex flex-col px-6 md:px-16 pb-10 md:pb-16 max-w-5xl">
           <h1
-            className="text-5xl sm:text-7xl md:text-8xl font-light text-white leading-[1.0] tracking-tight mb-6"
+            className="text-4xl sm:text-7xl md:text-8xl font-light text-white leading-[1.0] tracking-tight mb-6"
             style={{
               fontFamily: '"IBM Plex Sans", sans-serif',
               opacity: heroReady ? 1 : 0,
@@ -122,7 +122,7 @@ export function HeroSection({ heroReady }: HeroSectionProps) {
           </div>
 
           {/* Stats */}
-          <div className="flex gap-8 sm:gap-12">
+          <div className="flex flex-wrap gap-6 sm:gap-12">
             {HERO_STATS.map((stat, i) => (
               <div
                 key={i}
@@ -146,7 +146,7 @@ export function HeroSection({ heroReady }: HeroSectionProps) {
 
         {/* Scroll Indicator */}
         <div
-          className="absolute bottom-10 right-10 z-30 flex flex-col items-center gap-2"
+          className="hidden md:flex absolute bottom-10 right-10 z-30 flex-col items-center gap-2"
           style={{
             opacity: heroReady ? 1 : 0,
             transition: "opacity 1.5s ease 1s",

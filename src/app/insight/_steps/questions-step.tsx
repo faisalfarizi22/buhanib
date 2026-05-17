@@ -34,7 +34,7 @@ export function QuestionsStep({ step, answers, onAnswer }: QuestionsStepProps) {
           return (
             <div
               key={q.id}
-              className="relative bg-white p-6 md:p-8 rounded-[40px] border border-black/[0.03] shadow-[0_10px_30px_rgba(0,0,0,0.02)] overflow-hidden"
+              className="relative bg-white p-4 md:p-8 rounded-[24px] md:rounded-[40px] border border-black/[0.03] shadow-[0_10px_30px_rgba(0,0,0,0.02)] overflow-hidden"
             >
               {/* Scaled Background Number - Reduced by 30% */}
               <div className="absolute top-[-5px] left-[-2px] text-[70px] font-black text-black/[0.015] leading-none pointer-events-none select-none">
@@ -42,18 +42,18 @@ export function QuestionsStep({ step, answers, onAnswer }: QuestionsStepProps) {
               </div>
 
               <div className="relative z-10">
-                <h3 className="text-base md:text-lg font-light text-[#0A1A3A] mb-5 text-left leading-relaxed px-2">
+                <h3 className="text-sm md:text-lg font-light text-[#0A1A3A] mb-5 text-left leading-relaxed px-2">
                   {q.text}
                 </h3>
 
-                <div className="grid grid-cols-5 gap-2 md:gap-4">
+                <div className="grid grid-cols-5 gap-1.5 md:gap-4">
                   {LIKERT_OPTIONS.map((opt) => {
                     const isSelected = answers[q.id] === opt.value;
                     return (
                       <button
                         key={opt.value}
                         onClick={() => onAnswer(q.id, opt.value)}
-                        className={`flex flex-col items-center justify-center py-3 md:py-5 rounded-2xl border transition-all duration-300 ${isSelected
+                        className={`flex flex-col items-center justify-center py-2.5 md:py-5 rounded-xl md:rounded-2xl border transition-all duration-300 ${isSelected
                             ? "bg-[#0A1A3A] border-[#0A1A3A] text-white shadow-[0_15px_30px_rgba(10,26,58,0.25)] scale-[1.03]"
                             : "bg-[#F5F7F9] border-black/[0.03] text-black/60 hover:bg-black/[0.05] hover:border-black/10"
                           }`}

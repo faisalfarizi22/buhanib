@@ -16,7 +16,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, y: -20, filter: "blur(4px)" }}
       transition={{ duration: 0.6 }}
-      className="w-full flex flex-col pt-26"
+      className="w-full flex flex-col pt-20 md:pt-26"
     >
       {/* Hero */}
       <section className="w-full px-4 md:px-8 mb-12">
@@ -36,7 +36,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
               <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
               BinaInsight Diagnostic
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.1] mb-6 text-white">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.1] mb-6 text-white">
               Optimalkan Performa<br />Tim Anda Sekarang.
             </h1>
             <p className="text-white/80 text-base md:text-xl mx-auto mb-10 leading-relaxed max-w-2xl font-light">
@@ -72,13 +72,13 @@ export function LandingStep({ onStart }: LandingStepProps) {
       </section>
 
       {/* Why BinaInsight */}
-      <section id="about-insight" className="py-24 px-6 bg-white">
+      <section id="about-insight" className="py-12 md:py-24 px-6 bg-white">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div>
             <div className="text-[10px] font-bold tracking-[0.3em] text-[#D4AF37] uppercase mb-4">
               Value Proposition
             </div>
-            <h2 className="text-4xl md:text-5xl font-light leading-tight mb-8">
+            <h2 className="text-3xl md:text-5xl font-light leading-tight mb-8">
               Mengapa Tim Anda Membutuhkan {" "}
               <span className="italic">BinaInsight?</span>
             </h2>
@@ -107,13 +107,13 @@ export function LandingStep({ onStart }: LandingStepProps) {
             </div>
           </div>
           <div className="relative">
-            <div className="aspect-[4/5] bg-[#F8F9FB] rounded-[48px] flex items-center justify-center p-12 overflow-hidden border border-black/[0.05] relative group">
+            <div className="aspect-[4/5] bg-[#F8F9FB] rounded-[32px] md:rounded-[48px] flex items-center justify-center p-6 md:p-12 overflow-hidden border border-black/[0.05] relative group">
               <img
                 src="/asset/Play.png"
                 alt="Team Analysis"
                 className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale transition-all duration-700 group-hover:scale-110 group-hover:opacity-30 group-hover:grayscale-0"
               />
-              <div className="relative z-10 w-full aspect-square bg-white rounded-3xl shadow-2xl p-8 flex flex-col justify-center border border-black/[0.03]">
+              <div className="relative z-10 w-full aspect-square bg-white rounded-3xl shadow-2xl p-4 md:p-8 flex flex-col justify-center border border-black/[0.03]">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-3 h-3 rounded-full bg-red-400" />
                   <div className="w-3 h-3 rounded-full bg-yellow-400" />
@@ -138,11 +138,11 @@ export function LandingStep({ onStart }: LandingStepProps) {
       </section>
 
       {/* 7 Dimensions Bento Grid */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 bg-[#F8F9FB]">
+      <section className="py-16 md:py-32 px-6 md:px-12 lg:px-20 bg-[#F8F9FB]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
+          <div className="text-center mb-16 md:mb-24">
             <Tag>7 DIMENSIONS</Tag>
-            <h2 className="text-4xl md:text-6xl font-light tracking-tight mt-10 text-[#0A1A3A]">Spektrum Pengukuran.</h2>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight mt-6 md:mt-10 text-[#0A1A3A]">Spektrum Pengukuran.</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -153,7 +153,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group bg-white p-10 rounded-[40px] border border-black/[0.04] hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 relative overflow-hidden"
+                className="group bg-white p-6 md:p-10 rounded-[32px] md:rounded-[40px] border border-black/[0.04] hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 relative overflow-hidden"
               >
                 <div className="relative z-10">
                   <div className="mb-10 group-hover:scale-110 transition-transform duration-500">
@@ -173,7 +173,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="bg-[#0A1A3A] p-10 rounded-[40px] flex flex-col justify-between text-white relative overflow-hidden group shadow-2xl shadow-[#0A1A3A]/20"
+              className="bg-[#0A1A3A] p-6 md:p-10 rounded-[32px] md:rounded-[40px] flex flex-col justify-between text-white relative overflow-hidden group shadow-2xl shadow-[#0A1A3A]/20"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/20 blur-3xl rounded-full translate-x-10 -translate-y-10" />
               <h4 className="text-2xl font-light leading-tight relative z-10">
@@ -192,7 +192,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
 
       {/* Slim & Premium CTA Section */}
       <section className="w-full px-4 md:px-8 mb-16">
-        <div className="relative w-full h-32 md:h-40 rounded-[32px] md:rounded-[40px] bg-[#0A1A3A] overflow-hidden flex items-center justify-between px-8 md:px-16 border border-white/5 shadow-2xl shadow-[#0A1A3A]/10">
+        <div className="relative w-full py-8 md:py-0 md:h-40 rounded-[32px] md:rounded-[40px] bg-[#0A1A3A] overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 px-6 md:px-16 border border-white/5 shadow-2xl shadow-[#0A1A3A]/10">
           {/* Background Ornaments */}
           <div className="absolute inset-0 opacity-10 pointer-events-none">
             <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '30px 30px' }} />

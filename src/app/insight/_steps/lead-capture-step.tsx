@@ -35,7 +35,7 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
       className="w-full max-w-4xl px-6 py-12 flex flex-col items-center"
     >
       <div className="mb-12 text-center">
-        <h2 className="text-5xl font-light text-[#0A1A3A] mb-4">Profil Organisasi</h2>
+        <h2 className="text-3xl md:text-5xl font-light text-[#0A1A3A] mb-4">Profil Organisasi</h2>
         <p className="text-black/40 text-sm font-medium tracking-wide">
           Berikan informasi dasar untuk personalisasi laporan diagnostik tim Anda.
         </p>
@@ -43,9 +43,9 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
 
       <form
         onSubmit={onNext}
-        className="bg-white p-8 md:p-12 rounded-[40px] border border-black/[0.03] shadow-[0_20px_60px_rgba(0,0,0,0.06)] w-full max-w-2xl"
+        className="bg-white p-6 md:p-12 rounded-[32px] md:rounded-[40px] border border-black/[0.03] shadow-[0_20px_60px_rgba(0,0,0,0.06)] w-full max-w-2xl"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8 md:mb-12">
           <div className="space-y-1">
             <label className={labelClass}>
               <User size={14} className="text-[#D4AF37]" /> Nama Lengkap *

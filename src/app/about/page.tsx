@@ -49,7 +49,7 @@ export default function AboutPage() {
               <div className="mb-8">
                 <Tag>TENTANG BINAHUB</Tag>
               </div>
-              <h1 className="text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter leading-[0.9] text-white mb-10">
+              <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter leading-[0.9] text-white mb-10">
                 Memanusiawikan <br />
                 <span className="text-[#D4AF37] font-normal">Masa Depan.</span>
               </h1>
@@ -79,11 +79,11 @@ export default function AboutPage() {
       </section>
 
       {/* The Context Section - Modern Typography */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 bg-white">
+      <section className="py-16 md:py-32 px-6 md:px-12 lg:px-20 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-16">
             <div className="lg:col-span-5">
-              <h2 className="text-4xl md:text-5xl font-light tracking-tight leading-tight text-[#0A1A3A]">
+              <h2 className="text-3xl md:text-5xl font-light tracking-tight leading-tight text-[#0A1A3A]">
                 Era Transformasi <br />
                 <span className="font-medium italic">Tanpa Batas.</span>
               </h2>
@@ -124,7 +124,7 @@ export default function AboutPage() {
       </section>
 
       {/* Vision & Mission - Bento Style */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 bg-[#F8F9FB]">
+      <section className="py-16 md:py-32 px-6 md:px-12 lg:px-20 bg-[#F8F9FB]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <Tag>VISI & MISI</Tag>
@@ -170,12 +170,12 @@ export default function AboutPage() {
       </section>
 
       {/* Positioning & Capabilities Grid */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 bg-white">
+      <section className="py-16 md:py-32 px-6 md:px-12 lg:px-20 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-20 items-end mb-24">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-end mb-16 lg:mb-24">
             <div>
               <Tag>OUR POSITIONING</Tag>
-              <h2 className="text-5xl md:text-6xl font-light tracking-tight mt-8 leading-[1.1] text-[#0A1A3A]">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight mt-6 md:mt-8 leading-[1.1] text-[#0A1A3A]">
                 Mitra transformasi & <br />
                 <span className="font-medium">kapabilitas masa depan.</span>
               </h2>
@@ -209,7 +209,7 @@ export default function AboutPage() {
       </section>
 
       {/* Philosophy Section - Minimalist & Bold */}
-      <section className="py-40 px-6 md:px-12 lg:px-20 bg-[#F8F9FB] relative overflow-hidden">
+      <section className="py-20 md:py-40 px-6 md:px-12 lg:px-20 bg-[#F8F9FB] relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none flex items-center justify-center">
           <span className="text-[25vw] font-black text-black/[0.02] select-none tracking-tighter">HUMAN</span>
         </div>
@@ -224,7 +224,7 @@ export default function AboutPage() {
             <div className="inline-block p-4 rounded-3xl bg-white shadow-xl shadow-black/5">
               <Quote className="text-[#D4AF37]" size={40} />
             </div>
-            <h2 className="text-3xl md:text-5xl font-light text-[#0A1A3A] leading-[1.3] tracking-tight">
+            <h2 className="text-2xl md:text-5xl font-light text-[#0A1A3A] leading-[1.3] tracking-tight">
               &quot;Bagi kami, memanusiakan masa depan bukan berarti menolak kemajuan. Melainkan memastikan bahwa di tengah kemajuan tersebut, <span className="italic font-normal text-[#D4AF37]">manusia tetap menjadi inti</span> dari setiap transformasi.&quot;
             </h2>
             
