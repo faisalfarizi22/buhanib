@@ -35,7 +35,7 @@ const SILVER = '#8A9BB0';
 const styles = StyleSheet.create({
   page: { backgroundColor: ICE, color: '#1A2332', fontFamily: 'Inter', padding: 0 },
 
-  // Header Section (Full-bleed style)
+  // Header Section (Full-bleed  style)
   header: { position: 'relative', backgroundColor: '#FFFFFF', height: 185, padding: '30 44', color: '#1A2332' },
   headerAccent: { position: 'absolute', bottom: -6, left: 0, right: 0, height: 6, backgroundColor: GOLD },
   headerMotif: { position: 'absolute', top: -30, right: -40, opacity: 0.1 },
