@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MessageSquare, ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 
 export function CTASection() {
   return (
@@ -23,33 +23,22 @@ export function CTASection() {
           Anda.
         </p>
 
-        {/* 3 CTA Buttons: Single Row Layout, No Icons */}
-        <div className="flex flex-row flex-wrap sm:flex-nowrap items-center justify-center gap-3 w-full max-w-4xl mx-auto">
-          
-          {/* Button 1: Konsultasi Gratis (Secondary Accent) */}
-          <Link
-            href="#chatbot"
-            className="flex items-center justify-center px-5 sm:px-7 py-3.5 sm:py-4 bg-[#D9A441] text-[#0B2C6B] text-[10px] sm:text-[11px] rounded-full hover:bg-[#0B2C6B] hover:text-white transition-all duration-300 tracking-[0.18em] font-bold shadow-md hover:shadow-lg shrink-0"
-          >
-            KONSULTASI GRATIS
-          </Link>
-
-          {/* Button 2: Diagnosa Performa (Largest, Primary Focus) */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-3xl mx-auto">
           <Link
             href="/insight"
-            className="flex items-center justify-center px-6 sm:px-9 py-4.5 sm:py-5 bg-[#0B2C6B] text-white text-[12px] sm:text-[13px] rounded-full hover:bg-[#D9A441] hover:text-[#0B2C6B] transition-all duration-300 tracking-[0.22em] font-bold shadow-xl shadow-black/10 hover:scale-105 active:scale-95 shrink-0 border border-transparent hover:border-[#0B2C6B]"
+            className="group flex items-center justify-center gap-3 rounded-full bg-[#0B2C6B] px-8 py-4 text-[12px] font-bold uppercase tracking-[0.2em] text-white shadow-xl shadow-black/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D9A441] hover:text-[#0B2C6B] active:scale-95"
           >
             DIAGNOSA PERFORMA
+            <ChevronRight size={15} className="transition-transform duration-300 group-hover:translate-x-0.5" />
           </Link>
 
-          {/* Button 3: Pelajari Lebih Lanjut (Outline Glass style) */}
           <Link
             href="/about"
-            className="flex items-center justify-center px-5 sm:px-7 py-3.5 sm:py-4 bg-white/40 backdrop-blur-sm border border-[#0B2C6B]/20 text-[#0B2C6B] text-[10px] sm:text-[11px] rounded-full hover:bg-[#0B2C6B] hover:text-white transition-all duration-300 tracking-[0.18em] font-bold shrink-0 shadow-sm"
+            className="group flex items-center justify-center gap-3 rounded-full border border-[#0B2C6B]/18 bg-white/45 px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#0B2C6B] shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#D9A441]/45 hover:bg-white/75"
           >
             PELAJARI LEBIH LANJUT
+            <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5" />
           </Link>
-
         </div>
       </div>
     </section>

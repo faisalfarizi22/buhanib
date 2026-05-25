@@ -82,7 +82,7 @@ export function StackingServiceCards() {
                     />
                     <div
                       className="absolute inset-0"
-                      style={{ background: "linear-gradient(to right, #faf9f7 0%, transparent 55%)" }}
+                      style={{ background: "linear-gradient(to right, #F5F7FA 0%, transparent 55%)" }}
                     />
                   </div>
                 )}

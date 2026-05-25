@@ -10,7 +10,7 @@
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.208 0.042 265.755);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.208 0.042 265.755);
+  --popover-foreground: #0f172b;
   --primary: #0B2C6B;
   /* BinaHub Navy */
   --primary-foreground: oklch(0.985 0 0);
@@ -22,7 +22,7 @@
   /* Slate 500 */
   --accent: #D9A441;
   /* BinaHub Gold */
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --accent-foreground: #0f172b;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);

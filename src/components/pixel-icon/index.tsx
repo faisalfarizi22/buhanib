@@ -40,8 +40,11 @@ interface PixelIconProps {
 export function PixelIcon({ type, size = 40 }: PixelIconProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number>(0);
+  
+  const isPng = ["insights", "lab", "coach", "journey", "play", "academy", "impact", "works"].includes(type);
 
   useEffect(() => {
+    if (isPng) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
@@ -75,7 +78,26 @@ export function PixelIcon({ type, size = 40 }: PixelIconProps) {
 
     rafRef.current = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [type, size]);
+  }, [type, size, isPng]);
+
+  if (isPng) {
+    return (
+      <img
+        src={`/asset/${type}.png`}
+        alt={`${type} icon`}
+        width={size}
+        height={size}
+        style={{
+          width: size,
+          height: size,
+          imageRendering: "pixelated",
+          display: "block",
+          flexShrink: 0,
+          objectFit: "contain"
+        }}
+      />
+    );
+  }
 
   return (
     <canvas

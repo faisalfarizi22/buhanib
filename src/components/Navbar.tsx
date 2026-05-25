@@ -16,6 +16,7 @@ const NAV_LINKS = [
       { label: "Siapa kami", href: "/about#siapa-kami" },
       { label: "Visi & Misi", href: "/about#visi" },
       { label: "Nilai-nilai", href: "/about#nilai" },
+      { label: "Gallery", href: "/gallery" },
       { label: "Kontak", href: "/contact" },
     ]
   },
@@ -73,20 +74,24 @@ export default function Navbar() {
   }, [pathname])
 
   return (
-    <div id="global-navbar" className="fixed top-0 inset-x-0 z-[100] flex justify-center p-4 md:p-6 pointer-events-none">
+    <div id="global-navbar" className="fixed inset-x-0 top-0 z-[100] flex justify-center p-4 pointer-events-none md:p-7">
       <motion.div
         initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        animate={{ y: 0, opacity: 1, scale: scrolled ? 0.985 : 1 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-5xl pointer-events-auto"
       >
         <nav
-          className={`relative flex items-center justify-between px-6 py-3 md:py-4 rounded-[24px] border transition-all duration-500 ${scrolled
-              ? "bg-white/90 backdrop-blur-xl border-black/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.04)]"
-              : "bg-white/60 backdrop-blur-md border-white/40 shadow-none"
+          className={`relative flex items-center justify-between rounded-[22px] border px-5 py-3 transition-all duration-500 md:px-6 md:py-3.5 ${scrolled
+              ? "border-white/35 bg-white/88 shadow-[0_20px_60px_-25px_rgba(11,44,107,0.22)] backdrop-blur-2xl"
+              : "border-white/30 bg-white/76 shadow-[0_18px_50px_-32px_rgba(11,44,107,0.16)] backdrop-blur-xl"
             }`}
         >
-          <Link href="/" className="flex items-center group">
-            <div className="relative h-8 md:h-10 w-32 md:w-40 transition-transform group-hover:scale-105 duration-300">
+          <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(120deg,rgba(255,255,255,0.72),rgba(255,255,255,0.28),rgba(217,164,65,0.04))]" />
+          <div className="pointer-events-none absolute inset-x-6 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D9A441]/20 to-transparent" />
+
+          <Link href="/" className="group relative z-10 flex items-center mr-6">
+            <div className="relative h-8 w-32 transition-transform duration-500 group-hover:-translate-y-0.5 md:h-9 md:w-36">
               <Image
                 src="/full-logo.png"
                 alt="BinaHub Logo"
@@ -97,7 +102,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="relative z-10 hidden items-center gap-9 md:flex">
             {NAV_LINKS.map((link) => (
               <div
                 key={link.label}
@@ -107,13 +112,13 @@ export default function Navbar() {
               >
                 <Link
                   href={link.href}
-                  className="flex items-center gap-1.5 text-[11px] font-bold text-[#0B2C6B]/70 hover:text-[#0B2C6B] transition-colors tracking-widest uppercase py-4"
+                  className="flex items-center gap-1.5 py-3.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#0B2C6B]/66 transition-colors hover:text-[#0B2C6B]"
                 >
                   {link.label}
                   {link.submenu && (
-                    <ChevronDown size={14} className={`transition-transform duration-300 ${activeDropdown === link.label ? 'rotate-180' : ''}`} />
+                    <ChevronDown size={12} strokeWidth={1.8} className={`text-[#0B2C6B]/45 transition-transform duration-200 ${activeDropdown === link.label ? 'rotate-180 text-[#D9A441]' : ''}`} />
                   )}
-                  <span className="absolute bottom-3 left-0 w-0 h-0.5 bg-[#D9A441] transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute bottom-2.5 left-0 h-px w-0 bg-[#D9A441] transition-all duration-300 group-hover:w-full" />
                 </Link>
 
                 {/* Desktop Dropdown */}
@@ -124,14 +129,14 @@ export default function Navbar() {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-64 bg-white/95 backdrop-blur-2xl rounded-2xl border border-black/[0.05] shadow-xl overflow-hidden py-2"
+                        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute left-1/2 top-full mt-1 w-64 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/40 bg-white/88 py-2 shadow-[0_24px_70px_-42px_rgba(11,44,107,0.35)] backdrop-blur-2xl"
                       >
                         {link.submenu.map((sub) => (
                           <Link
                             key={sub.label}
                             href={sub.href}
-                            className="block px-5 py-3 text-[11px] font-bold text-[#0B2C6B]/70 hover:text-[#0B2C6B] hover:bg-[#F5F7FA] transition-colors tracking-widest uppercase"
+                            className="block px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#0B2C6B]/64 transition-all hover:translate-x-0.5 hover:bg-[#F5F7FA]/80 hover:text-[#0B2C6B]"
                           >
                             {sub.label}
                           </Link>
@@ -145,19 +150,19 @@ export default function Navbar() {
           </div>
 
           {/* CTA Button */}
-          <div className="flex items-center gap-4">
+          <div className="relative z-10 flex items-center gap-4">
             <Link
               href="/insight"
-              className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-[#0B2C6B] text-[#D9A441] rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-[#4A4C54] hover:scale-105 transition-all shadow-lg shadow-black/10 active:scale-95"
+              className="hidden items-center gap-2 rounded-full bg-[#0B2C6B] px-4 py-2 text-[9.5px] font-bold uppercase tracking-[0.14em] text-[#D9A441] shadow-[0_14px_34px_-22px_rgba(11,44,107,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#08245A] hover:shadow-[0_18px_42px_-24px_rgba(11,44,107,0.95)] active:scale-95 md:flex"
             >
               Diagnosa Performa (Gratis)
-              <ChevronRight size={14} />
+              <ChevronRight size={12} strokeWidth={2} />
             </Link>
 
             {/* Mobile Toggle */}
             <button
               onClick={() => setOpen(!open)}
-              className="md:hidden w-10 h-10 rounded-full bg-[#0B2C6B]/5 flex items-center justify-center text-[#0B2C6B] hover:bg-[#0B2C6B]/10 transition-colors"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0B2C6B]/5 text-[#0B2C6B] transition-colors hover:bg-[#0B2C6B]/10 md:hidden"
             >
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -171,7 +176,7 @@ export default function Navbar() {
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              className="md:hidden absolute top-full left-4 right-4 mt-4 p-4 bg-white/95 backdrop-blur-2xl rounded-[32px] border border-black/[0.05] shadow-2xl overflow-y-auto max-h-[70vh]"
+              className="absolute left-4 right-4 top-full mt-4 max-h-[70vh] overflow-y-auto rounded-[28px] border border-white/40 bg-white/90 p-4 shadow-[0_24px_80px_-40px_rgba(11,44,107,0.38)] backdrop-blur-2xl md:hidden"
             >
               <div className="flex flex-col gap-2">
                 {NAV_LINKS.map((link) => {
@@ -181,7 +186,7 @@ export default function Navbar() {
                       {link.submenu ? (
                         <button
                           onClick={() => setActiveMobileDropdown(isExpanded ? null : link.label)}
-                          className="flex items-center justify-between px-6 py-4 rounded-2xl hover:bg-[#0B2C6B]/5 text-[#0B2C6B] font-bold text-[12px] tracking-widest uppercase transition-all text-left w-full"
+                          className="flex w-full items-center justify-between rounded-2xl px-6 py-4 text-left text-[12px] font-bold uppercase tracking-widest text-[#0B2C6B] transition-all hover:bg-[#0B2C6B]/5"
                         >
                           {link.label}
                           <ChevronDown size={16} className={`text-[#D9A441] transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`} />
@@ -190,7 +195,7 @@ export default function Navbar() {
                         <Link
                           href={link.href}
                           onClick={() => setOpen(false)}
-                          className="flex items-center justify-between px-6 py-4 rounded-2xl hover:bg-[#0B2C6B]/5 text-[#0B2C6B] font-bold text-[12px] tracking-widest uppercase transition-all"
+                          className="flex items-center justify-between rounded-2xl px-6 py-4 text-[12px] font-bold uppercase tracking-widest text-[#0B2C6B] transition-all hover:bg-[#0B2C6B]/5"
                         >
                           {link.label}
                           <ChevronRight size={16} className="text-[#D9A441]" />
@@ -238,7 +243,7 @@ export default function Navbar() {
                 <Link
                   href="/insight"
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-3 w-full py-5 bg-[#0B2C6B] text-[#D9A441] rounded-2xl font-bold text-[12px] tracking-widest uppercase shadow-xl"
+                  className="flex w-full items-center justify-center gap-3 rounded-2xl bg-[#0B2C6B] py-5 text-[12px] font-bold uppercase tracking-widest text-[#D9A441] shadow-xl"
                 >
                   DIAGNOSA PERFORMA (GRATIS)
                   <ChevronRight size={18} />

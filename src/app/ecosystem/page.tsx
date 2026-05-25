@@ -3,15 +3,43 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
-import { ArrowRight, X, Zap, Shield, Target, TrendingUp, CheckCircle2, ChevronRight } from "lucide-react"
+import { AlertCircle, ArrowRight, Check, ChevronRight, Target, TrendingUp, X } from "lucide-react"
 import { ECOSYSTEM_DATA } from "@/data/ecosystem"
 import { PixelIcon } from "@/components/pixel-icon"
 import { Tag } from "@/components/ui/tag"
 import Image from "next/image"
+import BinaHubClickable from "@/components/BinaHubClickable"
+import BinaHubOrbit from "@/components/BinaHubOrbit"
+
+const AMBIENT_PIXELS = [
+  { x: "12%", y: "18%", duration: 4.2 },
+  { x: "28%", y: "66%", duration: 5.4 },
+  { x: "44%", y: "26%", duration: 6.1 },
+  { x: "63%", y: "74%", duration: 4.9 },
+  { x: "82%", y: "32%", duration: 6.6 },
+  { x: "18%", y: "82%", duration: 5.7 },
+  { x: "37%", y: "48%", duration: 4.6 },
+  { x: "52%", y: "58%", duration: 6.3 },
+  { x: "71%", y: "18%", duration: 5.2 },
+  { x: "89%", y: "78%", duration: 6.8 },
+  { x: "8%", y: "54%", duration: 4.8 },
+  { x: "24%", y: "36%", duration: 5.9 },
+  { x: "59%", y: "39%", duration: 4.4 },
+  { x: "76%", y: "63%", duration: 6.5 },
+  { x: "93%", y: "49%", duration: 5.1 },
+]
 
 export default function LayananPage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [activeView, setActiveView] = useState<"image" | "orbit">("image")
+  const [activeDetailTab, setActiveDetailTab] = useState<"overview" | "challenges" | "outcome" | "output">("overview")
   const products = Object.values(ECOSYSTEM_DATA)
+  const primaryProductIds = new Set(["insight", "academy", "works"])
+
+  const openProduct = (product: any) => {
+    setSelectedProduct(product)
+    setActiveDetailTab("overview")
+  }
 
   // Approximate coordinate mapping for service.jpeg (Adjust top, left, w, h percentages as needed)
   const imageMapAreas = [
@@ -30,7 +58,7 @@ export default function LayananPage() {
 
       {/* Immersive Hero Section - Reconstructed for High Visibility */}
       <section className="w-full px-4 md:px-8 pt-20 md:pt-28 mb-8 md:mb-16">
-        <div className="relative w-full h-[80vh] md:h-[85vh] rounded-[32px] md:rounded-[48px] bg-[#030712] overflow-hidden flex items-center justify-center border border-white/5 shadow-2xl">
+        <div className="relative w-full h-[75vh] sm:h-[80vh] md:h-[85vh] min-h-[500px] max-h-[900px] rounded-xl bg-[#030712] overflow-hidden flex items-center justify-center border border-white/5 shadow-lg">
           
           {/* 1. Technical Grid Lines (High Visibility) */}
           <div className="absolute inset-0 z-[1] opacity-20" 
@@ -52,8 +80,8 @@ export default function LayananPage() {
             }} />
           </div>
 
-          {/* 3. Heartbeat Ecosystem Icons - Responsive Lowered Arc */}
-          <div className="absolute inset-0 z-[6] pointer-events-none overflow-hidden flex items-center justify-center">
+          {/* 3. Heartbeat Ecosystem Icons - Hidden on mobile, visible md+ */}
+          <div className="hidden md:flex absolute inset-0 z-[6] pointer-events-none overflow-hidden items-center justify-center">
             {[
               { type: 'insights' as const, angle: -175, r: 520, s: 44 },
               { type: 'lab' as const, angle: -145, r: 560, s: 40 },
@@ -65,11 +93,8 @@ export default function LayananPage() {
               { type: 'works' as const, angle: 5, r: 580, s: 42 },
             ].map((icon, i) => {
               const rad = (icon.angle * Math.PI) / 180;
-              // Responsive radius scaling
-              const responsiveR = typeof window !== 'undefined' && window.innerWidth < 768 
-                ? icon.r * 0.6 
-                : icon.r;
-                
+              const responsiveR = icon.r;
+
               const x = Math.cos(rad) * responsiveR;
               const y = Math.sin(rad) * (responsiveR * 0.75); 
               
@@ -101,13 +126,13 @@ export default function LayananPage() {
             })}
 
             {/* Agitated Small Pixels */}
-            {[...Array(15)].map((_, i) => (
+            {AMBIENT_PIXELS.map((pixel, i) => (
               <motion.div
                 key={i}
                 className="absolute w-1.5 h-1.5 bg-[#D9A441]/40 rounded-sm"
                 initial={{ 
-                  x: Math.random() * 100 + "%", 
-                  y: Math.random() * 100 + "%",
+                  x: pixel.x,
+                  y: pixel.y,
                 }}
                 animate={{ 
                   y: [0, -40, 0],
@@ -115,7 +140,7 @@ export default function LayananPage() {
                   opacity: [0, 0.6, 0],
                 }}
                 transition={{ 
-                  duration: 4 + Math.random() * 4, 
+                  duration: pixel.duration,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
@@ -125,13 +150,13 @@ export default function LayananPage() {
 
           {/* 4. BinaHub Large Background Text */}
           <div className="absolute -bottom-[15%] left-1/2 -translate-x-1/2 z-[4] select-none pointer-events-none">
-            <h2 className="text-[20vw] font-black text-white/10 tracking-tighter leading-none whitespace-nowrap">
+            <h2 className="text-[20vw] font-black text-white/[0.045] tracking-tighter leading-none whitespace-nowrap">
               BinaHub
             </h2>
           </div>
 
-          {/* 5. The Curved Horizon Arc - Lowered to sit right above the text */}
-          <div className="absolute -bottom-[58%] left-1/2 -translate-x-1/2 w-[160%] aspect-[4/1] rounded-[100%] bg-gradient-to-t from-[#0B2C6B] to-transparent border-t border-[#D9A441]/30 shadow-[0_-20px_100px_rgba(212,175,55,0.2)] z-[5]" />
+          {/* 5. The Curved Horizon Arc - Flat, clean navy gradient */}
+          <div className="absolute -bottom-[58%] left-1/2 -translate-x-1/2 w-[160%] aspect-[4/1] rounded-[100%] bg-gradient-to-t from-[#0B2C6B] to-transparent border-t border-[#D9A441]/25 z-[5]" />
 
           {/* 6. Hero Content (Highest Layer) */}
           <div className="relative z-[10] max-w-7xl mx-auto px-6 text-center">
@@ -149,12 +174,15 @@ export default function LayananPage() {
                 <Tag className="text-white/40 bg-white/5 border border-white/10 px-6 py-2 uppercase tracking-[0.3em]">THE INTEGRATED HUB</Tag>
               </div>
 
-              <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tighter leading-[0.85] text-white mb-10">
-                People. Learning. <br />
-                <span className="text-[#D9A441] font-normal italic">Elevated.</span>
+              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-tight leading-tight text-white mb-6 sm:mb-10 text-center">
+                People{" "}
+                <span className="text-white/24 font-light">·</span>
+                {" "}Learning{" "}
+                <span className="text-white/24 font-light">·</span>
+                {" "}<span className="text-[#D9A441] font-normal italic">Elevated</span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-white/40 font-light leading-relaxed max-w-2xl mx-auto">
+              <p className="text-lg md:text-2xl text-white/62 font-light leading-[1.75] max-w-3xl mx-auto">
                 Menyatukan <span className="text-white">Potensi Manusia</span> dan <span className="text-white">Teknologi</span> dalam satu layanan terpadu untuk transformasi nyata.
               </p>
             </motion.div>
@@ -171,9 +199,9 @@ export default function LayananPage() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-[#F5F7FA] p-6 md:p-16 rounded-[32px] md:rounded-[48px] border border-black/[0.03]"
+              className="bg-[#F5F7FA] p-6 md:p-16 rounded-xl border border-black/[0.08]"
             >
-              <h3 className="text-3xl font-light mb-10 text-[#0B2C6B]">Mengapa Program <br /><span className="font-bold text-red-500 underline decoration-red-500/30 underline-offset-8">Sering Gagal?</span></h3>
+              <h3 className="text-3xl font-light mb-10 text-[#0B2C6B]">Mengapa Program <br /><span className="font-bold text-[#C85A2A] underline decoration-[#C85A2A]/30 underline-offset-8">Sering Gagal?</span></h3>
               <div className="space-y-6">
                 {[
                   "Tidak menyentuh akar permasalahan (Root Cause)",
@@ -183,8 +211,8 @@ export default function LayananPage() {
                   "Terhenti di ruang kelas tanpa eksekusi"
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-4">
-                    <div className="w-6 h-6 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
-                      <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                    <div className="w-6 h-6 rounded-full bg-[#C85A2A]/10 flex items-center justify-center shrink-0">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#B9471D]" />
                     </div>
                     <p className="text-black/80 font-light text-lg">{item}</p>
                   </div>
@@ -197,17 +225,15 @@ export default function LayananPage() {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-[#0B2C6B] p-6 md:p-16 rounded-[32px] md:rounded-[48px] text-white relative overflow-hidden flex flex-col justify-center border border-[#D9A441]/20 shadow-2xl"
+              className="bg-[#0B2C6B] p-6 md:p-16 rounded-xl text-white relative overflow-hidden flex flex-col justify-center border border-[#D9A441]/20"
             >
-              {/* Background Ornaments (Increased Visibility) */}
-              <div className="absolute inset-0 z-0 opacity-40 pointer-events-none" 
+              {/* Background Ornaments (Subtle Grid) */}
+              <div className="absolute inset-0 z-0 opacity-15 pointer-events-none" 
                    style={{ 
-                     backgroundImage: 'radial-gradient(rgba(212,175,55,0.4) 1px, transparent 1px)', 
+                     backgroundImage: 'radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px)', 
                      backgroundSize: '24px 24px' 
                    }} 
               />
-              <div className="absolute top-0 right-0 w-96 h-96 bg-[#D9A441]/30 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2 opacity-60" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D9A441]/15 blur-[80px] rounded-full translate-y-1/2 -translate-x-1/2 opacity-40" />
               
               {/* Decorative Corner '+' */}
               <div className="absolute top-10 left-10 w-6 h-6 opacity-40">
@@ -237,38 +263,93 @@ export default function LayananPage() {
             </h2>
           </div>
 
-          {/* New Image Map Section - Responsive and Full-Width */}
-          <div className="relative w-full max-w-[95vw] xl:max-w-7xl 2xl:max-w-[1440px] mx-auto aspect-[16/9] rounded-3xl md:rounded-[40px] overflow-hidden shadow-2xl border border-black/5 bg-white">
-            <Image 
-              src="/asset/service.jpeg"
-              alt="BinaHub Layanan Map"
-              fill
-              className="object-contain w-full h-full"
-            />
-            {/* Clickable Overlay Areas */}
-            {imageMapAreas.map((area, i) => {
-              const product = products.find(p => p.id === area.id);
-              return (
-                <div
-                  key={i}
-                  className="absolute cursor-pointer hover:bg-[#D9A441]/20 transition-colors duration-300 rounded-xl border-2 border-transparent hover:border-[#D9A441]/50 flex items-center justify-center group"
-                  style={{ top: area.top, left: area.left, width: area.width, height: area.height }}
-                  onClick={() => {
-                    if(product) setSelectedProduct(product);
-                  }}
-                >
-                  {/* Subtle indicator for clickable area */}
-                  <div className="w-8 h-8 rounded-full bg-white/40 shadow-xl opacity-0 group-hover:opacity-100 flex items-center justify-center backdrop-blur-sm transition-opacity">
-                    <Zap size={16} className="text-[#0B2C6B]" />
-                  </div>
-                </div>
-              );
-            })}
+          {/* Immersive View Switcher (Desktop & Tablet only) */}
+          <div className="hidden md:flex justify-center mb-12">
+            <div className="bg-white border border-black/5 p-1.5 rounded-lg flex items-center gap-1 shadow-sm">
+              <button
+                onClick={() => setActiveView("image")}
+                className={`px-6 py-2.5 rounded-md font-bold text-[10px] tracking-wider uppercase transition-all duration-300 ${
+                  activeView === "image"
+                    ? "bg-[#0B2C6B] text-white shadow-sm"
+                    : "text-[#0B2C6B]/60 hover:text-[#0B2C6B] hover:bg-[#F5F7FA]"
+                }`}
+              >
+                Peta Gambar (Hotspot)
+              </button>
+              <button
+                onClick={() => setActiveView("orbit")}
+                className={`px-6 py-2.5 rounded-md font-bold text-[10px] tracking-wider uppercase transition-all duration-300 ${
+                  activeView === "orbit"
+                    ? "bg-[#0B2C6B] text-white shadow-sm"
+                    : "text-[#0B2C6B]/60 hover:text-[#0B2C6B] hover:bg-[#F5F7FA]"
+                }`}
+              >
+                Skema Orbit (CSS Murni)
+              </button>
+            </div>
           </div>
 
-          
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-              {products.map((product: any, i) => (
+          {/* Conditional Visualization Component Rendering (Desktop & Tablet only) */}
+          <div className="hidden md:block mb-16">
+            <AnimatePresence mode="wait">
+              {activeView === "image" ? (
+                <motion.div
+                  key="image-view"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative w-full max-w-[95vw] xl:max-w-7xl 2xl:max-w-[1440px] mx-auto overflow-hidden shadow-md border border-black/5 bg-white rounded-xl"
+                >
+                  <BinaHubClickable 
+                    onProductClick={(productId) => {
+                      const product = products.find(p => p.id === productId);
+                      if (product) openProduct(product);
+                    }} 
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="orbit-view"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full max-w-[95vw] xl:max-w-7xl 2xl:max-w-[1440px] mx-auto"
+                >
+                  <BinaHubOrbit 
+                    onProductClick={(productId) => {
+                      const product = products.find(p => p.id === productId);
+                      if (product) openProduct(product);
+                    }} 
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          {/* Visual Divider / Section Separator */}
+          <div className="relative flex items-center justify-center my-20">
+            {/* Left line */}
+            <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-black/10 to-[#0B2C6B]/20" />
+            
+            {/* Center icon / detail badge */}
+            <div className="mx-6 px-6 py-2.5 bg-white border border-[#0B2C6B]/10 rounded-full shadow-sm flex items-center gap-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D9A441] animate-ping" />
+              <span className="text-[10px] font-bold text-[#0B2C6B]/60 tracking-[0.25em] uppercase">
+                Detail Eksplorasi Layanan
+              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D9A441]" />
+            </div>
+
+            {/* Right line */}
+            <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent via-black/10 to-[#0B2C6B]/20" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {products.map((product: any, i) => {
+                const isPrimary = primaryProductIds.has(product.id)
+
+                return (
                 <motion.div
                   key={product.id}
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -276,22 +357,33 @@ export default function LayananPage() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                   layoutId={product.id}
-                  onClick={() => setSelectedProduct(product)}
-                  className="group bg-white p-6 md:p-10 rounded-[32px] md:rounded-[40px] border border-black/[0.04] cursor-pointer hover:shadow-2xl hover:shadow-black/10 transition-all duration-500 relative overflow-hidden"
+                  onClick={() => openProduct(product)}
+                  className={`group bg-white rounded-xl border border-black/[0.08] cursor-pointer hover:shadow-md hover:border-black/15 transition-all duration-300 relative overflow-hidden ${
+                    isPrimary
+                      ? "p-7 md:p-10 lg:col-span-2 min-h-[300px]"
+                      : "p-6 md:p-8"
+                  }`}
                 >
+                  {isPrimary && (
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_10%,rgba(217,164,65,0.13),transparent_34%),linear-gradient(135deg,rgba(11,44,107,0.045),transparent_42%)]" />
+                  )}
                   <div className="relative z-10">
-                    <div className="mb-10 group-hover:scale-110 transition-transform duration-500">
-                      <PixelIcon type={product.iconType} size={48} />
+                    <div className="mb-10 transition-transform duration-300 group-hover:-translate-y-1">
+                      <PixelIcon type={product.iconType} size={isPrimary ? 58 : 48} />
                     </div>
-                    <h3 className="text-2xl font-bold mb-2 text-[#0B2C6B] group-hover:text-[#D9A441] transition-colors">{product.title}</h3>
+                    {isPrimary && (
+                      <span className="mb-4 inline-flex rounded-full bg-[#D9A441]/10 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-[#B9851F]">
+                        Core
+                      </span>
+                    )}
+                    <h3 className={`${isPrimary ? "text-3xl md:text-4xl" : "text-2xl"} font-bold mb-2 text-[#0B2C6B] group-hover:text-[#D9A441] transition-colors`}>{product.title}</h3>
                     <p className="text-[10px] text-black/40 uppercase tracking-[0.2em] font-bold mb-8">{product.subtitle}</p>
                     <div className="flex items-center gap-3 text-[11px] font-bold text-black/40 group-hover:text-black transition-colors">
                       PELAJARI DETAIL <ChevronRight size={16} />
                     </div>
                   </div>
-                  <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-black/[0.01] rounded-full group-hover:bg-[#D9A441]/5 transition-all duration-700" />
                 </motion.div>
-              ))}
+              )})}
             </div>
 
 
@@ -305,7 +397,7 @@ export default function LayananPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12"
+            className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-12"
           >
             <div
               className="absolute inset-0 bg-[#0B2C6B]/90 backdrop-blur-xl"
@@ -314,19 +406,25 @@ export default function LayananPage() {
 
             <motion.div
               layoutId={selectedProduct.id}
-              className="relative w-full max-w-6xl bg-white rounded-[32px] md:rounded-[48px] overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh]"
+              className="relative w-full max-w-6xl bg-white rounded-xl overflow-hidden shadow-lg flex flex-col md:flex-row max-h-[95vh] md:max-h-[85vh]"
             >
               {/* Product Header Side - Now Navy */}
               <div
-                className="w-full md:w-1/3 p-6 md:p-12 text-white flex flex-col justify-between relative overflow-hidden shrink-0 bg-[#0B2C6B]"
+                className="w-full md:w-1/3 p-5 sm:p-6 md:p-12 text-white flex flex-col justify-between relative overflow-hidden shrink-0 bg-[#0B2C6B]"
               >
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full translate-x-10 -translate-y-10" />
                 <div className="relative z-10">
-                  <div className="bg-white/10 backdrop-blur-md p-8 rounded-[32px] inline-block mb-10 border border-white/20">
+                  <div className="bg-white/5 p-5 sm:p-8 rounded-lg inline-block mb-6 sm:mb-10 border border-white/10">
                     <PixelIcon type={selectedProduct.iconType} size={64} />
                   </div>
-                  <h2 className="text-5xl font-light tracking-tighter mb-4 leading-none text-white">{selectedProduct.title}</h2>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tighter mb-4 leading-none text-white">{selectedProduct.title}</h2>
                   <p className="text-[11px] font-bold tracking-[0.3em] uppercase text-[#D9A441] mb-8">{selectedProduct.subtitle}</p>
+                  {selectedProduct.tagline && (
+                    <div className="mt-10 rounded-2xl border border-white/10 bg-white/[0.045] p-5">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/36 mb-3">Focus</p>
+                      <p className="text-sm font-light leading-relaxed text-white/74">{selectedProduct.tagline}</p>
+                    </div>
+                  )}
                 </div>
                 <button
                   onClick={() => setSelectedProduct(null)}
@@ -337,60 +435,133 @@ export default function LayananPage() {
               </div>
 
               {/* Product Content Side */}
-              <div className="flex-1 p-6 md:p-20 overflow-y-auto custom-scrollbar bg-white">
-                <div className="space-y-20">
-                  {/* Context */}
-                  <div>
-                    <h4 className="text-[10px] font-bold tracking-[0.5em] text-black/30 uppercase mb-8">Filosofi & Pendekatan</h4>
-                    <p className="text-xl md:text-2xl text-black/75 font-light leading-relaxed">
-                      {selectedProduct.description}
-                    </p>
+              <div className="flex-1 overflow-y-auto custom-scrollbar bg-white">
+                <div className="sticky top-0 z-20 border-b border-black/[0.06] bg-white/92 px-6 py-4 backdrop-blur-xl md:px-12">
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { id: "overview", label: "Overview" },
+                      { id: "challenges", label: "Tantangan" },
+                      { id: "outcome", label: "Outcome" },
+                      { id: "output", label: "Output" },
+                    ].map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveDetailTab(tab.id as typeof activeDetailTab)}
+                        className={`rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[0.16em] transition-all duration-300 ${
+                          activeDetailTab === tab.id
+                            ? "bg-[#0B2C6B] text-white"
+                            : "bg-[#F5F7FA] text-black/42 hover:text-[#0B2C6B]"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
                   </div>
+                </div>
 
-                  <div className="grid md:grid-cols-2 gap-8 md:gap-16">
-                    {/* Challenges */}
-                    <div>
-                      <h4 className="text-[10px] font-bold tracking-[0.5em] text-black/30 uppercase mb-8">Tantangan yang Dijawab</h4>
-                      <div className="space-y-6">
-                        {selectedProduct.challenges.map((c: string, i: number) => (
-                          <div key={i} className="flex gap-4 items-center">
-                            <div className="w-6 h-6 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
-                              <X size={14} className="text-red-500" />
-                            </div>
-                            <p className="text-black/80 font-light leading-relaxed">{c}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Benefits */}
-                    <div>
-                      <h4 className="text-[10px] font-bold tracking-[0.5em] text-black/30 uppercase mb-8">Tujuan & Manfaat</h4>
-                      <div className="space-y-6">
-                        {selectedProduct.benefits.map((b: string, i: number) => (
-                          <div key={i} className="flex gap-4 items-center">
-                            <div className="w-6 h-6 rounded-lg bg-[#D9A441]/10 flex items-center justify-center shrink-0">
-                              <Target size={14} className="text-[#D9A441]" />
-                            </div>
-                            <p className="text-black/80 font-light leading-relaxed">{b}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Results */}
-                  <div className="bg-[#F5F7FA] p-6 md:p-12 rounded-[32px] md:rounded-[48px] border border-black/[0.04] shadow-sm">
-                    <h4 className="text-[10px] font-bold tracking-[0.5em] text-black/30 uppercase mb-10">Hasil & Output Nyata</h4>
-                    <div className="grid sm:grid-cols-2 gap-x-12 gap-y-6">
-                      {selectedProduct.results.map((r: string, i: number) => (
-                        <div key={i} className="flex gap-4 items-center group">
-                          <div className="w-2 h-2 rounded-full bg-green-500 group-hover:scale-150 transition-transform shrink-0" />
-                          <p className="text-xs font-bold text-black/80 uppercase tracking-widest leading-relaxed">{r}</p>
+                <div className="p-6 md:p-12">
+                  <AnimatePresence mode="wait">
+                    {activeDetailTab === "overview" && (
+                      <motion.div
+                        key="overview"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.32 }}
+                        className="space-y-10"
+                      >
+                        <div>
+                          <h4 className="text-[10px] font-bold tracking-[0.42em] text-black/30 uppercase mb-7">Filosofi & Pendekatan</h4>
+                          <p className="text-xl md:text-2xl text-black/75 font-light leading-relaxed">
+                            {selectedProduct.description}
+                          </p>
                         </div>
-                      ))}
-                    </div>
-                  </div>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          {selectedProduct.benefits.slice(0, 2).map((benefit: string, i: number) => (
+                            <div key={i} className="rounded-2xl border border-[#D9A441]/18 bg-[#D9A441]/[0.055] p-5">
+                              <Check size={18} className="mb-4 text-[#B9851F]" />
+                              <p className="text-sm font-medium leading-relaxed text-black/72">{benefit}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activeDetailTab === "challenges" && (
+                      <motion.div
+                        key="challenges"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.32 }}
+                      >
+                        <h4 className="text-[10px] font-bold tracking-[0.42em] text-black/30 uppercase mb-8">Tantangan yang Dijawab</h4>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          {selectedProduct.challenges.map((c: string, i: number) => (
+                            <div key={i} className="flex gap-4 rounded-2xl border border-[#D9A441]/16 bg-[#FFF8EA] p-5">
+                              <div className="w-8 h-8 rounded-xl bg-[#D9A441]/14 flex items-center justify-center shrink-0">
+                                <AlertCircle size={16} className="text-[#B9851F]" />
+                              </div>
+                              <p className="text-sm text-black/76 font-light leading-relaxed">{c}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activeDetailTab === "outcome" && (
+                      <motion.div
+                        key="outcome"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.32 }}
+                      >
+                        <h4 className="text-[10px] font-bold tracking-[0.42em] text-black/30 uppercase mb-8">Tujuan & Manfaat</h4>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          {selectedProduct.benefits.map((b: string, i: number) => (
+                            <div key={i} className="flex gap-4 rounded-2xl border border-[#0B2C6B]/10 bg-[#F5F7FA] p-5">
+                              <div className="w-8 h-8 rounded-xl bg-[#0B2C6B] flex items-center justify-center shrink-0">
+                                <Target size={15} className="text-[#D9A441]" />
+                              </div>
+                              <p className="text-sm text-black/76 font-light leading-relaxed">{b}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activeDetailTab === "output" && (
+                      <motion.div
+                        key="output"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.32 }}
+                        className="rounded-[28px] border border-[#0B2C6B]/10 bg-[#F5F7FA] p-6 md:p-8"
+                      >
+                        <div className="mb-8 flex items-center gap-4">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#0B2C6B] shadow-sm">
+                            <TrendingUp size={22} />
+                          </div>
+                          <div>
+                            <h4 className="text-[10px] font-bold tracking-[0.42em] text-black/30 uppercase">Hasil & Output Nyata</h4>
+                            <p className="mt-1 text-sm text-black/48">Artifact yang membantu pengambilan keputusan dan eksekusi.</p>
+                          </div>
+                        </div>
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          {selectedProduct.results.map((r: string, i: number) => (
+                            <div key={i} className="flex gap-4 items-center rounded-2xl bg-white p-4">
+                              <div className="w-8 h-8 rounded-full bg-[#D9A441]/12 flex items-center justify-center text-[10px] font-bold text-[#B9851F] shrink-0">
+                                0{i + 1}
+                              </div>
+                              <p className="text-xs font-bold text-black/80 uppercase tracking-widest leading-relaxed">{r}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             </motion.div>
@@ -423,7 +594,7 @@ export default function LayananPage() {
           <div className="flex items-center gap-6">
             <Link
               href="#chatbot"
-              className="group inline-flex h-14 px-10 bg-[#D9A441] text-[#0B2C6B] rounded-full text-[11px] font-bold tracking-[0.3em] hover:bg-white transition-all items-center justify-center uppercase"
+              className="group inline-flex h-14 px-10 bg-[#D9A441] text-[#0B2C6B] rounded-lg text-[11px] font-bold tracking-[0.3em] hover:bg-white transition-all items-center justify-center uppercase"
             >
               KONSULTASI GRATIS <ArrowRight size={16} className="ml-3 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -439,6 +610,3 @@ export default function LayananPage() {
     </div>
   )
 }
-
-
-

@@ -143,7 +143,7 @@ export default function ServiceLayout({ data }: { data: ServiceData }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-20 text-center bg-white p-6 md:p-20 rounded-[32px] md:rounded-[48px] border border-black/[0.03] shadow-2xl shadow-black/[0.02]"
+          className="mt-20 text-center bg-white p-6 sm:p-10 md:p-16 lg:p-20 rounded-[24px] md:rounded-[48px] border border-black/[0.03] shadow-2xl shadow-black/[0.02]"
         >
           <div className="w-16 h-16 rounded-full bg-[#F5F7FA] mx-auto flex items-center justify-center mb-8 text-[#D9A441]">
             <Sparkles size={32} />

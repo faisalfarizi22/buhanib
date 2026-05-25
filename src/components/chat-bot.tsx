@@ -165,7 +165,7 @@ export function ChatBot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-6 right-6 w-[350px] sm:w-[400px] h-[600px] max-h-[80vh] bg-white rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden border border-black/5"
+            className="fixed bottom-6 right-6 w-[calc(100vw-32px)] sm:w-[400px] h-[600px] max-h-[80vh] bg-white rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden border border-black/5"
           >
             {/* Header */}
             <div className="bg-[#0B2C6B] p-4 flex items-center justify-between relative overflow-hidden">

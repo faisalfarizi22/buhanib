@@ -66,7 +66,7 @@ export default function PixelBackground({ ready = true }: { ready?: boolean }) {
 
       const centerX = W * 0.62
       const centerY = H * 0.62
-      const pixelSize = Math.max(18, W * 0.018)
+      const pixelSize = Math.max(14, W * 0.014)
       const depth = pixelSize * 0.2
 
       const startX = centerX - (12 * pixelSize) / 2

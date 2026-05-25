@@ -85,17 +85,22 @@ export function HumanCoreValuesSection() {
         isGlowing ? "bg-[#050E21] text-white" : "bg-[#F5F7FA] text-[#4A4C54]"
       }`}
     >
-      {/* High-intensity Glow ambient lights */}
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-70">
+        <div className={`absolute inset-0 transition-opacity duration-1000 ${
+          isGlowing
+            ? "opacity-40 bg-[linear-gradient(90deg,rgba(217,164,65,0.08)_0%,transparent_34%,rgba(255,255,255,0.035)_100%)]"
+            : "opacity-55 bg-[linear-gradient(90deg,rgba(11,44,107,0.045)_0%,transparent_40%,rgba(217,164,65,0.04)_100%)]"
+        }`} />
+        <div className="absolute inset-0 opacity-[0.05] bg-[linear-gradient(90deg,transparent_0,transparent_96%,rgba(11,44,107,0.75)_100%)] bg-[length:72px_100%]" />
+      </div>
+
+      {/* Premium ambient lights */}
       {isGlowing && (
-        <div className="absolute inset-0 z-0 opacity-100 pointer-events-none transition-opacity duration-1000">
-          {/* Big Golden aura on top-left */}
-          <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-[#D9A441]/15 rounded-full blur-[130px] animate-pulse" style={{ animationDuration: "8s" }} />
-          {/* Vibrant blue/cyan orb on bottom-right */}
-          <div className="absolute -bottom-32 -right-32 w-[700px] h-[700px] bg-[#3B82F6]/20 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: "12s" }} />
-          {/* Central golden neon horizontal strip */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[30%] bg-[#D9A441]/5 rounded-full blur-[100px]" />
-          {/* Sparkles of stardust */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.03] via-transparent to-transparent" />
+        <div className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000">
+          <div className="absolute -top-40 -left-28 h-[560px] w-[560px] rounded-full bg-[#D9A441]/12 blur-[140px]" />
+          <div className="absolute -bottom-40 right-0 h-[620px] w-[620px] rounded-full bg-[#0B2C6B]/38 blur-[150px]" />
+          <div className="absolute left-[8%] right-[8%] top-1/2 h-px bg-gradient-to-r from-transparent via-[#D9A441]/26 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_55%_52%,rgba(255,255,255,0.045),transparent_34%)]" />
         </div>
       )}
 
@@ -103,7 +108,13 @@ export function HumanCoreValuesSection() {
         
         {/* Header Tags (Aligned to Left) */}
         <div className="text-left mb-16 flex flex-col items-start">
-          <PixelIcon type="core" size={40} />
+          <div className={`flex h-12 w-12 items-center justify-center rounded-2xl border transition-all duration-1000 ${
+            isGlowing
+              ? "border-[#D9A441]/35 bg-white/[0.06] text-[#D9A441]"
+              : "border-[#0B2C6B]/10 bg-white/60 text-[#0B2C6B]"
+          }`}>
+            <PixelIcon type="core" size={26} />
+          </div>
           <div className="mt-5">
             <Tag className={isGlowing ? "bg-white/10 text-white border border-white/20 shadow-sm" : "bg-black/[0.04] text-black/40"}>
               NILAI-NILAI UTAMA
@@ -130,9 +141,9 @@ export function HumanCoreValuesSection() {
                       animate={{ opacity: 1, x: 0, scale: 1 }}
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ duration: 0.5, type: "spring", stiffness: 120 }}
-                      className="flex flex-col md:flex-row md:items-center justify-between w-full gap-6"
+                      className="flex flex-col md:flex-row md:items-center justify-between w-full gap-6 px-0 py-0 transition-all duration-700 md:px-6 md:py-3"
                     >
-                      <div className="flex items-baseline text-3.5xl md:text-5xl lg:text-6xl tracking-tight leading-none">
+                      <div className="flex items-baseline text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight leading-none">
                         {/* Big capital letter with golden neon glow when active */}
                         <span
                           className={`font-extrabold font-sans transition-all duration-1000 shrink-0 select-none ${
@@ -142,7 +153,7 @@ export function HumanCoreValuesSection() {
                           }`}
                           style={{
                             textShadow: isGlowing
-                              ? "0 0 15px rgba(217,164,65,0.85), 0 0 30px rgba(217,164,65,0.4)"
+                              ? "0 0 20px rgba(217,164,65,0.32)"
                               : "none",
                           }}
                         >

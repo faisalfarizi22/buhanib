@@ -14,13 +14,39 @@ export default function PerspektifPage() {
   return (
     <div className="bg-[#F5F7FA] text-[#4A4C54] min-h-screen font-sans antialiased pt-24">
       {/* Page Header */}
-      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-20 text-center">
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-light tracking-tighter leading-[1.0] text-[#0B2C6B] mb-6">
-          Perspektif <span className="italic font-normal text-[#D9A441]">BinaHub.</span>
+      <section className="relative overflow-hidden py-16 md:py-28 px-6 md:px-12 lg:px-20 text-center">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-1/2 top-10 h-[420px] w-[620px] -translate-x-1/2 rounded-full bg-[#D9A441]/[0.07] blur-[130px]" />
+          <div className="absolute inset-0 opacity-[0.026] bg-[linear-gradient(90deg,transparent_0,transparent_96%,rgba(11,44,107,0.72)_100%)] bg-[length:82px_100%]" />
+        </div>
+        <div className="relative z-10 mx-auto max-w-5xl">
+          <div className="mb-6 inline-flex rounded-full bg-black/[0.04] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[#0B2C6B]/52">
+            Perspektif BinaHub
+          </div>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter leading-[1.05] text-[#0B2C6B] mb-7">
+            Transformasi gagal ketika <span className="italic font-normal text-[#D9A441]">manusia dilupakan.</span>
         </h1>
-        <p className="text-lg md:text-xl text-[#4A4C54]/70 font-light leading-relaxed max-w-2xl mx-auto">
-          Bagaimana kami merancang dan memberikan solusi pembelajaran dan transformasi dengan memadukan teknologi dan sisi kemanusiaan.
-        </p>
+          <p className="text-lg md:text-xl text-[#4A4C54]/72 font-light leading-[1.85] max-w-3xl mx-auto">
+            AI, data, dan sistem hanya bermakna ketika memperkuat cara manusia berpikir, belajar,
+            bekerja sama, dan mengambil keputusan.
+          </p>
+        </div>
+      </section>
+
+      <section className="px-6 md:px-12 lg:px-20 pb-16">
+        <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
+          {[
+            ["01", "Human before system", "Perubahan dimulai dari kesadaran, bukan dari tools."],
+            ["02", "Learning before automation", "Teknologi harus mempercepat pembelajaran, bukan menggantikannya."],
+            ["03", "Impact before activity", "Program bernilai ketika perilaku dan kinerja ikut berubah."],
+          ].map(([n, title, desc]) => (
+            <div key={n} className="rounded-3xl border border-black/[0.06] bg-white/70 p-6 shadow-[0_18px_60px_-50px_rgba(11,44,107,0.42)]">
+              <span className="text-[10px] font-bold tracking-[0.24em] text-[#D9A441]">{n}</span>
+              <h2 className="mt-5 text-xl font-medium tracking-tight text-[#0B2C6B]">{title}</h2>
+              <p className="mt-3 text-sm font-light leading-relaxed text-black/56">{desc}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <MethodologySection onMouseMove={handleMouse} />

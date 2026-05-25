@@ -28,78 +28,109 @@ const HUMANOID_FRAMES: number[][][] = [
   ],
 ];
 
-const EYE_SHAPE = [
-  [0, 0, 1, 1, 1, 1, 1, 0, 0],
-  [0, 1, 0, 0, 0, 0, 0, 1, 0],
-  [1, 0, 0, 1, 1, 1, 0, 0, 1],
-  [1, 0, 1, 1, 1, 1, 1, 0, 1],
-  [1, 0, 1, 1, 1, 1, 1, 0, 1],
-  [1, 0, 0, 1, 1, 1, 0, 0, 1],
-  [0, 1, 0, 0, 0, 0, 0, 1, 0],
-  [0, 0, 1, 1, 1, 1, 1, 0, 0],
+const LIGHTBULB_SHAPE = [
+  [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], // ray top
+  [0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0], // diagonal rays + bulb top
+  [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0], // filament
+  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], // horizontal rays
+  [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
+  [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], // neck
+  [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], // metal base
+  [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
 ];
 
-const FLASK_SHAPE = [
-  [0, 0, 1, 1, 1, 0, 0],
-  [0, 0, 0, 1, 0, 0, 0],
-  [0, 0, 0, 1, 0, 0, 0],
-  [0, 0, 1, 1, 1, 0, 0],
-  [0, 1, 1, 1, 1, 1, 0],
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1],
+const COG_SHAPE = [
+  [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0], // Top tooth
+  [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+  [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0], // Teeth on top-sides
+  [0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0],
+  [1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1], // Horizontal teeth + inner hub hole
+  [1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1],
+  [1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1],
+  [1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1],
+  [0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0],
+  [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
+  [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0], // Bottom tooth
+  [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
 ];
 
-const WHISTLE_SHAPE = [
-  [1, 1, 1, 1, 1, 0, 0],
-  [1, 0, 0, 0, 1, 1, 0],
-  [1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 0, 0, 1, 0, 1],
-  [1, 1, 1, 1, 1, 1, 1],
-  [0, 0, 1, 1, 1, 0, 0],
+const HEAD_HEART_SHAPE = [
+  [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+  [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0], // Transparent heart lobes
+  [0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1], // Transparent heart body, nose profile
+  [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0], // Transparent tip of the heart, mouth profile
+  [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0], // chin profile
+  [0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+  [0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+  [0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
 ];
 
-const MOUNTAIN_SHAPE = [
-  [0, 0, 0, 0, 1, 0, 0, 0, 0],
-  [0, 0, 0, 1, 1, 1, 0, 0, 0],
-  [0, 0, 1, 1, 1, 1, 1, 0, 0],
-  [0, 1, 1, 1, 1, 1, 1, 1, 0],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1],
+const PLANE_SUITCASE_SHAPE = [
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0], // Plane cockpit / nose
+  [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+  [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0], // Wing top
+  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], // Fuselage
+  [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+  [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0], // Wing bottom
+  [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Tail
+  [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], // Suitcase handle
+  [0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0], // Suitcase body
+  [0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
 ];
 
 const GAMEPAD_SHAPE = [
-  [0, 1, 1, 0, 0, 1, 1, 0],
-  [1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 0, 1, 1, 1, 1, 0, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1],
-  [0, 1, 1, 0, 0, 1, 1, 0],
+  [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+  [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1], // Left D-pad up vs Right button top
+  [1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1], // D-pad horizontal vs Right action buttons
+  [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1], // Left D-pad down vs Right button bottom
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0], // Handles
+  [0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0],
+  [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
 ];
 
 const BOOK_SHAPE = [
-  [1, 1, 1, 1, 1, 1, 1],
-  [1, 0, 0, 0, 0, 0, 1],
-  [1, 0, 1, 1, 1, 0, 1],
-  [1, 0, 0, 0, 0, 0, 1],
-  [1, 0, 1, 1, 1, 0, 1],
-  [1, 1, 1, 1, 1, 1, 1],
+  [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0], // spine top
+  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], // page curves top
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1], // open page lines
+  [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
+  [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], // hard cover outline
+  [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
 ];
 
-const CHART_SHAPE = [
-  [0, 0, 0, 0, 0, 0, 1],
-  [0, 0, 0, 0, 0, 1, 1],
-  [0, 0, 0, 0, 1, 1, 0],
-  [0, 0, 0, 1, 1, 0, 0],
-  [0, 1, 1, 1, 0, 0, 0],
-  [1, 1, 0, 0, 0, 0, 0],
+const CHART_WITH_ARROW_SHAPE = [
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1], // Arrow head top-right
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],
+  [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], // Trend line diagonal
+  [0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0], // Column 3 starts (H=6)
+  [0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0],
+  [0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0], // Column 2 starts (H=4)
+  [0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0],
+  [0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0], // Column 1 starts (H=2)
+  [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // Bottom axis line
 ];
 
-const GEAR_SHAPE = [
-  [0, 0, 1, 1, 1, 0, 0],
-  [0, 1, 1, 1, 1, 1, 0],
-  [1, 1, 0, 0, 0, 1, 1],
-  [1, 1, 0, 0, 0, 1, 1],
-  [0, 1, 1, 1, 1, 1, 0],
-  [0, 0, 1, 1, 1, 0, 0],
+const TARGET_SHAPE = [
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1], // arrow feather
+  [0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0],
+  [0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0], // shaft
+  [0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0], // outer ring
+  [0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0], // inner ring
+  [0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0], // bullseye + arrow tip hits the center!
+  [0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0],
+  [0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0],
+  [0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0],
+  [0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
 ];
 
 // ── Draw functions ────────────────────────────────────────────────────────────
@@ -129,19 +160,19 @@ export function drawAbout(ctx: CanvasRenderingContext2D, W: number, t: number) {
 }
 
 export function drawInsights(ctx: CanvasRenderingContext2D, W: number, t: number) {
-  drawGrid(ctx, W, t, EYE_SHAPE, true);
+  drawGrid(ctx, W, t, LIGHTBULB_SHAPE, true);
 }
 
 export function drawLab(ctx: CanvasRenderingContext2D, W: number, t: number) {
-  drawGrid(ctx, W, t, FLASK_SHAPE, true);
+  drawGrid(ctx, W, t, COG_SHAPE, true);
 }
 
 export function drawCoach(ctx: CanvasRenderingContext2D, W: number, t: number) {
-  drawGrid(ctx, W, t, WHISTLE_SHAPE, true);
+  drawGrid(ctx, W, t, HEAD_HEART_SHAPE, true);
 }
 
 export function drawJourney(ctx: CanvasRenderingContext2D, W: number, t: number) {
-  drawGrid(ctx, W, t, MOUNTAIN_SHAPE, true);
+  drawGrid(ctx, W, t, PLANE_SUITCASE_SHAPE, true);
 }
 
 export function drawPlay(ctx: CanvasRenderingContext2D, W: number, t: number) {
@@ -153,11 +184,11 @@ export function drawAcademy(ctx: CanvasRenderingContext2D, W: number, t: number)
 }
 
 export function drawImpact(ctx: CanvasRenderingContext2D, W: number, t: number) {
-  drawGrid(ctx, W, t, CHART_SHAPE, true);
+  drawGrid(ctx, W, t, CHART_WITH_ARROW_SHAPE, true);
 }
 
 export function drawWorks(ctx: CanvasRenderingContext2D, W: number, t: number) {
-  drawGrid(ctx, W, t, GEAR_SHAPE, true);
+  drawGrid(ctx, W, t, TARGET_SHAPE, true);
 }
 
 export function drawCoreValues(ctx: CanvasRenderingContext2D, W: number, t: number) {
