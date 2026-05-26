@@ -51,11 +51,12 @@ export function LandingStep({ onStart }: LandingStepProps) {
             <img
               src="/asset/bg-insight.png"
               alt="Team Collaboration"
-              className="w-full h-full object-cover object-center scale-105 saturate-[0.88] brightness-[1.04]"
+              className="w-full h-full object-cover object-center scale-105 saturate-[0.94] brightness-[1.12]"
             />
-            <div className="absolute inset-0 bg-[#071B3D]/38 backdrop-blur-[0.5px]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_64%_38%,rgba(217,164,65,0.18),transparent_30%),linear-gradient(90deg,rgba(7,21,46,0.76)_0%,rgba(7,21,46,0.48)_48%,rgba(7,21,46,0.18)_100%)]" />
-            <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-[#061A3B]/76 to-transparent" />
+            <div className="absolute inset-0 bg-[#061A3A]/22 mix-blend-multiply" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#071A33]/82 via-[#0B2C6B]/38 to-[#0B2C6B]/6" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/24 via-transparent to-black/5" />
+            <div className="absolute left-[58%] top-[30%] h-72 w-72 rounded-full bg-[#D9A63A]/10 blur-3xl" />
           </div>
 
           <div className="relative z-10 grid w-full items-center justify-items-start gap-8 px-6 py-14 md:grid-cols-[60%_40%] md:px-12 lg:px-14 xl:px-16">
