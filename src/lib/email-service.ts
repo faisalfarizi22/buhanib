@@ -10,6 +10,25 @@ const FROM = process.env.EMAIL_FROM && process.env.EMAIL_FROM.includes('@')
 const COMPANY_COPY = process.env.EMAIL_COMPANY_COPY || 'admin@binahub.id';
 const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME || 'BinaHub';
 
+function normalizeUrl(value?: string) {
+  if (!value) return '';
+  const trimmed = value.trim().replace(/\/$/, '');
+  if (!trimmed) return '';
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+function getAppUrl() {
+  const configuredUrl = normalizeUrl(process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL);
+  const vercelUrl = normalizeUrl(process.env.VERCEL_URL);
+
+  // Avoid stale links from previous Vercel projects when staging/prod is deployed elsewhere.
+  if (configuredUrl && !configuredUrl.includes('buhanib.vercel.app')) {
+    return configuredUrl;
+  }
+
+  return vercelUrl || configuredUrl;
+}
+
 export async function sendAssessmentEmail(
   formData: AssessmentData,
   result: AssessmentResult,
@@ -22,7 +41,7 @@ export async function sendAssessmentEmail(
   const offWhite = '#F5F7FA';
   const scoreInterpretation = result.scoreInterpretation || `Skor ${result.scores.overall} menempatkan ${formData.company} pada kategori ${result.category}. Ini menunjukkan fondasi organisasi yang dapat diperkuat melalui prioritas strategis yang lebih tajam.`;
   const crossInsights: string[] = [];
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, '');
+  const appUrl = getAppUrl();
   const proposalUrl = assessmentId && appUrl
     ? `${appUrl}/api/proposal/request?assessmentId=${encodeURIComponent(assessmentId)}`
     : `${appUrl || '#'}?proposal=request`;
@@ -123,7 +142,7 @@ export async function sendAssessmentEmail(
           Minta Penawaran
         </a>
         <div style="margin-top:25px;">
-          <a href="${process.env.NEXT_PUBLIC_APP_URL || ''}?chat=open&name=${encodeURIComponent(formData.name)}&company=${encodeURIComponent(formData.company)}&score=${result.scores.overall}" 
+          <a href="${appUrl || '#'}?chat=open&name=${encodeURIComponent(formData.name)}&company=${encodeURIComponent(formData.company)}&score=${result.scores.overall}" 
              style="color:${navy};font-size:13px;font-weight:600;text-decoration:underline;">
             Ajukan pertanyaan awal melalui asisten BinaHub
           </a>
@@ -192,7 +211,7 @@ export async function sendOutreachEmail(
     subject,
     html: htmlContent.replace('{{name}}', name).replace('{{company}}', company || 'Perusahaan Anda'),
     headers: {
-      'List-Unsubscribe': `<${process.env.NEXT_PUBLIC_APP_URL}/unsubscribe>`,
+      'List-Unsubscribe': `<${getAppUrl()}/unsubscribe>`,
     },
   });
 }
@@ -215,6 +234,7 @@ export async function sendProposalEmail(
   const navy = '#0B2C6B';
   const gold = '#D9A441';
   const subject = proposal.subject || `Proposal Penawaran BinaHub untuk ${company}`;
+  const appUrl = getAppUrl();
 
   const html = `
 <!DOCTYPE html>
@@ -235,7 +255,7 @@ export async function sendProposalEmail(
         <p style="margin:0 0 18px;color:#475569;font-size:14px;line-height:1.6;">${proposal.nextStep || 'Langkah berikutnya adalah menyelaraskan prioritas program, ruang lingkup, peserta, dan paket yang paling sesuai.'}</p>
         <a href="https://calendly.com/binahub-diagnostic/consultation" style="display:inline-block;background:${navy};color:#FFFFFF;text-decoration:none;padding:14px 28px;border-radius:6px;font-weight:700;font-size:14px;">Jadwalkan Diskusi Lanjutan</a>
         <div style="margin-top:22px;">
-          <a href="${process.env.NEXT_PUBLIC_APP_URL || ''}?chat=open&name=${encodeURIComponent(name)}&company=${encodeURIComponent(company)}"
+          <a href="${appUrl || '#'}?chat=open&name=${encodeURIComponent(name)}&company=${encodeURIComponent(company)}"
              style="color:${navy};font-size:13px;font-weight:600;text-decoration:underline;">
             Ajukan pertanyaan awal melalui asisten BinaHub
           </a>

@@ -14,6 +14,9 @@ Format yang digunakan berdasarkan [Keep a Changelog](https://keepachangelog.com/
 - Menyederhanakan body email hasil assessment menjadi pengantar formal, sementara detail analisis diarahkan ke PDF terlampir.
 - Mengubah email proposal menjadi pengantar personal dengan lampiran PDF proposal, CTA utama `Jadwalkan Diskusi Lanjutan`, dan sub CTA asisten BinaHub.
 
+### Fixed
+- Memperbaiki pembentukan URL CTA email agar tidak memakai domain Vercel lama dan dapat fallback ke `VERCEL_URL` saat staging/production berubah.
+
 ## [0.2.0]
 ### Added
 - Menambahkan fondasi dashboard admin internal di `/admin` dengan Supabase Auth dan akses terbatas untuk email admin.
