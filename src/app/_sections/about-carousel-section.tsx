@@ -123,7 +123,7 @@ export function AboutCarouselSection() {
         <div className="relative z-10 w-full max-w-6xl mx-auto px-6 md:px-16 flex flex-col items-start text-left">
 
           <div className="mb-10 flex flex-col items-start">
-            <div className="flex h-11 w-11 items-center justify-center rounded-[12px] border border-white/15 bg-white/[0.08] text-[#D9A441] backdrop-blur-md">
+            <div className="flex h-11 w-11 items-center justify-center rounded-[12px] border border-white/15 bg-white/[0.1] text-[#D9A441]">
               <PixelIcon type="about" size={28} />
             </div>
             <div className="mt-6">
@@ -184,7 +184,7 @@ export function AboutCarouselSection() {
                         initial={{ opacity: 0, y: 26, scale: 0.92, filter: "blur(10px)" }}
                         animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
                         transition={{ delay: 0.18 + pIdx * 0.14, duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
-                        className={`group relative mb-3 flex w-full items-center gap-5 rounded-[12px] border px-5 py-4 text-white shadow-[0_22px_70px_-46px_rgba(0,0,0,0.82)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 md:absolute md:mb-0 md:w-[380px] ${POPUP_POSITIONS[pIdx]} ${
+                        className={`group relative mb-3 flex w-full items-center gap-5 rounded-[12px] border px-5 py-4 text-white shadow-[0_18px_52px_-44px_rgba(0,0,0,0.72)] transition-all duration-500 hover:-translate-y-1 md:absolute md:mb-0 md:w-[380px] ${POPUP_POSITIONS[pIdx]} ${
                           pIdx === 1
                             ? "border-[#D9A441]/45 bg-[#D9A441]/16"
                             : "border-white/14 bg-[#071B3D]/48 hover:border-white/24 hover:bg-[#0B2C6B]/48"
@@ -197,9 +197,7 @@ export function AboutCarouselSection() {
                           {point.icon}
                         </div>
                         <div>
-                          <span className="block text-xs font-bold uppercase tracking-[0.22em] text-[#D9A441]/80">
-                            {String(pIdx + 1).padStart(2, "0")}
-                          </span>
+                          <span className="mb-3 block h-px w-8 bg-[#D9A441]/70" />
                           <span className="mt-1 block text-[18px] font-semibold leading-snug tracking-tight md:text-[21px]">{point.title}</span>
                         </div>
                       </motion.div>
@@ -223,7 +221,7 @@ export function AboutCarouselSection() {
                 <span className={`text-[10px] font-bold tracking-[0.22em] transition-colors duration-500 ${
                   displaySlide === i ? "text-[#D9A441]" : "text-white/34 group-hover:text-white/60"
                 }`}>
-                  {String(i + 1).padStart(2, "0")}
+                  {item.title}
                 </span>
                 <span className={`h-px transition-all duration-500 ${
                   displaySlide === i ? "w-14 bg-[#D9A441]" : "w-6 bg-white/25 group-hover:bg-white/45"

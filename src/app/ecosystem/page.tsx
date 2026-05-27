@@ -400,7 +400,7 @@ export default function LayananPage() {
             className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-12"
           >
             <div
-              className="absolute inset-0 bg-[#0B2C6B]/90 backdrop-blur-xl"
+              className="absolute inset-0 bg-[#0B2C6B]/88 backdrop-blur-sm"
               onClick={() => setSelectedProduct(null)}
             />
 
@@ -436,7 +436,7 @@ export default function LayananPage() {
 
               {/* Product Content Side */}
               <div className="flex-1 overflow-y-auto custom-scrollbar bg-white">
-                <div className="sticky top-0 z-20 border-b border-black/[0.06] bg-white/92 px-6 py-4 backdrop-blur-xl md:px-12">
+                <div className="sticky top-0 z-20 border-b border-black/[0.06] bg-white px-6 py-4 shadow-[0_10px_34px_-30px_rgba(11,44,107,0.26)] md:px-12">
                   <div className="flex flex-wrap gap-2">
                     {[
                       { id: "overview", label: "Overview" },

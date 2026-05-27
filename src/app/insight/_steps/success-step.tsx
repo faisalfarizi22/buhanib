@@ -23,7 +23,7 @@ export function SuccessStep({ name, company }: SuccessStepProps) {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", damping: 15 }}
-          className="mx-auto mb-10 flex h-24 w-24 items-center justify-center rounded-[16px] border border-emerald-100 bg-emerald-50 text-emerald-500 shadow-2xl shadow-emerald-500/10"
+          className="mx-auto mb-10 flex h-24 w-24 items-center justify-center rounded-[16px] border border-emerald-100 bg-emerald-50 text-emerald-500 shadow-[0_18px_52px_-42px_rgba(16,185,129,0.46)]"
         >
           <Check size={48} strokeWidth={3} />
         </motion.div>

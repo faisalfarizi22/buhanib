@@ -13,14 +13,19 @@ const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME || 'BinaHub';
 export async function sendAssessmentEmail(
   formData: AssessmentData,
   result: AssessmentResult,
-  pdfBuffer?: Buffer
+  pdfBuffer?: Buffer,
+  assessmentId?: string
 ) {
   // Brand Colors
   const navy = '#0B2C6B';
   const gold = '#D9A441';
   const offWhite = '#F5F7FA';
   const scoreInterpretation = result.scoreInterpretation || `Skor ${result.scores.overall} menempatkan ${formData.company} pada kategori ${result.category}. Ini menunjukkan fondasi organisasi yang dapat diperkuat melalui prioritas strategis yang lebih tajam.`;
-  const crossInsights = result.crossDimensionalInsights?.length ? result.crossDimensionalInsights : [];
+  const crossInsights: string[] = [];
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, '');
+  const proposalUrl = assessmentId && appUrl
+    ? `${appUrl}/api/proposal/request?assessmentId=${encodeURIComponent(assessmentId)}`
+    : `${appUrl || '#'}?proposal=request`;
 
   // Premium Corporate HTML Email
   const htmlBody = `
@@ -49,7 +54,7 @@ export async function sendAssessmentEmail(
         Yth. <strong>Bapak/Ibu ${formData.name}</strong>,
       </p>
       <p style="color:#475569;font-size:15px;line-height:1.6;margin:0 0 35px;font-weight:400;">
-        Terima kasih telah menyelesaikan proses diagnostik BinaHub Insight. Kami telah memetakan pola operasional, keselarasan kepemimpinan, dan kesiapan transformasi organisasi Anda berdasarkan parameter diagnostik multidimensi.
+        Terima kasih telah menyelesaikan proses diagnostik BinaHub Insight. Laporan awal Anda telah kami proses dan kami lampirkan dalam bentuk PDF agar dapat ditinjau secara lebih utuh oleh tim internal ${formData.company}.
       </p>
 
       <!-- Score Card -->
@@ -70,33 +75,33 @@ export async function sendAssessmentEmail(
       </div>
 
       <!-- Analysis -->
-      <h2 style="color:${navy};font-size:18px;font-weight:600;margin:0 0 15px;border-left:3px solid ${gold};padding-left:12px;">Ringkasan Eksekutif</h2>
+      <h2 style="color:${navy};font-size:18px;font-weight:600;margin:0 0 15px;border-left:3px solid ${gold};padding-left:12px;">Catatan Pendahuluan</h2>
       <div style="background:#FFFFFF;padding:0 0 35px 0;">
-        <p style="color:#475569;font-size:15px;line-height:1.7;margin:0;font-weight:400;">${result.aiAnalysis}</p>
+        <p style="color:#475569;font-size:15px;line-height:1.7;margin:0;font-weight:400;">Email ini bersifat sebagai pengantar resmi atas hasil diagnostik yang telah diselesaikan. Seluruh detail analisis, prioritas pengembangan, penalaran lintas dimensi, dan rekomendasi awal tersedia dalam PDF terlampir.</p>
       </div>
 
       ${crossInsights.length ? `
         <h2 style="color:${navy};font-size:18px;font-weight:600;margin:0 0 15px;border-left:3px solid ${gold};padding-left:12px;">Penalaran Diagnostik</h2>
-        ${crossInsights.slice(0, 2).map((insight, i) => `
+        ${crossInsights.slice(0, 2).map((insight) => `
           <div style="padding:18px;background:#FFFFFF;border-radius:8px;margin-bottom:12px;border:1px solid #E2E8F0;">
-            <div style="color:${gold};font-size:10px;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:1.2px;">Temuan 0${i + 1}</div>
+            <div style="width:34px;height:1px;background:${gold};margin-bottom:12px;"></div>
             <p style="color:#475569;font-size:14px;margin:0;line-height:1.55;">${insight}</p>
           </div>
         `).join('')}
       ` : ''}
 
       <!-- Recommendation Highlights -->
-      <h2 style="color:${navy};font-size:18px;font-weight:600;margin:0 0 15px;border-left:3px solid ${gold};padding-left:12px;">Prioritas Strategis</h2>
-      ${result.recommendations.slice(0, 3).map((rec, i) => `
+      <h2 style="color:${navy};font-size:18px;font-weight:600;margin:0 0 15px;border-left:3px solid ${gold};padding-left:12px;">Dokumen Rujukan</h2>
+      ${result.recommendations.slice(0, 0).map((rec) => `
         <div style="padding:20px;background:${offWhite};border-radius:8px;margin-bottom:12px;border:1px solid #E2E8F0;border-left:4px solid ${navy};">
-          <div style="color:${gold};font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase;">Prioritas 0${i+1} — ${rec.service}</div>
+          <div style="color:${gold};font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase;">Prioritas Strategis — ${rec.service}</div>
           <p style="color:${navy};font-size:15px;font-weight:600;margin:0 0 8px;">${rec.title}</p>
           ${rec.diagnosis ? `<p style="color:${navy};font-size:13px;margin:0 0 8px;line-height:1.5;font-weight:500;">${rec.diagnosis}</p>` : ''}
           <p style="color:#64748B;font-size:14px;margin:0;line-height:1.5;">${rec.description}</p>
         </div>
       `).join('')}
 
-      ${result.riskProjection ? `
+      ${false && result.riskProjection ? `
         <div style="background:#FFF8E8;border-radius:8px;padding:22px;margin:30px 0;border:1px solid #F4E5B2;">
           <div style="color:${navy};font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">Proyeksi Risiko 12-18 Bulan</div>
           <p style="color:#475569;font-size:14px;line-height:1.6;margin:0;">${result.riskProjection}</p>
@@ -106,21 +111,21 @@ export async function sendAssessmentEmail(
       <!-- PDF Note -->
       <div style="background:${offWhite};border-radius:8px;padding:25px;text-align:center;margin:35px 0;">
         <p style="color:#475569;font-size:14px;margin:0;line-height:1.6;">
-          <strong>Laporan lengkap (PDF)</strong> yang berisi visualisasi data mendalam untuk 7 Dimensi Organisasi telah kami lampirkan pada email ini.
+          <strong>Laporan lengkap (PDF)</strong> berisi detail visualisasi, insight diagnostik, prioritas strategis, dan roadmap awal. Badan email ini kami buat ringkas agar dokumen utama tetap menjadi rujukan resmi.
         </p>
       </div>
 
       <!-- CTA -->
       <div style="text-align:center;margin:45px 0 10px;">
-        <p style="color:#475569;font-size:14px;margin-bottom:20px;">Langkah selanjutnya adalah mendiskusikan hasil ini melalui sesi konsultasi strategis.</p>
-        <a href="https://calendly.com/binahub-diagnostic/consultation" 
+        <p style="color:#475569;font-size:14px;margin-bottom:20px;">Jika Bapak/Ibu ingin mengetahui bentuk program, ruang lingkup, dan arah investasi yang paling relevan dengan hasil diagnostik ini, silakan minta penawaran awal dari tim kami.</p>
+        <a href="${proposalUrl}" 
            style="display:inline-block;background-color:${navy};color:#FFFFFF;text-decoration:none;padding:16px 40px;border-radius:6px;font-weight:600;font-size:15px;letter-spacing:0.5px;box-shadow: 0 4px 6px rgba(10,26,58,0.2);">
-          Kunci Jadwal Konsultasi (Calendly)
+          Minta Penawaran
         </a>
         <div style="margin-top:25px;">
           <a href="${process.env.NEXT_PUBLIC_APP_URL || ''}?chat=open&name=${encodeURIComponent(formData.name)}&company=${encodeURIComponent(formData.company)}&score=${result.scores.overall}" 
              style="color:${navy};font-size:13px;font-weight:600;text-decoration:underline;">
-            Pelajari lebih lanjut & Konsultasi Interaktif
+            Ajukan pertanyaan awal melalui asisten BinaHub
           </a>
         </div>
       </div>
@@ -189,5 +194,69 @@ export async function sendOutreachEmail(
     headers: {
       'List-Unsubscribe': `<${process.env.NEXT_PUBLIC_APP_URL}/unsubscribe>`,
     },
+  });
+}
+
+export async function sendProposalEmail(
+  to: string,
+  name: string,
+  company: string,
+  proposal: {
+    subject?: string;
+    opening?: string;
+    proposedProgram?: string;
+    scope?: string[];
+    timeline?: string;
+    investmentNote?: string;
+    nextStep?: string;
+  },
+  pdfBuffer?: Buffer
+) {
+  const navy = '#0B2C6B';
+  const gold = '#D9A441';
+  const subject = proposal.subject || `Proposal Penawaran BinaHub untuk ${company}`;
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#EAF0F7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:640px;margin:36px auto;background:#FFFFFF;border-radius:10px;overflow:hidden;border:1px solid #DDE5F0;">
+    <div style="background:${navy};padding:34px 38px;border-bottom:4px solid ${gold};">
+      <p style="margin:0 0 10px;color:${gold};font-size:10px;font-weight:700;letter-spacing:2.4px;text-transform:uppercase;">Proposal Penawaran BinaHub</p>
+      <h1 style="margin:0;color:#FFFFFF;font-size:25px;font-weight:600;line-height:1.25;">${proposal.proposedProgram || 'Program Transformasi Organisasi'}</h1>
+      <p style="margin:12px 0 0;color:rgba(255,255,255,0.72);font-size:14px;">${company}</p>
+    </div>
+    <div style="padding:36px 38px;color:#334155;">
+      <p style="margin:0 0 18px;color:${navy};font-size:16px;">Yth. <strong>${name}</strong>,</p>
+      <p style="margin:0 0 22px;line-height:1.7;font-size:15px;">${proposal.opening || 'Berdasarkan hasil diagnostik yang telah Anda selesaikan, kami menyusun penawaran awal yang dapat menjadi bahan diskusi internal dan tindak lanjut bersama tim BinaHub.'}</p>
+      <p style="margin:0 0 26px;line-height:1.7;font-size:15px;">Detail ruang lingkup, estimasi timeline, pilihan paket A/B/C, dan catatan investasi kami lampirkan dalam PDF proposal. Email ini kami buat sebagai pengantar agar dokumen utama tetap menjadi rujukan resmi.</p>
+
+      <div style="border-top:1px solid #E2E8F0;padding-top:24px;text-align:center;">
+        <p style="margin:0 0 18px;color:#475569;font-size:14px;line-height:1.6;">${proposal.nextStep || 'Langkah berikutnya adalah menyelaraskan prioritas program, ruang lingkup, peserta, dan paket yang paling sesuai.'}</p>
+        <a href="https://calendly.com/binahub-diagnostic/consultation" style="display:inline-block;background:${navy};color:#FFFFFF;text-decoration:none;padding:14px 28px;border-radius:6px;font-weight:700;font-size:14px;">Jadwalkan Diskusi Lanjutan</a>
+        <div style="margin-top:22px;">
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || ''}?chat=open&name=${encodeURIComponent(name)}&company=${encodeURIComponent(company)}"
+             style="color:${navy};font-size:13px;font-weight:600;text-decoration:underline;">
+            Ajukan pertanyaan awal melalui asisten BinaHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+  return resend.emails.send({
+    from: `${COMPANY_NAME} <${FROM}>`,
+    to,
+    subject,
+    html,
+    attachments: pdfBuffer
+      ? [{
+          filename: `Proposal_Penawaran_${company.replace(/\s+/g, '_')}.pdf`,
+          content: pdfBuffer.toString('base64'),
+        }]
+      : [],
   });
 }

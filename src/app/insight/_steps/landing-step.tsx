@@ -46,7 +46,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
     >
       {/* Hero */}
       <section className="w-full px-4 mb-12">
-        <div className="relative flex min-h-[620px] w-full items-center justify-center overflow-hidden rounded-[16px] border border-black/[0.03] shadow-2xl shadow-black/10 md:h-[78svh] md:rounded-[18px]">
+        <div className="relative flex min-h-[620px] w-full items-center justify-center overflow-hidden rounded-[16px] border border-black/[0.03] shadow-[0_24px_78px_-58px_rgba(11,44,107,0.52)] md:h-[78svh] md:rounded-[18px]">
           <div className="absolute inset-0 w-full h-full">
             <img
               src="/asset/bg-insight.png"
@@ -61,7 +61,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
 
           <div className="relative z-10 grid w-full items-center justify-items-start gap-8 px-6 py-14 md:grid-cols-[60%_40%] md:px-12 lg:px-14 xl:px-16">
             <div className="text-left w-full max-w-[980px]">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/18 text-[11px] uppercase tracking-widest font-medium mb-8 text-white/84 bg-white/10 backdrop-blur-md">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/18 text-[11px] uppercase tracking-widest font-medium mb-8 text-white/84 bg-white/12">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#D9A441] animate-pulse" />
                 BinaInsight Diagnostic
               </div>
@@ -169,7 +169,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="relative overflow-hidden rounded-[14px] bg-[#0B2C6B] p-7 text-white shadow-2xl shadow-[#0B2C6B]/20 md:p-9 lg:col-span-4"
+              className="relative overflow-hidden rounded-[14px] bg-[#0B2C6B] p-7 text-white shadow-[0_24px_70px_-48px_rgba(11,44,107,0.72)] md:p-9 lg:col-span-4"
             >
               <div className="absolute -right-16 -top-16 h-44 w-72 bg-[#D9A441]/16 blur-3xl" />
               <div className="relative z-10 flex h-full min-h-[360px] flex-col justify-between">
@@ -199,7 +199,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.06 }}
-                  className={`group relative overflow-hidden rounded-[12px] border border-black/[0.04] bg-white p-5 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/5 ${
+                  className={`group relative overflow-hidden rounded-[12px] border border-black/[0.05] bg-[#FCFCFB] p-5 transition-all duration-500 hover:-translate-y-1 hover:border-[#D9A441]/25 hover:bg-white hover:shadow-[0_18px_54px_-44px_rgba(11,44,107,0.36)] ${
                     i === 0 ? "md:col-span-2" : ""
                   }`}
                 >
@@ -209,9 +209,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
                     </div>
                     <div>
                       <div className="mb-2 flex items-center gap-3">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D9A441]">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
+                        <span className="h-px w-8 bg-[#D9A441]/60" />
                         <h4 className="text-xl font-light text-[#0B2C6B] transition-colors group-hover:text-[#D9A441]">{dim}</h4>
                       </div>
                       <p className="max-w-2xl text-sm font-light leading-relaxed text-black/50">
@@ -229,7 +227,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
 
       {/* Focused CTA Section */}
       <section className="w-full px-4 md:px-8 mb-16">
-        <div className="relative flex w-full flex-col items-center justify-between gap-8 overflow-hidden rounded-[16px] border border-white/5 bg-[#0B2C6B] px-6 py-10 shadow-2xl shadow-[#0B2C6B]/10 md:h-48 md:flex-row md:px-16">
+        <div className="relative flex w-full flex-col items-center justify-between gap-8 overflow-hidden rounded-[16px] border border-white/5 bg-[#0B2C6B] px-6 py-10 shadow-[0_24px_70px_-52px_rgba(11,44,107,0.68)] md:h-48 md:flex-row md:px-16">
           <div className="absolute inset-0 opacity-10 pointer-events-none">
             <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "30px 30px" }} />
           </div>
@@ -345,7 +343,7 @@ function DiagnosticPreview() {
 
 function ReportPreview() {
   return (
-    <div className="relative z-10 w-full rounded-[14px] border border-black/[0.04] bg-white p-5 shadow-2xl shadow-black/10 md:p-7">
+    <div className="relative z-10 w-full rounded-[14px] border border-black/[0.04] bg-white p-5 shadow-[0_18px_58px_-46px_rgba(11,44,107,0.42)] md:p-7">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#D9A441]">Sample Report</p>

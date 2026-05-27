@@ -3,6 +3,57 @@
 Semua perubahan yang signifikan pada proyek ini akan didokumentasikan di file ini.
 Format yang digunakan berdasarkan [Keep a Changelog](https://keepachangelog.com/id/1.0.0/), dan proyek ini mematuhi aturan [Semantic Versioning](https://semver.org/).
 
+## [0.2.1]
+### Added
+- Menambahkan endpoint publik `/api/proposal/request` untuk memproses permintaan penawaran dari CTA email hasil assessment.
+- Menambahkan flow otomatis `Minta Penawaran`: generate proposal penawaran berbasis AI, kirim email proposal ke klien, dan simpan status proposal di tabel assessment.
+- Menambahkan PDF proposal penawaran berisi pendahuluan, ruang lingkup, timeline, catatan investasi, serta pilihan paket A/B/C dengan harga berbeda.
+
+### Changed
+- Mengubah CTA email hasil assessment dari jadwal Calendly menjadi `Minta Penawaran`.
+- Menyederhanakan body email hasil assessment menjadi pengantar formal, sementara detail analisis diarahkan ke PDF terlampir.
+- Mengubah email proposal menjadi pengantar personal dengan lampiran PDF proposal, CTA utama `Jadwalkan Diskusi Lanjutan`, dan sub CTA asisten BinaHub.
+
+## [0.2.0]
+### Added
+- Menambahkan fondasi dashboard admin internal di `/admin` dengan Supabase Auth dan akses terbatas untuk email admin.
+- Menambahkan halaman `/admin/login` untuk login admin menggunakan Supabase email/password.
+- Menambahkan API agregasi `/api/admin/dashboard` untuk membaca data assessment, leads, inquiries, rekomendasi, distribusi jawaban, statistik dimensi, dan data coach jika tabel tersedia.
+- Menambahkan tampilan dashboard rekap assessment yang mengambil kebutuhan data dari contoh `Data-Visual-Report`: KPI, rata-rata skor, dimensi terkuat/terlemah, kategori, ukuran perusahaan, distribusi jawaban Q1-Q49, rekomendasi layanan, dan tabel assessment expandable.
+- Menambahkan tab Kontak untuk inquiry klien dan tab Coach & HRM sebagai fondasi modul HRM/coach management.
+- Menambahkan input manual coach di dashboard admin, termasuk data bidang, kategori, rate, availability, status, bio, dan catatan HRM.
+- Menambahkan tindakan admin untuk data coach: tambah, edit, hapus, email langsung, dan status kerja sama.
+- Menambahkan tindakan admin untuk kontak klien dan inquiry: update status, catatan internal, email langsung, dan WhatsApp.
+- Menambahkan master database Kontak yang menggabungkan data assessment, inquiry, coach, dan karyawan jika tabel tersedia.
+- Menambahkan filter pencarian, sumber, kategori, status, ukuran perusahaan, dan skor pada menu admin utama untuk memudahkan pencarian data.
+- Menambahkan badge notifikasi merah untuk data assessment dan inquiry baru di sidebar admin.
+- Menambahkan modul operasional HRM untuk assignment coach ke program, kalender availability, histori sesi, evaluasi/rating, dan dokumen/kontrak berbasis link.
+- Menambahkan endpoint `/api/admin/coach-ops` untuk menyimpan, memperbarui, dan menghapus data assignment, availability, sesi, dan dokumen coach.
+- Menambahkan tindakan assessment di dashboard admin: kirim ulang email hasil assessment, tandai minta proposal, generate proposal AI, dan kirim proposal penawaran via email.
+- Menambahkan status assessment dan proposal untuk memantau alur `Result Email Terkirim`, `Minta Proposal`, hingga `Proposal Terkirim`.
+
+### Changed
+- Memisahkan fitur Kontak dan Inquiries di dashboard admin agar database klien/lead tidak bercampur dengan pesan masuk dari formulir kontak.
+- Menyesuaikan tab Kontak menjadi database klien berbasis lead dengan kategori sumber, sedangkan Inquiries menjadi inbox operasional untuk pesan masuk.
+- Mengubah data dari form kontak agar masuk ke tab Inquiries, sementara tab Kontak difokuskan untuk database lead/klien non-inquiry.
+- Mengubah identitas sidebar admin dari teks `BinaHub Admin` menjadi logo resmi BinaHub.
+- Menggabungkan kontak duplikat berdasarkan email atau nomor telepon agar lead dan inquiry dari orang yang sama hanya tampil satu kali di master Kontak.
+- Memisahkan tab `Coach` dan `HRM` agar database coach tidak bercampur dengan operasional penugasan, sesi, availability, dan dokumen.
+- Mengubah modul HRM menjadi expand/collapse agar form operasional lebih mudah dipindai.
+
+## [0.1.2]
+### Changed
+- Menerapkan anti-AI visual polish lintas halaman dengan mengurangi glass/frosted treatment, shadow berat, dan card surface yang terlalu seragam.
+- Menghapus dekor angka `01/02/03` pada section dan card yang bersifat pajangan, menggantinya dengan garis aksen, marker editorial, atau label kontekstual yang lebih tenang.
+- Merapikan H.U.M.A.N, Positioning & Capabilities, Perspektif, Workflow, BinaInsight, Contact, dan carousel Home agar tidak terlalu terasa seperti template card-grid generatif.
+- Memperhalus navbar, mega dropdown, mobile dropdown, modal layanan, form assessment, chatbot, CTA, dan output email/PDF dengan depth yang lebih restrained.
+- Menjaga angka yang memang informatif seperti skor, statistik, jumlah dimensi, dan durasi assessment tetap tampil sebagai data, bukan dekorasi.
+
+### Fixed
+- Menghilangkan watermark nomor besar pada kartu pertanyaan assessment yang membuat form terasa ramai dan melelahkan.
+- Menghapus label prioritas/temuan bernomor pada email hasil assessment agar report terasa lebih editorial dan tidak seperti output template otomatis.
+- Mengembalikan treatment mockup kanan hero BinaInsight ke versi sebelumnya sesuai arahan, tanpa membatalkan polish visual lain.
+
 ## [0.1.1]
 ### Added
 - Menambahkan FAQ bergaya collapse/futuristic pada halaman kontak untuk menjawab pertanyaan umum sebelum user mengirim inquiry.

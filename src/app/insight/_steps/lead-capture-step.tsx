@@ -61,7 +61,7 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
                 ["49 indikator", "Membaca 7 dimensi"],
                 ["Privat", "Dikirim ke Email & WhatsApp"],
               ].map(([value, label]) => (
-                <div key={value} className="rounded-[12px] border border-white/10 bg-white/[0.06] px-5 py-4 backdrop-blur-md">
+                <div key={value} className="rounded-[12px] border border-white/10 bg-white/[0.075] px-5 py-4">
                   <p className="text-sm font-bold text-white">{value}</p>
                   <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white/36">{label}</p>
                 </div>
@@ -72,7 +72,7 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
 
         <form
           onSubmit={onNext}
-          className="w-full rounded-[16px] border border-black/[0.03] bg-white p-6 shadow-[0_20px_60px_rgba(0,0,0,0.06)] md:p-12"
+          className="w-full rounded-[16px] border border-black/[0.04] bg-white p-6 shadow-[0_18px_54px_-44px_rgba(11,44,107,0.34)] md:p-12"
         >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8 md:mb-12">
           <div className="space-y-1">
@@ -138,7 +138,7 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
                       initial={{ opacity: 0, y: 5, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 5, scale: 0.98 }}
-                      className="absolute left-0 right-0 top-full z-[101] mt-2 overflow-hidden rounded-[12px] border border-black/[0.06] bg-white shadow-2xl"
+                      className="absolute left-0 right-0 top-full z-[101] mt-2 overflow-hidden rounded-[12px] border border-black/[0.06] bg-white shadow-[0_18px_58px_-42px_rgba(11,44,107,0.34)]"
                     >
                       <div className="p-2 max-h-[240px] overflow-y-auto">
                         {EMPLOYEE_OPTIONS.map((opt) => {

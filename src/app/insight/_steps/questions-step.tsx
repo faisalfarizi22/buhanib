@@ -51,20 +51,13 @@ export function QuestionsStep({ step, answers, onAnswer }: QuestionsStepProps) {
 
       <div className="space-y-4 w-full max-w-3xl">
         {pageQuestions.map((q, idx) => {
-          const globalIdx = pageIndex * 7 + idx + 1;
-          const displayIdx = globalIdx < 10 ? `0${globalIdx}` : globalIdx;
-          
           return (
             <div
               key={q.id}
-              className="relative overflow-hidden rounded-[14px] border border-black/[0.03] bg-white p-4 shadow-[0_10px_30px_rgba(0,0,0,0.02)] md:p-8"
+              className="relative overflow-hidden rounded-[14px] border border-black/[0.05] bg-white p-4 shadow-[0_14px_46px_-38px_rgba(11,44,107,0.28)] md:p-8"
             >
-              {/* Scaled Background Number - Reduced by 30% */}
-              <div className="absolute top-[-5px] left-[-2px] text-[70px] font-black text-black/[0.015] leading-none pointer-events-none select-none">
-                {displayIdx}
-              </div>
-
               <div className="relative z-10">
+                <div className="mb-4 h-px w-10 bg-[#D9A441]/45" />
                 <h3 className="text-sm md:text-lg font-light text-[#0B2C6B] mb-5 text-left leading-relaxed px-2">
                   {q.text}
                 </h3>
@@ -85,7 +78,7 @@ export function QuestionsStep({ step, answers, onAnswer }: QuestionsStepProps) {
                         key={opt.value}
                         onClick={() => onAnswer(q.id, opt.value)}
                         className={`flex flex-col items-center justify-center rounded-[10px] border py-2.5 transition-all duration-300 md:py-5 ${isSelected
-                            ? "bg-[#0B2C6B] border-[#0B2C6B] text-white shadow-[0_15px_30px_rgba(10,26,58,0.25)] scale-[1.03]"
+                            ? "bg-[#0B2C6B] border-[#0B2C6B] text-white shadow-[0_14px_34px_-22px_rgba(10,26,58,0.48)] scale-[1.02]"
                             : "bg-[#F5F7F9] border-black/[0.03] text-black/60 hover:bg-black/[0.05] hover:border-black/10"
                           }`}
                       >

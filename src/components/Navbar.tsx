@@ -77,6 +77,10 @@ export default function Navbar() {
     return () => window.removeEventListener("hashchange", scrollToHash)
   }, [pathname])
 
+  if (pathname?.startsWith("/admin")) {
+    return null
+  }
+
   return (
     <div id="global-navbar" className="fixed inset-x-0 top-0 z-[100] flex justify-center p-4 pointer-events-none md:p-6">
       <motion.div
@@ -88,8 +92,8 @@ export default function Navbar() {
       >
         <nav
           className={`relative flex items-center justify-between overflow-hidden rounded-[16px] border px-4 py-2.5 transition-all duration-500 md:px-5 ${scrolled
-              ? "border-white/45 bg-white/90 shadow-[0_24px_70px_-30px_rgba(11,44,107,0.28)] backdrop-blur-2xl"
-              : "border-white/35 bg-white/78 shadow-[0_20px_60px_-36px_rgba(11,44,107,0.2)] backdrop-blur-xl"
+              ? "border-white/45 bg-white/92 shadow-[0_20px_58px_-34px_rgba(11,44,107,0.26)] backdrop-blur-lg"
+              : "border-white/35 bg-white/84 shadow-[0_18px_52px_-38px_rgba(11,44,107,0.18)] backdrop-blur-md"
             }`}
         >
           <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(120deg,rgba(255,255,255,0.84),rgba(255,255,255,0.32),rgba(217,164,65,0.06))]" />
@@ -161,7 +165,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.99 }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute left-0 right-0 top-[calc(100%+10px)] hidden overflow-hidden rounded-[14px] border border-white/10 bg-[#070A10]/94 shadow-[0_34px_90px_-42px_rgba(0,0,0,0.72)] backdrop-blur-2xl md:block"
+              className="absolute left-0 right-0 top-[calc(100%+10px)] hidden overflow-hidden rounded-[14px] border border-white/10 bg-[#070A10]/96 shadow-[0_28px_76px_-44px_rgba(0,0,0,0.68)] md:block"
             >
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(217,164,65,0.12),transparent_28%),linear-gradient(90deg,rgba(255,255,255,0.04),transparent_42%)]" />
               <div className="relative grid grid-cols-2 gap-px lg:grid-cols-4">
@@ -194,7 +198,7 @@ export default function Navbar() {
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              className="absolute left-3 right-3 top-full mt-3 max-h-[76vh] overflow-y-auto rounded-[18px] border border-white/35 bg-[#F8FAFC]/94 p-3 shadow-[0_28px_90px_-46px_rgba(11,44,107,0.46)] backdrop-blur-2xl sm:left-4 sm:right-4 sm:p-4 md:hidden"
+              className="absolute left-3 right-3 top-full mt-3 max-h-[76vh] overflow-y-auto rounded-[18px] border border-white/35 bg-[#F8FAFC]/96 p-3 shadow-[0_24px_72px_-48px_rgba(11,44,107,0.42)] backdrop-blur-md sm:left-4 sm:right-4 sm:p-4 md:hidden"
             >
               <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-[radial-gradient(circle_at_80%_0%,rgba(217,164,65,0.16),transparent_28%),linear-gradient(135deg,rgba(255,255,255,0.86),rgba(255,255,255,0.34))]" />
               <div className="relative z-10 mb-3 flex items-center justify-between border-b border-[#0B2C6B]/8 px-3 pb-3">
@@ -215,7 +219,7 @@ export default function Navbar() {
                 {NAV_LINKS.map((link) => {
                   const isExpanded = activeMobileDropdown === link.label;
                   return (
-                    <div key={link.label} className="flex flex-col overflow-hidden rounded-[14px] border border-[#0B2C6B]/7 bg-white/72 shadow-[0_16px_52px_-44px_rgba(11,44,107,0.44)]">
+                    <div key={link.label} className="flex flex-col overflow-hidden rounded-[14px] border border-[#0B2C6B]/7 bg-white/86 shadow-[0_14px_42px_-38px_rgba(11,44,107,0.36)]">
                       {link.submenu ? (
                         <button
                           onClick={() => setActiveMobileDropdown(isExpanded ? null : link.label)}

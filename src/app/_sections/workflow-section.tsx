@@ -7,7 +7,7 @@ import { PixelIcon } from "@/components/pixel-icon";
 
 const WORKFLOW_STEPS = [
   {
-    n: "01",
+    n: "diagnose",
     title: "Diagnose",
     desc: "Memahami kondisi saat ini dan tantangan unik organisasi Anda.",
     detail:
@@ -15,7 +15,7 @@ const WORKFLOW_STEPS = [
     image: "/asset/Diagnose.png",
   },
   {
-    n: "02",
+    n: "design",
     title: "Design",
     desc: "Merancang intervensi yang disesuaikan dengan kebutuhan spesifik tim.",
     detail:
@@ -23,7 +23,7 @@ const WORKFLOW_STEPS = [
     image: "/asset/Design.png",
   },
   {
-    n: "03",
+    n: "develop",
     title: "Develop",
     desc: "Membangun kapabilitas melalui pembelajaran transformatif.",
     detail:
@@ -31,7 +31,7 @@ const WORKFLOW_STEPS = [
     image: "/asset/Develop.png",
   },
   {
-    n: "04",
+    n: "deliver",
     title: "Deliver",
     desc: "Memastikan hasil nyata dan dampak yang berkelanjutan.",
     detail:
@@ -76,7 +76,7 @@ export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
         </div>
 
         <div
-          className="rounded-[14px] border border-black/[0.07] bg-white p-4 shadow-[0_24px_90px_-70px_rgba(11,44,107,0.55)] md:p-6"
+          className="rounded-[14px] border border-black/[0.07] bg-white p-4 shadow-[0_20px_64px_-56px_rgba(11,44,107,0.42)] md:p-6"
           onMouseMove={onMouseMove}
         >
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
@@ -95,9 +95,7 @@ export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
               </AnimatePresence>
               <div className="absolute inset-0 bg-gradient-to-t from-[#061A3B]/72 via-[#061A3B]/18 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
-                <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D9A441]">
-                  Step {activeStep.n}
-                </span>
+                <span className="block h-px w-12 bg-[#D9A441]/70" />
                 <h3 className="mt-3 text-4xl font-light tracking-tight text-white md:text-5xl">
                   {activeStep.title}
                 </h3>
@@ -141,12 +139,10 @@ export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
                         }`}
                       >
                         <span
-                          className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full text-[10px] font-bold tracking-widest transition-colors ${
-                            isActive ? "bg-[#0B2C6B] text-[#D9A441]" : "bg-white text-black/34"
+                          className={`relative z-10 block h-px w-10 transition-colors ${
+                            isActive ? "bg-[#D9A441]" : "bg-black/16"
                           }`}
-                        >
-                          {step.n}
-                        </span>
+                        />
                         <h4 className={`mt-5 text-sm font-semibold ${isActive ? "text-[#0B2C6B]" : "text-black/62"}`}>
                           {step.title}
                         </h4>

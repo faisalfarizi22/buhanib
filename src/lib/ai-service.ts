@@ -189,6 +189,89 @@ Output JSON:
   return JSON.parse(jsonMatch[0]);
 }
 
+export async function generateAssessmentProposal(input: {
+  name: string;
+  email: string;
+  company: string;
+  role?: string;
+  employees?: string;
+  challenge?: string;
+  target?: string;
+  category?: string;
+  overallScore?: number;
+  scores?: Record<string, number>;
+  aiAnalysis?: string;
+  recommendations?: Array<{ title?: string; diagnosis?: string; description?: string; service?: string; priority?: string }>;
+}) {
+  const prompt = `
+Kamu adalah konsultan senior PT BinaHub. Buat proposal penawaran ringkas berbasis hasil assessment berikut.
+Output harus Bahasa Indonesia, terasa personal, strategis, dan siap dikirim via email.
+
+DATA KLIEN:
+Nama: ${input.name}
+Email: ${input.email}
+Perusahaan: ${input.company}
+Jabatan: ${input.role || '-'}
+Skala karyawan: ${input.employees || '-'}
+Tantangan: ${input.challenge || '-'}
+Target: ${input.target || '-'}
+Kategori: ${input.category || '-'}
+Skor keseluruhan: ${input.overallScore || '-'}
+Skor dimensi: ${JSON.stringify(input.scores || {})}
+Analisis: ${input.aiAnalysis || '-'}
+Rekomendasi: ${JSON.stringify(input.recommendations || [])}
+
+Berikan JSON PERSIS:
+{
+  "subject": "<subject email proposal yang premium dan spesifik>",
+  "opening": "<2-3 kalimat pembuka yang mengaitkan hasil assessment dengan kebutuhan klien>",
+  "proposedProgram": "<nama program penawaran yang direkomendasikan>",
+  "scope": ["<scope 1>", "<scope 2>", "<scope 3>", "<scope 4>"],
+  "timeline": "<estimasi timeline implementasi>",
+  "investmentNote": "<catatan investasi tanpa angka pasti, arahkan ke diskusi komersial>",
+  "packages": [
+    {
+      "name": "Paket A - Essential",
+      "price": "<harga rupiah spesifik, contoh Rp 45.000.000>",
+      "bestFor": "<cocok untuk kondisi apa>",
+      "duration": "<durasi>",
+      "scope": ["<cakupan 1>", "<cakupan 2>", "<cakupan 3>"],
+      "deliverables": ["<output 1>", "<output 2>", "<output 3>"]
+    },
+    {
+      "name": "Paket B - Growth",
+      "price": "<harga rupiah lebih tinggi dari Paket A>",
+      "bestFor": "<cocok untuk kondisi apa>",
+      "duration": "<durasi>",
+      "scope": ["<cakupan 1>", "<cakupan 2>", "<cakupan 3>", "<cakupan 4>"],
+      "deliverables": ["<output 1>", "<output 2>", "<output 3>", "<output 4>"]
+    },
+    {
+      "name": "Paket C - Transformation",
+      "price": "<harga rupiah paling tinggi>",
+      "bestFor": "<cocok untuk kondisi apa>",
+      "duration": "<durasi>",
+      "scope": ["<cakupan 1>", "<cakupan 2>", "<cakupan 3>", "<cakupan 4>", "<cakupan 5>"],
+      "deliverables": ["<output 1>", "<output 2>", "<output 3>", "<output 4>", "<output 5>"]
+    }
+  ],
+  "nextStep": "<ajakan jadwalkan konsultasi untuk finalisasi scope dan paket>"
+}
+`;
+
+  const text = await callAI([
+    { role: 'system', content: 'Anda adalah konsultan senior PT BinaHub. Jawab hanya JSON Bahasa Indonesia.' },
+    { role: 'user', content: prompt },
+  ], true);
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Invalid proposal AI response format');
+  }
+
+  return JSON.parse(jsonMatch[0]);
+}
+
 export async function chatWithAI(
   message: string, 
   history: { role: string, content: string }[], 

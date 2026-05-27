@@ -174,7 +174,7 @@ export default function BinaHubOrbit({ onProductClick }: BinaHubOrbitProps) {
         <div className="absolute w-[480px] h-[480px] flex items-center justify-center pointer-events-none z-[5]">
           
           {/* Core Dark Center Disc with gold ring */}
-          <div className="w-[280px] h-[280px] rounded-full shadow-2xl flex flex-col items-center justify-center z-10 pointer-events-auto border border-[#D9A441]/30"
+          <div className="w-[280px] h-[280px] rounded-full shadow-[0_24px_70px_-48px_rgba(0,0,0,0.72)] flex flex-col items-center justify-center z-10 pointer-events-auto border border-[#D9A441]/30"
             style={{ background: "linear-gradient(135deg, #0B2C6B 0%, #050f24 100%)" }}
           >
             <span className="text-[10px] font-bold text-[#D9A441] tracking-[0.25em] uppercase mb-1">Ecosystem</span>

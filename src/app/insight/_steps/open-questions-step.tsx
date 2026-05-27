@@ -30,7 +30,7 @@ export function OpenQuestionsStep({
     >
       <form
         onSubmit={onSubmit}
-        className="space-y-8 rounded-[16px] border border-black/[0.03] bg-white p-8 text-left shadow-[0_20px_60px_rgba(0,0,0,0.06)] md:p-12"
+        className="space-y-8 rounded-[16px] border border-black/[0.04] bg-white p-8 text-left shadow-[0_18px_54px_-44px_rgba(11,44,107,0.34)] md:p-12"
       >
         <div className="space-y-3">
           <label className="block text-[10px] font-medium text-[#0B2C6B]/60 uppercase tracking-widest px-1">

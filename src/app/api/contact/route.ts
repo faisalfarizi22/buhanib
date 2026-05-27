@@ -68,10 +68,13 @@ export async function POST(req: NextRequest) {
       const { error: inquiryError } = await supabase
         .from('inquiries')
         .insert({
+          lead_id: leadId,
           name,
           email,
           whatsapp,
           message,
+          source: 'contact_form',
+          status: 'Baru',
         });
 
       if (!inquiryError) {

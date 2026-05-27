@@ -149,7 +149,7 @@ export default function InsightPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowExitConfirm(false)}
-              className="absolute inset-0 bg-[#0B2C6B]/60 backdrop-blur-md"
+              className="absolute inset-0 bg-[#0B2C6B]/60 backdrop-blur-sm"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -201,7 +201,7 @@ export default function InsightPage() {
 
       {/* Assessment header */}
       {step >= 0 && (
-        <header className="insight-header fixed top-0 inset-x-0 h-16 flex items-center justify-between px-6 md:px-12 z-50 bg-white/80 backdrop-blur-md border-b border-black/[0.03]">
+        <header className="insight-header fixed top-0 inset-x-0 h-16 flex items-center justify-between px-6 md:px-12 z-50 bg-white/92 backdrop-blur-sm border-b border-black/[0.03]">
           <button 
             onClick={() => {
               if (step > 0 && step < 10) {
@@ -262,7 +262,7 @@ export default function InsightPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="fixed bottom-0 inset-x-0 p-4 md:p-6 flex justify-between gap-3 z-50 bg-white/90 backdrop-blur-md border-t border-black/[0.05]"
+          className="fixed bottom-0 inset-x-0 p-4 md:p-6 flex justify-between gap-3 z-50 bg-white/96 backdrop-blur-sm border-t border-black/[0.05]"
         >
           <button
             onClick={prevStep}

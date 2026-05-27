@@ -102,7 +102,7 @@ export function PainPointSection() {
             </p>
             <a
               href="#home-hero"
-              className="group relative inline-flex h-[52px] w-full items-center justify-center gap-3 overflow-hidden rounded-full border border-white/20 bg-white/[0.08] px-6 text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-[0_18px_52px_-32px_rgba(0,0,0,0.7)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-0.5 hover:border-[#D9A441]/45 hover:bg-[#D9A441] hover:text-[#0B2C6B] hover:shadow-[0_24px_70px_-38px_rgba(217,164,65,0.75)] sm:h-14 sm:w-auto sm:px-8 sm:text-[11px] sm:tracking-[0.18em]"
+              className="group relative inline-flex h-[52px] w-full items-center justify-center gap-3 overflow-hidden rounded-full border border-white/24 bg-white/[0.11] px-6 text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-[0_16px_46px_-34px_rgba(0,0,0,0.62)] transition-all duration-500 hover:-translate-y-0.5 hover:border-[#D9A441]/45 hover:bg-[#D9A441] hover:text-[#0B2C6B] hover:shadow-[0_20px_58px_-42px_rgba(217,164,65,0.64)] sm:h-14 sm:w-auto sm:px-8 sm:text-[11px] sm:tracking-[0.18em]"
             >
               <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/35 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
               <span className="relative z-10">Lihat Jawaban BinaHub</span>

@@ -34,7 +34,7 @@ export function CTASection() {
 
           <Link
             href="/about"
-            className="group flex items-center justify-center gap-3 rounded-full border border-[#0B2C6B]/18 bg-white/45 px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#0B2C6B] shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#D9A441]/45 hover:bg-white/75"
+            className="group flex items-center justify-center gap-3 rounded-full border border-[#0B2C6B]/18 bg-white/72 px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#0B2C6B] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#D9A441]/45 hover:bg-white"
           >
             PELAJARI LEBIH LANJUT
             <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5" />

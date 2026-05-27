@@ -95,8 +95,8 @@ export default function ContactPage() {
   return (
     <div className="bg-[#F5F7FA] min-h-screen pt-28 pb-20 px-6 md:px-12 lg:px-16">
       {/* Decorative Glow Ambient Orbs */}
-      <div className="pointer-events-none absolute right-0 top-20 h-[360px] w-[680px] bg-[#D9A441]/4 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-20 left-0 h-[300px] w-[620px] bg-[#3B82F6]/4 blur-[100px]" />
+      <div className="pointer-events-none absolute right-0 top-20 h-[220px] w-[760px] bg-[#D9A441]/4 blur-[110px]" />
+      <div className="pointer-events-none absolute bottom-20 left-0 h-[180px] w-[720px] bg-[#0B2C6B]/[0.035] blur-[100px]" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         
@@ -122,7 +122,7 @@ export default function ContactPage() {
           <div className="lg:col-span-5 flex flex-col justify-between gap-8">
             
             {/* Info Badges Card */}
-            <div className="flex flex-col gap-6 rounded-[14px] border border-white/50 bg-white/60 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.02)] backdrop-blur-xl">
+            <div className="flex flex-col gap-6 rounded-[14px] border border-black/[0.045] bg-white p-8 shadow-[0_16px_48px_-42px_rgba(11,44,107,0.32)]">
               <h2 className="text-xl font-bold text-[#0B2C6B] tracking-tight mb-2">Informasi Kontak</h2>
               
               {/* Address */}
@@ -181,7 +181,7 @@ export default function ContactPage() {
             </div>
 
             {/* Google Maps Card */}
-            <div className="relative h-[280px] min-h-[250px] overflow-hidden rounded-[14px] border border-white/50 bg-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.02)] backdrop-blur-xl lg:h-full">
+            <div className="relative h-[280px] min-h-[250px] overflow-hidden rounded-[14px] border border-black/[0.045] bg-white shadow-[0_16px_48px_-42px_rgba(11,44,107,0.32)] lg:h-full">
               <iframe
                 title="BinaHub Office - Kencana Tower, Business Park Kebon Jeruk, Jakarta Barat"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.7963243964685!2d106.74600407586469!3d-6.193820660990527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f7b2e93a0f5b%3A0x3c8b7c4f2d1a5e9c!2sJl.%20Raya%20Meruya%20Ilir%20No.88%2C%20Meruya%20Utara%2C%20Kembangan%2C%20Jakarta%20Barat!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
@@ -196,7 +196,7 @@ export default function ContactPage() {
 
           {/* Right Column: Inquiry Form Card */}
           <div className="lg:col-span-7">
-            <div className="flex h-full flex-col justify-between rounded-[14px] border border-white bg-white/90 p-8 shadow-[0_12px_40px_rgba(0,0,0,0.03)] backdrop-blur-2xl md:p-10">
+            <div className="flex h-full flex-col justify-between rounded-[14px] border border-black/[0.045] bg-white p-8 shadow-[0_18px_54px_-44px_rgba(11,44,107,0.34)] md:p-10">
               
               <AnimatePresence mode="wait">
                 {status === "success" ? (
@@ -376,7 +376,7 @@ export default function ContactPage() {
 
         </div>
 
-        <section className="relative mt-20 overflow-hidden rounded-[16px] border border-white/70 bg-[#071B3D] p-6 shadow-[0_26px_90px_-54px_rgba(11,44,107,0.55)] backdrop-blur-xl md:p-10">
+        <section className="relative mt-20 overflow-hidden rounded-[16px] border border-white/10 bg-[#071B3D] p-6 shadow-[0_24px_74px_-54px_rgba(11,44,107,0.58)] md:p-10">
           <div className="absolute inset-0 opacity-[0.16]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
           <div className="absolute -right-24 -top-24 h-56 w-96 bg-[#D9A441]/16 blur-3xl" />
           <div className="absolute -bottom-28 left-10 h-56 w-96 bg-[#8FA3C7]/12 blur-3xl" />
@@ -402,7 +402,7 @@ export default function ContactPage() {
               return (
                 <div
                   key={item.question}
-                  className="overflow-hidden rounded-[14px] border border-white/10 bg-white/[0.065] backdrop-blur-xl transition-all duration-500 hover:border-[#D9A441]/24 hover:bg-white/[0.09]"
+                  className="overflow-hidden rounded-[14px] border border-white/10 bg-white/[0.075] transition-all duration-500 hover:border-[#D9A441]/24 hover:bg-white/[0.1]"
                 >
                   <button
                     type="button"
@@ -411,9 +411,7 @@ export default function ContactPage() {
                     aria-expanded={isOpen}
                   >
                     <span className="flex items-center gap-4">
-                      <span className="hidden text-[10px] font-bold uppercase tracking-[0.2em] text-[#D9A441]/70 sm:inline">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
+                      <span className="hidden h-px w-8 bg-[#D9A441]/70 sm:inline-block" />
                       <span className="text-base font-medium leading-snug text-white md:text-lg">{item.question}</span>
                     </span>
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-white/10 bg-white/10 text-[#D9A441] transition-transform duration-300 group-hover:border-[#D9A441]/30">

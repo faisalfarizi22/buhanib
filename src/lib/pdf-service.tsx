@@ -31,6 +31,26 @@ export interface AssessmentResult {
   }[];
 }
 
+export interface ProposalPackage {
+  name: string;
+  price: string;
+  bestFor: string;
+  duration: string;
+  scope: string[];
+  deliverables: string[];
+}
+
+export interface ProposalResult {
+  subject?: string;
+  opening?: string;
+  proposedProgram?: string;
+  scope?: string[];
+  timeline?: string;
+  investmentNote?: string;
+  packages?: ProposalPackage[];
+  nextStep?: string;
+}
+
 const NAVY = '#0B2C6B';
 const GOLD = '#D9A441';
 const ICE = '#F4F7FB';
@@ -217,7 +237,7 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
           </View>
           <View style={styles.kpiCard}>
             <Text style={styles.kpiLabel}>Total Dimensi</Text>
-            <Text style={styles.kpiValue}>07</Text>
+            <Text style={styles.kpiValue}>7</Text>
             <View style={styles.kpiBadge}><Text style={styles.kpiBadgeText}>Kriteria Inti</Text></View>
           </View>
           <View style={styles.kpiCard}>
@@ -410,9 +430,117 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
   );
 };
 
-export async function generatePDFBuffer(formData: AssessmentData, result: AssessmentResult): Promise<Buffer> {
-  const { renderToBuffer } = await import('@react-pdf/renderer');
+const ProposalPDF = ({ formData, proposal, logoPath }: { formData: AssessmentData; proposal: ProposalResult; logoPath?: string }) => {
+  const date = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  const logoSrc = logoPath || 'https://buhanib.vercel.app/full-logo.png';
+  const packages = proposal.packages?.length ? proposal.packages.slice(0, 3) : [
+    {
+      name: 'Paket A - Essential',
+      price: 'Menyesuaikan ruang lingkup',
+      bestFor: 'Organisasi yang membutuhkan intervensi awal dan prioritas cepat.',
+      duration: '2-4 minggu',
+      scope: proposal.scope || ['Review hasil assessment', 'Workshop prioritas', 'Roadmap awal'],
+      deliverables: ['Executive brief', 'Priority map', 'Rencana aksi awal'],
+    },
+  ];
 
+  return (
+    <Document title={`Proposal Penawaran - ${formData.company}`}>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.header}>
+          <Svg style={styles.headerMotif} width="200" height="200">
+            <Circle cx="150" cy="50" r="100" fill={NAVY} fillOpacity="0.03" />
+            <Circle cx="170" cy="70" r="70" fill={NAVY} fillOpacity="0.03" />
+          </Svg>
+          <View style={styles.logoBox}>
+            <Image src={logoSrc} style={styles.logoImage} />
+          </View>
+          <View style={styles.headerTitleBlock}>
+            <Text style={styles.headerLabel}>Proposal Penawaran Strategis</Text>
+            <Text style={styles.headerTitle}>{proposal.proposedProgram || 'Program Transformasi Organisasi'}</Text>
+            <Text style={styles.headerSubtitle}>{formData.company}</Text>
+          </View>
+          <View style={styles.metaRow}>
+            <View style={styles.metaItem}><Text style={styles.metaLabel}>DISUSUN UNTUK</Text><Text style={styles.metaValue}>{formData.name.toUpperCase()}</Text></View>
+            <View style={styles.metaItem}><Text style={styles.metaLabel}>PERUSAHAAN</Text><Text style={styles.metaValue}>{formData.company.toUpperCase()}</Text></View>
+            <View style={styles.metaItem}><Text style={styles.metaLabel}>TANGGAL</Text><Text style={styles.metaValue}>{date.toUpperCase()}</Text></View>
+          </View>
+          <View style={styles.headerAccent} />
+        </View>
+
+        <View style={styles.content}>
+          <View style={styles.profileCard} wrap={false}>
+            <Text style={styles.profileLabel}>Pendahuluan</Text>
+            <Text style={styles.profileTitle}>Arah Penawaran Awal</Text>
+            <Text style={styles.profileText}>{proposal.opening || 'Proposal ini disusun sebagai tindak lanjut awal berdasarkan hasil diagnostik organisasi Anda.'}</Text>
+          </View>
+
+          <View style={styles.twoColumn} wrap={false}>
+            <View style={[styles.miniCard, { borderTopColor: NAVY }]}>
+              <Text style={styles.miniLabel}>Timeline</Text>
+              <Text style={styles.miniTitle}>{proposal.timeline || 'Menyesuaikan kebutuhan'}</Text>
+              <Text style={styles.miniText}>Estimasi durasi akan difinalisasi setelah scope dan prioritas disepakati bersama.</Text>
+            </View>
+            <View style={[styles.miniCard, { borderTopColor: GOLD }]}>
+              <Text style={styles.miniLabel}>Catatan Investasi</Text>
+              <Text style={styles.miniText}>{proposal.investmentNote || 'Nilai investasi final bergantung pada skala, jumlah peserta, format program, dan keluaran yang dipilih.'}</Text>
+            </View>
+          </View>
+
+          <View style={styles.summaryCard} wrap={false}>
+            <Text style={styles.summaryTitle}>Ruang Lingkup Rekomendasi</Text>
+            {(proposal.scope || []).slice(0, 6).map((item, index) => (
+              <Text key={index} style={styles.summaryText}>• {item}</Text>
+            ))}
+          </View>
+        </View>
+        <Footer page={1} />
+      </Page>
+
+      <Page size="A4" style={styles.page}>
+        <CompactHeader title="Pilihan Paket Penawaran" subtitle="Paket A, B, dan C berdasarkan tingkat kedalaman program" />
+        <View style={styles.content}>
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionBar} />
+            <View>
+              <Text style={styles.sectionTitle}>Opsi Paket Implementasi</Text>
+              <Text style={styles.sectionSubtitle}>Harga bersifat estimasi awal dan dapat disesuaikan setelah konsultasi lanjutan</Text>
+            </View>
+          </View>
+
+          <View style={styles.recGrid}>
+            {packages.map((pack, index) => (
+              <View key={pack.name} wrap={false} style={[styles.recCard, { width: '31.5%', borderTopColor: index === 1 ? NAVY : GOLD }]}>
+                <Text style={{ fontSize: 7, color: SILVER, fontWeight: 700, marginBottom: 6 }}>PAKET {String.fromCharCode(65 + index)}</Text>
+                <Text style={styles.recTitle}>{pack.name}</Text>
+                <Text style={[styles.kpiValue, { fontSize: 13, marginBottom: 8 }]}>{pack.price}</Text>
+                <Text style={styles.recDiagnosis}>{pack.bestFor}</Text>
+                <Text style={styles.miniLabel}>Durasi</Text>
+                <Text style={styles.recDesc}>{pack.duration}</Text>
+                <Text style={[styles.miniLabel, { marginTop: 8 }]}>Cakupan</Text>
+                {pack.scope.slice(0, 5).map((item, itemIndex) => (
+                  <Text key={itemIndex} style={styles.recDesc}>• {item}</Text>
+                ))}
+                <Text style={[styles.miniLabel, { marginTop: 8 }]}>Output</Text>
+                {pack.deliverables.slice(0, 5).map((item, itemIndex) => (
+                  <Text key={itemIndex} style={styles.recDesc}>• {item}</Text>
+                ))}
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.callout} wrap={false}>
+            <Text style={styles.summaryTitle}>Langkah Berikutnya</Text>
+            <Text style={styles.summaryText}>{proposal.nextStep || 'Jadwalkan konsultasi untuk memfinalisasi kebutuhan, ruang lingkup, peserta, timeline, dan opsi paket yang paling sesuai.'}</Text>
+          </View>
+        </View>
+        <Footer page={2} />
+      </Page>
+    </Document>
+  );
+};
+
+async function getLogoBase64() {
   let logoBase64 = 'https://buhanib.vercel.app/full-logo.png';
   try {
     const fs = await import('fs');
@@ -421,21 +549,26 @@ export async function generatePDFBuffer(formData: AssessmentData, result: Assess
     if (fs.existsSync(logoPath)) {
       const logoBuffer = fs.readFileSync(logoPath);
       logoBase64 = `data:image/png;base64,${logoBuffer.toString('base64')}`;
-      console.log('[PDF Service] Successfully loaded local logo as base64');
-    } else {
-      const altLogoPath = path.join(process.cwd(), 'website-prod', 'public', 'full-logo.png');
-      if (fs.existsSync(altLogoPath)) {
-        const logoBuffer = fs.readFileSync(altLogoPath);
-        logoBase64 = `data:image/png;base64,${logoBuffer.toString('base64')}`;
-        console.log('[PDF Service] Successfully loaded local logo from alternative path as base64');
-      } else {
-        console.warn('[PDF Service] Local logo not found, using URL fallback');
-      }
     }
   } catch (error: any) {
     console.error('[PDF Service] Failed to read logo file locally, using URL fallback:', error.message);
   }
+  return logoBase64;
+}
+
+export async function generatePDFBuffer(formData: AssessmentData, result: AssessmentResult): Promise<Buffer> {
+  const { renderToBuffer } = await import('@react-pdf/renderer');
+
+  const logoBase64 = await getLogoBase64();
 
   // @ts-ignore
   return await renderToBuffer(<AssessmentPDF formData={formData} result={result} logoPath={logoBase64} />);
+}
+
+export async function generateProposalPDFBuffer(formData: AssessmentData, proposal: ProposalResult): Promise<Buffer> {
+  const { renderToBuffer } = await import('@react-pdf/renderer');
+  const logoBase64 = await getLogoBase64();
+
+  // @ts-ignore
+  return await renderToBuffer(<ProposalPDF formData={formData} proposal={proposal} logoPath={logoBase64} />);
 }

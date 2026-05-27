@@ -36,12 +36,12 @@ export default function PerspektifPage() {
       <section className="px-6 md:px-12 lg:px-20 pb-16">
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
           {[
-            ["01", "Human before system", "Perubahan dimulai dari kesadaran, bukan dari tools."],
-            ["02", "Learning before automation", "Teknologi harus mempercepat pembelajaran, bukan menggantikannya."],
-            ["03", "Impact before activity", "Program bernilai ketika perilaku dan kinerja ikut berubah."],
-          ].map(([n, title, desc]) => (
-            <div key={n} className="rounded-[12px] border border-black/[0.06] bg-white/70 p-6 shadow-[0_18px_60px_-50px_rgba(11,44,107,0.42)]">
-              <span className="text-[10px] font-bold tracking-[0.24em] text-[#D9A441]">{n}</span>
+            ["Human before system", "Perubahan dimulai dari kesadaran, bukan dari tools."],
+            ["Learning before automation", "Teknologi harus mempercepat pembelajaran, bukan menggantikannya."],
+            ["Impact before activity", "Program bernilai ketika perilaku dan kinerja ikut berubah."],
+          ].map(([title, desc]) => (
+            <div key={title} className="rounded-[12px] border border-black/[0.06] bg-[#FCFCFB] p-6 shadow-[0_16px_48px_-42px_rgba(11,44,107,0.34)]">
+              <span className="block h-px w-10 bg-[#D9A441]/60" />
               <h2 className="mt-5 text-xl font-medium tracking-tight text-[#0B2C6B]">{title}</h2>
               <p className="mt-3 text-sm font-light leading-relaxed text-black/56">{desc}</p>
             </div>

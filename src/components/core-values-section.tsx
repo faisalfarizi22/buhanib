@@ -105,7 +105,7 @@ export function CoreValuesSection() {
 
               return (
                 <motion.button
-                  key={item.num}
+                  key={item.title}
                   type="button"
                   onClick={() => setActive(index)}
                   initial={{ opacity: 0, y: 20 }}
@@ -116,8 +116,8 @@ export function CoreValuesSection() {
                   transition={{ delay: index * 0.07, duration: 0.65, ease: premiumEase }}
                   className={`group relative min-h-[84px] overflow-hidden rounded-[12px] border px-5 py-4 text-left transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     isActive
-                      ? "border-[#D9A441]/40 bg-white shadow-[0_18px_60px_-42px_rgba(11,44,107,0.42),0_0_32px_-24px_rgba(217,164,65,0.7)]"
-                      : "border-black/[0.055] bg-white/54 hover:border-[#D9A441]/24 hover:bg-white/78"
+                      ? "border-[#D9A441]/40 bg-white shadow-[0_18px_48px_-38px_rgba(11,44,107,0.34)]"
+                      : "border-black/[0.055] bg-[#FCFCFB] hover:border-[#D9A441]/24 hover:bg-white"
                   }`}
                 >
                   <motion.div
@@ -157,9 +157,7 @@ export function CoreValuesSection() {
                     </div>
 
                     <div className="min-w-0">
-                      <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-[#D9A441]">
-                        {item.num}
-                      </span>
+                      <span className="mb-3 block h-px w-8 bg-[#D9A441]/55" />
                       <h3
                         className={`text-base font-medium leading-snug transition-colors duration-700 md:text-lg ${
                           isActive ? "text-[#0B2C6B]" : "text-[#0B2C6B]/62"
@@ -176,7 +174,7 @@ export function CoreValuesSection() {
           </div>
 
           <motion.div
-            key={value.num}
+            key={value.title}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-70px" }}
@@ -228,9 +226,7 @@ export function CoreValuesSection() {
                   <ValueIcon icon={value.icon} size={22} />
                 </motion.div>
 
-                <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/34">
-                  {value.num}
-                </span>
+                <span className="h-px w-14 bg-[#D9A441]/45" />
               </div>
 
               <div className="mt-auto max-w-2xl">

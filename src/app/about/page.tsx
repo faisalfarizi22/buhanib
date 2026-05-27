@@ -104,7 +104,7 @@ export default function AboutPage() {
 
       {/* Hero Section */}
       <section className="w-full px-4 md:px-8 pt-20 md:pt-28 mb-8 md:mb-16">
-        <div className="relative flex h-[65vh] min-h-[480px] w-full items-center overflow-hidden rounded-[14px] border border-white/10 bg-[#071A33] shadow-2xl shadow-black/15 sm:h-[72vh] md:h-[80vh] md:rounded-[18px]">
+        <div className="relative flex h-[65vh] min-h-[480px] w-full items-center overflow-hidden rounded-[14px] border border-white/10 bg-[#071A33] shadow-[0_24px_78px_-56px_rgba(11,44,107,0.48)] sm:h-[72vh] md:h-[80vh] md:rounded-[18px]">
           <div className="absolute inset-0 z-0">
             <img
               src="/bg-about.png"
@@ -270,7 +270,7 @@ export default function AboutPage() {
               return (
                 <div
                   key={item}
-                  className={`group rounded-[12px] border border-black/5 bg-white p-6 shadow-[0_18px_60px_-35px_rgba(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1 hover:border-[#D9A441]/30 hover:shadow-[0_28px_80px_-40px_rgba(11,44,107,0.35)] md:p-7 ${
+                  className={`group rounded-[12px] border border-black/5 bg-white p-6 shadow-[0_18px_46px_-38px_rgba(11,44,107,0.28)] transition-all duration-300 hover:-translate-y-1 hover:border-[#D9A441]/30 hover:shadow-[0_24px_64px_-48px_rgba(11,44,107,0.36)] md:p-7 ${
                               isLast ? "md:col-span-2 min-h-[116px]" : "min-h-[136px]"
                             }`}
                 >
@@ -281,9 +281,7 @@ export default function AboutPage() {
                       </div>
 
                       <div>
-                        <span className="mb-4 block text-[11px] font-semibold tracking-[0.18em] text-[#D9A441]">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
+                        <span className="mb-4 block h-px w-10 bg-[#D9A441]/60" />
 
                         <h3 className="text-sm md:text-[15px] font-semibold uppercase leading-[1.7] tracking-[0.035em] text-[#111827]">
                           {item}
@@ -333,10 +331,10 @@ export default function AboutPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-70px" }}
                   transition={{ delay: i * 0.08, duration: 0.65, ease: "easeOut" }}
-                  className={`group relative min-h-[360px] overflow-hidden rounded-[14px] border p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 md:p-8 lg:min-h-[370px] xl:min-h-[390px] ${
+                  className={`group relative min-h-[360px] overflow-hidden rounded-[14px] border p-7 transition-all duration-500 hover:-translate-y-1 md:p-8 lg:min-h-[370px] xl:min-h-[390px] ${
                     isFeatured
-                      ? "border-[#0A2A63]/10 bg-[#082D70] text-white shadow-[0_28px_80px_-44px_rgba(11,44,107,0.78)] hover:bg-[#062763] hover:shadow-[0_34px_96px_-48px_rgba(11,44,107,0.86)]"
-                      : "border-white bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,251,253,0.96))] text-[#1D2433] shadow-[0_24px_70px_-52px_rgba(11,44,107,0.32)] hover:border-[#D9A441]/25 hover:bg-white hover:shadow-[0_30px_92px_-50px_rgba(11,44,107,0.42)]"
+                      ? "border-[#0A2A63]/10 bg-[#082D70] text-white shadow-[0_24px_66px_-44px_rgba(11,44,107,0.68)] hover:bg-[#062763] hover:shadow-[0_30px_78px_-50px_rgba(11,44,107,0.74)]"
+                      : "border-black/[0.045] bg-[#FCFCFB] text-[#1D2433] shadow-[0_18px_54px_-48px_rgba(11,44,107,0.28)] hover:border-[#D9A441]/25 hover:bg-white hover:shadow-[0_24px_72px_-56px_rgba(11,44,107,0.36)]"
                   }`}
                 >
                  {/* Ambient texture */}
@@ -387,9 +385,7 @@ export default function AboutPage() {
                     </div>
 
                     <div className="mt-auto">
-                      <span className="mb-5 block text-[11px] font-semibold tracking-[0.2em] text-[#D9A441]">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
+                      <span className="mb-5 block h-px w-8 bg-[#D9A441]" />
 
                       <h4
                         className={`mb-4 text-sm md:text-[15px] font-semibold tracking-[0.16em] uppercase leading-[1.55] transition-colors ${
@@ -440,7 +436,7 @@ export default function AboutPage() {
                   y: ((event.clientY - rect.top) / rect.height) * 100,
                 });
               }}
-              className="col-span-12 md:col-span-8 md:row-span-2 lg:-translate-y-1 bg-[#0B2C6B] rounded-xl text-white relative overflow-hidden group shadow-2xl shadow-[#0B2C6B]/20 min-h-[440px] flex flex-col justify-between"
+              className="col-span-12 md:col-span-8 md:row-span-2 lg:-translate-y-1 bg-[#0B2C6B] rounded-xl text-white relative overflow-hidden group shadow-[0_24px_76px_-54px_rgba(11,44,107,0.62)] min-h-[440px] flex flex-col justify-between"
             >
               {/* Background photo */}
               <div className="absolute inset-0 z-0">
@@ -494,7 +490,7 @@ export default function AboutPage() {
                 </div>
 
                 <div className="mt-8">
-                  <p className="max-w-2xl rounded-[12px] border border-white/10 bg-white/[0.04] p-5 text-xs font-light leading-relaxed text-white/82 backdrop-blur-md md:text-sm">
+                  <p className="max-w-2xl rounded-[12px] border border-white/10 bg-white/[0.055] p-5 text-xs font-light leading-relaxed text-white/82 md:text-sm">
                     BinaHub percaya bahwa kemajuan dan kemanusiaan bukanlah dua hal yang saling bertentangan. Teknologi, AI, dan transformasi organisasi seharusnya menjadi sarana untuk <span className="text-[#D9A441] font-semibold">meningkatkan kualitas kehidupan manusia.</span>
                   </p>
                 </div>

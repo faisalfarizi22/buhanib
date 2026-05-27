@@ -31,7 +31,7 @@ export function InstructionStep({ onNext, onPrev }: InstructionStepProps) {
         </p>
       </div>
 
-      <div className="mb-10 w-full max-w-2xl rounded-[16px] border border-black/[0.03] bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.05)] md:p-12">
+      <div className="mb-10 w-full max-w-2xl rounded-[16px] border border-black/[0.04] bg-white p-6 shadow-[0_18px_52px_-44px_rgba(11,44,107,0.32)] md:p-12">
         <div className="space-y-4">
           {SCALE_ITEMS.map((item) => (
             <div 

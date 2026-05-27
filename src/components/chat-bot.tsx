@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, User, Sparkles, Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
@@ -11,6 +12,7 @@ interface Message {
 }
 
 export function ChatBot() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: 'Halo! Saya Nara, Executive Concierge BinaHub. Ada yang bisa saya bantu terkait operasional bisnis atau SDM perusahaan Anda?' }
@@ -140,6 +142,10 @@ export function ChatBot() {
     }
   };
 
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <>
       {/* Floating Button */}
@@ -150,7 +156,7 @@ export function ChatBot() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-[16px] border border-white/10 bg-[#0B2C6B] shadow-2xl ${isOpen ? 'hidden' : 'flex'}`}
+        className={`fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-[16px] border border-white/10 bg-[#0B2C6B] shadow-[0_18px_54px_-36px_rgba(11,44,107,0.72)] ${isOpen ? 'hidden' : 'flex'}`}
       >
         <div className="absolute inset-0 bg-[#D9A441]/16 blur-xl animate-pulse" />
         <MessageSquare className="text-white w-6 h-6 relative z-10" />
@@ -165,7 +171,7 @@ export function ChatBot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-6 right-6 z-50 flex h-[600px] max-h-[80vh] w-[calc(100vw-32px)] flex-col overflow-hidden rounded-[16px] border border-black/5 bg-white shadow-2xl sm:w-[400px]"
+            className="fixed bottom-6 right-6 z-50 flex h-[600px] max-h-[80vh] w-[calc(100vw-32px)] flex-col overflow-hidden rounded-[16px] border border-black/5 bg-white shadow-[0_24px_76px_-48px_rgba(11,44,107,0.48)] sm:w-[400px]"
           >
             {/* Header */}
             <div className="bg-[#0B2C6B] p-4 flex items-center justify-between relative overflow-hidden">

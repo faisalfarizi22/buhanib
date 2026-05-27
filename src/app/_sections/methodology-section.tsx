@@ -43,7 +43,7 @@ export function MethodologySection({ onMouseMove }: MethodologySectionProps) {
         </div>
 
         <div
-          className="flex flex-col overflow-hidden rounded-[14px] border border-black/[0.07] shadow-2xl shadow-black/5 md:relative md:block"
+          className="flex flex-col overflow-hidden rounded-[14px] border border-black/[0.07] shadow-[0_20px_64px_-52px_rgba(11,44,107,0.34)] md:relative md:block"
           onMouseMove={onMouseMove}
         >
           <div className="relative w-full h-[220px] sm:h-[280px] md:h-[520px] xl:h-[580px] 2xl:h-[640px] shrink-0">

@@ -81,10 +81,10 @@ export default function JourneyPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="group relative h-[240px] w-full overflow-hidden rounded-[14px] border border-black/[0.06] bg-white p-6 shadow-[0_24px_90px_-60px_rgba(11,44,107,0.48)] sm:h-[320px] md:h-[500px] lg:col-span-6 lg:h-[400px] xl:h-[500px]"
+              className="group relative h-[240px] w-full overflow-hidden rounded-[14px] border border-black/[0.06] bg-white p-6 shadow-[0_20px_68px_-54px_rgba(11,44,107,0.42)] sm:h-[320px] md:h-[500px] lg:col-span-6 lg:h-[400px] xl:h-[500px]"
             >
               <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(11,44,107,0.08),transparent_46%,rgba(217,164,65,0.08))]" />
-              <div className="absolute right-6 top-6 rounded-full border border-black/[0.06] bg-white/70 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#0B2C6B]/50 backdrop-blur-md">
+              <div className="absolute right-6 top-6 rounded-full border border-black/[0.06] bg-white/86 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#0B2C6B]/50">
                 Heritage Since 2010
               </div>
               <div className="relative flex h-full items-center justify-center">
@@ -243,7 +243,7 @@ export default function JourneyPage() {
         <section className="my-36 relative">
           <div className="absolute inset-0 bg-[#0B2C6B] rounded-none scale-100 md:scale-105 pointer-events-none shadow-xl" />
 
-          <div className="relative z-10 bg-white border border-[#D9A441]/30 rounded-none p-8 md:p-16 flex flex-col items-center text-center shadow-2xl">
+          <div className="relative z-10 bg-white border border-[#D9A441]/30 rounded-none p-8 md:p-16 flex flex-col items-center text-center shadow-[0_22px_70px_-54px_rgba(11,44,107,0.36)]">
             <Quote size={48} className="text-[#D9A441] mb-8" />
             <blockquote className="text-xl md:text-3xl font-light text-[#0B2C6B] leading-relaxed max-w-3xl italic">
               "Masa depan tidak hanya membutuhkan organisasi yang lebih cerdas secara teknologi, tetapi juga organisasi yang jauh lebih matang secara manusiawi."
