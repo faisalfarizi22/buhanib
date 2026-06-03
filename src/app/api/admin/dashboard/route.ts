@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase, createServerSupabase } from "@/lib/supabase";
-
-const ADMIN_EMAILS = new Set(
-  (process.env.ADMIN_EMAILS || "admin@binahub.id")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean)
-);
+import { createServerSupabase } from "@/lib/supabase";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const DIMENSIONS = ["Insights", "Lab", "Coach", "Play", "Academy", "Works", "Impact"] as const;
 
@@ -50,6 +44,13 @@ type AssessmentRow = {
   proposal_sent_at?: string | null;
   proposal_email_id?: string | null;
   proposal_requested_at?: string | null;
+  result_follow_up_level?: number | null;
+  result_follow_up_sent_at?: string | null;
+  result_follow_up_email_id?: string | null;
+  proposal_follow_up_level?: number | null;
+  proposal_follow_up_sent_at?: string | null;
+  proposal_follow_up_email_id?: string | null;
+  follow_up_history?: unknown;
   proposal_data?: unknown;
   created_at: string;
 };
@@ -92,6 +93,9 @@ type CoachRow = {
   category?: string;
   rate?: string;
   availability?: string;
+  cv_url?: string;
+  linkedin_url?: string;
+  linkedin_summary?: string;
   notes?: string;
   created_at?: string;
 };
@@ -224,24 +228,6 @@ function buildAnswerDistribution(records: Array<{ answers: Record<string, number
   });
 }
 
-export async function requireAdmin(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const token = authHeader?.replace("Bearer ", "");
-
-  if (!token) {
-    return { error: "Token tidak ditemukan", status: 401 as const };
-  }
-
-  const { data, error } = await supabase.auth.getUser(token);
-  const email = data.user?.email?.toLowerCase();
-
-  if (error || !email || !ADMIN_EMAILS.has(email)) {
-    return { error: "Akses admin tidak valid", status: 403 as const };
-  }
-
-  return { email };
-}
-
 export async function GET(req: NextRequest) {
   const admin = await requireAdmin(req);
   if ("error" in admin) {
@@ -251,7 +237,7 @@ export async function GET(req: NextRequest) {
   const db = createServerSupabase();
 
   const assessmentSelect =
-    "id, lead_id, form_data, scores, category, ai_analysis, recommendations, overall_score, assessment_status, result_email_sent_at, result_email_id, proposal_status, proposal_sent_at, proposal_email_id, proposal_requested_at, proposal_data, created_at";
+    "id, lead_id, form_data, scores, category, ai_analysis, recommendations, overall_score, assessment_status, result_email_sent_at, result_email_id, proposal_status, proposal_sent_at, proposal_email_id, proposal_requested_at, result_follow_up_level, result_follow_up_sent_at, result_follow_up_email_id, proposal_follow_up_level, proposal_follow_up_sent_at, proposal_follow_up_email_id, follow_up_history, proposal_data, created_at";
 
   const assessmentSelectWithoutEmailIds =
     "id, lead_id, form_data, scores, category, ai_analysis, recommendations, overall_score, assessment_status, result_email_sent_at, proposal_status, proposal_sent_at, proposal_requested_at, proposal_data, created_at";
@@ -302,7 +288,7 @@ export async function GET(req: NextRequest) {
   try {
     const { data } = await db
       .from("coaches")
-      .select("id, name, email, phone, expertise, field, status, bio, category, rate, availability, notes, created_at")
+      .select("*")
       .order("created_at", { ascending: false });
     coachRows = (data || []) as CoachRow[];
   } catch {
@@ -397,6 +383,10 @@ export async function GET(req: NextRequest) {
       proposalRequestedAt: row.proposal_requested_at || null,
       proposalSentAt: row.proposal_sent_at || null,
       proposalEmailId: row.proposal_email_id || null,
+      resultFollowUpLevel: row.result_follow_up_level || 0,
+      resultFollowUpSentAt: row.result_follow_up_sent_at || null,
+      proposalFollowUpLevel: row.proposal_follow_up_level || 0,
+      proposalFollowUpSentAt: row.proposal_follow_up_sent_at || null,
       leadScore: lead?.lead_score || null,
       leadStatus: lead?.lead_status || null,
       createdAt: row.created_at,
@@ -537,14 +527,21 @@ export async function GET(req: NextRequest) {
     });
   });
 
-  coachRows.forEach((coach) => {
+  const normalizedCoaches = coachRows.map((coach) => ({
+    ...coach,
+    cvUrl: coach.cv_url || "",
+    linkedinUrl: coach.linkedin_url || "",
+    linkedinSummary: coach.linkedin_summary || "",
+  }));
+
+  normalizedCoaches.forEach((coach) => {
     mergeContact({
       id: `coach:${coach.id}`,
       recordId: coach.id || "",
       name: coach.name || "Coach BinaHub",
       email: coach.email || "-",
       whatsapp: coach.phone || "",
-      message: coach.notes || coach.bio || "",
+      message: coach.notes || coach.bio || coach.linkedinSummary || "",
       source: "coach",
       sourceType: "coach",
       category: coach.category || "Coach",
@@ -600,7 +597,7 @@ export async function GET(req: NextRequest) {
       mostCommonCategory: categoryBreakdown.sort((a, b) => b.count - a.count)[0]?.category || "-",
       totalContacts: contacts.length,
       totalInquiries: inquiries.length,
-      totalCoaches: coachRows.length,
+      totalCoaches: normalizedCoaches.length,
       totalEmployees: employeeRows.length,
     },
     dimensionStats,
@@ -611,7 +608,7 @@ export async function GET(req: NextRequest) {
     assessments,
     contacts,
     inquiries,
-    coaches: coachRows,
+    coaches: normalizedCoaches,
     employees: employeeRows,
     coachAssignments: assignmentRows,
     coachSessions: sessionRows,

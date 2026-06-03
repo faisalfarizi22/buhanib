@@ -3,6 +3,37 @@
 Semua perubahan yang signifikan pada proyek ini akan didokumentasikan di file ini.
 Format yang digunakan berdasarkan [Keep a Changelog](https://keepachangelog.com/id/1.0.0/), dan proyek ini mematuhi aturan [Semantic Versioning](https://semver.org/).
 
+## [0.2.5]
+### Added
+- Menambahkan popup quiz Home pada area pain point dengan trigger 5 detik atau setelah user melewati section pain point.
+- Menambahkan 10 pertanyaan quick diagnostic, penyimpanan hasil ke `home_quiz_results`, dan perbandingan skor user terhadap rata-rata peserta.
+- Menambahkan endpoint `/api/home-quiz` beserta SQL Supabase pendamping untuk database hasil quiz.
+- Menambahkan konsep follow-up inquiry 3 tingkat: H+2, H+7, dan H+14.
+- Menambahkan tombol manual Follow Up 1, Follow Up 2, dan Follow Up 3 di tab Inquiries yang generate email via AI, mengirim email, lalu mengubah status inquiry otomatis.
+- Menambahkan follow-up 3 tingkat di tab Assessment untuk email result dan email proposal.
+- Menambahkan endpoint follow-up generik yang mendukung inquiry, assessment result, assessment proposal, serta cron otomatis berbasis `FOLLOW_UP_CRON_SECRET`.
+- Menambahkan tracking SQL untuk follow-up inquiry, follow-up assessment result/proposal, dan tabel event log `follow_up_events`.
+- Menambahkan kategori Assossiate untuk assessor, facilitator, trainer, project manager, coach, tour guide, travel agency, event organizer, dan konsultan spesialis.
+- Menambahkan field lampiran CV, LinkedIn URL, dan ringkasan otomatis dari LinkedIn pada form assossiate.
+- Menambahkan upload file CV assossiate melalui endpoint admin dan private Supabase Storage bucket `associate-documents`.
+- Menambahkan ekstraksi field LinkedIn berbasis profile text/export yang diberikan admin, tanpa melakukan direct crawling LinkedIn yang tidak berizin.
+- Menambahkan stop condition follow-up otomatis agar cron tidak mengirim follow-up lanjutan saat status sudah dibalas, lanjut diskusi, qualified, client, revisi, deal, lost, closed, selesai, atau diarsipkan.
+- Menambahkan rekomendasi status cerdas di tab Kontak agar status dapat diarahkan otomatis berdasarkan sumber dan konteks kontak.
+
+### Changed
+- Menyederhanakan hero halaman Kontak menjadi headline tunggal "Kontak".
+- Menghapus Jam Respons dari panel informasi kiri halaman Kontak.
+- Mengubah copy brief form inquiry menjadi arahan diskusi lanjutan yang lebih langsung.
+- Mengubah label `Email Kerja` menjadi `Email Perusahaan`.
+- Mengubah tab `Coach` menjadi `Assossiate`.
+- Mengubah tab `HRM` menjadi `Project Assignment`.
+- Menyesuaikan bahasa modul operasional admin dari coach/HRM ke assossiate/project assignment.
+- Menyesuaikan copy FAQ halaman Kontak agar merujuk pada diskusi dengan tim BinaHub.
+- Menyesuaikan section Transformation Architecture di halaman Perspektif dengan background texture baru dan carousel tab ICEO/OWN/4P.
+
+### Removed
+- Menghapus FAQ `Apakah harus sudah tahu layanan yang dibutuhkan?` dari halaman Kontak.
+
 ## [0.2.4]
 ### Changed
 - Merapikan flow Home menjadi lebih kuratif: hero, pain point, carousel positioning/visi/misi, layanan, dan CTA akhir.

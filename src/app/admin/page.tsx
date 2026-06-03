@@ -61,6 +61,10 @@ type AssessmentRecord = {
   proposalRequestedAt: string | null;
   proposalSentAt: string | null;
   proposalEmailId: string | null;
+  resultFollowUpLevel?: number;
+  resultFollowUpSentAt?: string | null;
+  proposalFollowUpLevel?: number;
+  proposalFollowUpSentAt?: string | null;
   createdAt: string;
 };
 
@@ -117,6 +121,9 @@ type CoachRecord = {
   category?: string;
   rate?: string;
   availability?: string;
+  cvUrl?: string;
+  linkedinUrl?: string;
+  linkedinSummary?: string;
   notes?: string;
   created_at?: string;
 };
@@ -198,7 +205,45 @@ type DashboardData = {
   coachDocuments: CoachDocumentRecord[];
 };
 
-const tabs = ["Overview", "Assessment", "Kontak", "Inquiries", "Coach", "HRM"] as const;
+const tabs = ["Overview", "Assessment", "Kontak", "Inquiries", "Assossiate", "Project Assignment"] as const;
+
+const ASSOCIATE_CATEGORIES = [
+  "Assessor (Insight)",
+  "Facilitator (Play)",
+  "Trainer (Lab)",
+  "Project Manager (Works, Impact)",
+  "Coach (Coach)",
+  "Tour Guide (Journey)",
+  "Travel Agency (Journey)",
+  "Event Organizer",
+  "Consultant AI",
+  "Consultant Change Management",
+  "Consultant SDM",
+];
+
+const FOLLOW_UP_LEVELS = [
+  {
+    level: 1,
+    days: 2,
+    label: "Follow Up 1",
+    status: "Follow Up 1 Terkirim",
+    intent: "Memastikan email sebelumnya masuk dan sudah dibaca, sekaligus membuka eksplorasi kemungkinan baru.",
+  },
+  {
+    level: 2,
+    days: 7,
+    label: "Follow Up 2",
+    status: "Follow Up 2 Terkirim",
+    intent: "Soft push agar diskusi bergerak ke keputusan atau jadwal lanjutan tanpa terasa menekan.",
+  },
+  {
+    level: 3,
+    days: 14,
+    label: "Follow Up 3",
+    status: "Follow Up 3 Terkirim",
+    intent: "Hard push dengan posisi nothing to lose: lanjut atau tidak lanjut sama-sama jelas.",
+  },
+] as const;
 
 const colors = ["#0B2C6B", "#D9A441", "#8FA3C7", "#C86B2B", "#6EA27B", "#B9471D"];
 
@@ -217,6 +262,27 @@ function formatDate(value?: string | null) {
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(value));
+}
+
+function daysSince(value?: string | null) {
+  if (!value) return 0;
+  const timestamp = new Date(value).getTime();
+  if (!Number.isFinite(timestamp)) return 0;
+  return Math.max(0, Math.floor((Date.now() - timestamp) / 86_400_000));
+}
+
+function getSmartContactStatus(contact: ContactRecord) {
+  const text = [contact.source, contact.sourceType, contact.category, contact.status, contact.message, contact.notes]
+    .join(" ")
+    .toLowerCase();
+  const age = daysSince(contact.createdAt);
+
+  if (text.includes("client") || text.includes("proposal") || text.includes("qualified")) return "Client";
+  if (text.includes("assessment") || text.includes("insight")) return "Lead Assessment";
+  if (text.includes("follow up") || age >= 2) return "Perlu Follow Up";
+  if (text.includes("archived") || text.includes("diarsipkan")) return "Diarsipkan";
+  if (contact.sourceType === "coach" || contact.sourceType === "employee") return "Internal";
+  return "Lead Baru";
 }
 
 function exportCsv(filename: string, rows: Array<Record<string, string | number | null | undefined>>) {
@@ -482,7 +548,7 @@ export default function AdminDashboardPage() {
                 {activeTab === "Inquiries" && (
                   <InquiriesPanel inquiries={data.inquiries} onAction={adminRequest} onRefresh={fetchDashboard} />
                 )}
-                {activeTab === "Coach" && (
+                {activeTab === "Assossiate" && (
                   <CoachPanel
                     mode="coach"
                     coaches={data.coaches}
@@ -490,7 +556,7 @@ export default function AdminDashboardPage() {
                     onRefresh={fetchDashboard}
                   />
                 )}
-                {activeTab === "HRM" && (
+                {activeTab === "Project Assignment" && (
                   <CoachPanel
                     mode="hrm"
                     coaches={data.coaches}
@@ -517,7 +583,7 @@ function Overview({ data }: { data: DashboardData }) {
     { label: "Rata-rata Skor", value: `${data.summary.avgOverall}%`, icon: BarChart3 },
     { label: "Kontak Klien", value: data.summary.totalContacts, icon: Mail },
     { label: "Inquiry Masuk", value: data.summary.totalInquiries, icon: Phone },
-    { label: "Coach Terdaftar", value: data.summary.totalCoaches, icon: Users },
+    { label: "Assossiate Terdaftar", value: data.summary.totalCoaches, icon: Users },
   ];
 
   return (
@@ -705,6 +771,26 @@ function AssessmentPanel({
     }
   };
 
+  const sendAssessmentFollowUp = async (
+    record: AssessmentRecord,
+    channel: "result" | "proposal",
+    level: number
+  ) => {
+    setActionError("");
+    setActionId(`${record.id}:${channel}:follow_up_${level}`);
+    try {
+      await onAction("/api/admin/follow-up", {
+        method: "POST",
+        body: JSON.stringify({ assessmentId: record.id, channel, level }),
+      });
+      await onRefresh();
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Gagal mengirim follow up assessment.");
+    } finally {
+      setActionId(null);
+    }
+  };
+
   const saveAssessmentStatus = async (record: AssessmentRecord, assessmentStatus: string, proposalStatus: string) => {
     setActionError("");
     setActionId(`${record.id}:status`);
@@ -843,13 +929,30 @@ function AssessmentPanel({
                             "Minta Proposal",
                             "Proposal Terkirim",
                             "Follow Up",
+                            "Result Follow Up 1 Terkirim",
+                            "Result Follow Up 2 Terkirim",
+                            "Result Follow Up 3 Terkirim",
+                            "Lanjut Diskusi",
                             "Closed",
                           ]}
                         />
                         <AdminSelect
                           value={record.proposalStatus}
                           onChange={(value) => saveAssessmentStatus(record, record.assessmentStatus, value)}
-                          options={["Belum Diminta", "Diminta", "Sedang Disusun", "Terkirim", "Revisi", "Closed"]}
+                          options={[
+                            "Belum Diminta",
+                            "Diminta",
+                            "Sedang Disusun",
+                            "Terkirim",
+                            "Proposal Follow Up 1 Terkirim",
+                            "Proposal Follow Up 2 Terkirim",
+                            "Proposal Follow Up 3 Terkirim",
+                            "Revisi",
+                            "Lanjut Diskusi",
+                            "Deal",
+                            "Lost",
+                            "Closed",
+                          ]}
                         />
                         <div className="flex flex-wrap gap-2">
                           <button
@@ -874,6 +977,26 @@ function AssessmentPanel({
                             Kirim Proposal
                           </button>
                         </div>
+                      </div>
+                      <div className="mt-4 grid gap-3 xl:grid-cols-2">
+                        <AssessmentFollowUpBox
+                          title="Follow Up Result"
+                          description="H+2 memastikan result masuk dan terbaca, H+7 soft push diskusi, H+14 hard push keputusan."
+                          record={record}
+                          channel="result"
+                          actionId={actionId}
+                          disabled={!record.resultEmailSentAt && record.assessmentStatus !== "Result Otomatis Terkirim"}
+                          onSend={sendAssessmentFollowUp}
+                        />
+                        <AssessmentFollowUpBox
+                          title="Follow Up Proposal"
+                          description="H+2 memastikan proposal diterima, H+7 dorong jadwal diskusi, H+14 final push keputusan lanjut atau tidak."
+                          record={record}
+                          channel="proposal"
+                          actionId={actionId}
+                          disabled={!record.proposalSentAt}
+                          onSend={sendAssessmentFollowUp}
+                        />
                       </div>
                     </div>
                     <div className="rounded-[12px] border border-black/[0.05] bg-white p-5">
@@ -979,6 +1102,55 @@ function DocumentActionButton({
   );
 }
 
+function AssessmentFollowUpBox({
+  title,
+  description,
+  record,
+  channel,
+  actionId,
+  disabled,
+  onSend,
+}: {
+  title: string;
+  description: string;
+  record: AssessmentRecord;
+  channel: "result" | "proposal";
+  actionId: string | null;
+  disabled: boolean;
+  onSend: (record: AssessmentRecord, channel: "result" | "proposal", level: number) => void;
+}) {
+  return (
+    <div className="rounded-[12px] border border-black/[0.05] bg-[#FAFAF8] p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#0B2C6B]">{title}</p>
+          <p className="mt-2 text-xs leading-relaxed text-black/50">{description}</p>
+          <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.12em] text-black/34">
+            Terakhir: level {channel === "result" ? record.resultFollowUpLevel || 0 : record.proposalFollowUpLevel || 0}
+          </p>
+        </div>
+        <Badge tone={disabled ? "navy" : "gold"}>{disabled ? "Belum siap" : "Ready"}</Badge>
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {FOLLOW_UP_LEVELS.map((item) => {
+          const id = `${record.id}:${channel}:follow_up_${item.level}`;
+          return (
+            <button
+              key={item.level}
+              type="button"
+              onClick={() => onSend(record, channel, item.level)}
+              disabled={disabled || actionId === id}
+              className="h-9 rounded-[9px] border border-black/10 bg-white px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#0B2C6B] transition hover:border-[#D9A441]/45 hover:bg-[#FFF8EA] disabled:opacity-50"
+            >
+              {actionId === id ? "Kirim..." : item.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function EmailPreviewModal({
   preview,
   onClose,
@@ -1070,22 +1242,24 @@ function ContactsPanel({
   const filteredContacts = useMemo(() => {
     const keyword = search.toLowerCase();
     return contacts.filter((contact) =>
-      [contact.name, contact.email, contact.whatsapp, contact.category, contact.status, contact.source]
+      [contact.name, contact.email, contact.whatsapp, contact.category, contact.status, getSmartContactStatus(contact), contact.source]
         .join(" ")
         .toLowerCase()
         .includes(keyword) &&
       (sourceType === "Semua" || contact.sourceType === sourceType) &&
       (category === "Semua" || contact.category === category) &&
-      (status === "Semua" || contact.status === status)
+      (status === "Semua" || contact.status === status || getSmartContactStatus(contact) === status)
     );
   }, [category, contacts, search, sourceType, status]);
 
   const sourceOptions = uniqueOptions(contacts, (contact) => contact.sourceType);
   const categoryOptions = uniqueOptions(contacts, (contact) => contact.category);
-  const statusOptions = uniqueOptions(contacts, (contact) => contact.status);
+  const statusOptions = Array.from(
+    new Set([...uniqueOptions(contacts, (contact) => contact.status), ...contacts.map(getSmartContactStatus)])
+  ).sort((a, b) => a.localeCompare(b));
 
   const getDraft = (contact: ContactRecord) =>
-    drafts[contact.id] || { status: contact.status || "New Lead", notes: contact.notes || "" };
+    drafts[contact.id] || { status: contact.status || getSmartContactStatus(contact), notes: contact.notes || "" };
 
   const saveContact = async (contact: ContactRecord) => {
     if (contact.sourceType !== "lead") return;
@@ -1127,6 +1301,7 @@ function ContactsPanel({
               <div className="flex flex-wrap gap-2">
                 <Badge>{contact.category}</Badge>
                 <Badge>{contact.sourceType}</Badge>
+                <Badge>AI: {getSmartContactStatus(contact)}</Badge>
                 <Badge tone="gold">{getDraft(contact).status}</Badge>
               </div>
             </div>
@@ -1143,7 +1318,8 @@ function ContactsPanel({
                 }
                 className="h-11 rounded-[10px] border border-black/10 bg-white px-3 text-sm outline-none focus:border-[#D9A441]"
               >
-                <option>New Lead</option>
+                <option>{getSmartContactStatus(contact)}</option>
+                <option>Lead Baru</option>
                 <option>Follow Up</option>
                 <option>Qualified</option>
                 <option>Client</option>
@@ -1213,6 +1389,7 @@ function InquiriesPanel({
   const [savingId, setSavingId] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, { status: string; notes: string }>>({});
   const [actionError, setActionError] = useState("");
+  const [followUpSending, setFollowUpSending] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [source, setSource] = useState("Semua");
   const [status, setStatus] = useState("Semua");
@@ -1251,9 +1428,35 @@ function InquiriesPanel({
     }
   };
 
+  const sendFollowUp = async (inquiry: InquiryRecord, level: number) => {
+    setFollowUpSending(`${inquiry.id}:${level}`);
+    setActionError("");
+    try {
+      await onAction("/api/admin/follow-up", {
+        method: "POST",
+        body: JSON.stringify({ inquiryId: inquiry.id, level }),
+      });
+      await onRefresh();
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Gagal mengirim follow up.");
+    } finally {
+      setFollowUpSending(null);
+    }
+  };
+
   return (
     <Panel title="Inquiry Masuk" action={`${filteredInquiries.length}/${inquiries.length} records`}>
       {actionError && <AdminNotice>{actionError}</AdminNotice>}
+      <div className="mb-5 grid gap-3 md:grid-cols-3">
+        {FOLLOW_UP_LEVELS.map((item) => (
+          <div key={item.level} className="rounded-[12px] border border-black/[0.05] bg-[#FFF8EA] p-4">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#9B6C17]">
+              {item.label} / Setelah {item.days} hari
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-black/56">{item.intent}</p>
+          </div>
+        ))}
+      </div>
       <div className="mb-5 grid gap-3 lg:grid-cols-[1fr_180px_180px]">
         <AdminSearch value={search} onChange={setSearch} placeholder="Cari nama, email, pesan..." />
         <AdminSelect value={source} onChange={setSource} options={["Semua", ...sourceOptions]} />
@@ -1276,6 +1479,31 @@ function InquiriesPanel({
               </div>
             </div>
             <p className="mt-4 text-sm font-light leading-relaxed text-black/58">{inquiry.message}</p>
+            <div className="mt-4 grid gap-2 rounded-[12px] border border-black/[0.05] bg-white p-3 md:grid-cols-[1fr_auto] md:items-center">
+              <p className="text-xs leading-relaxed text-black/50">
+                Auto follow-up: H+2, H+7, H+14 dari inquiry masuk. Tombol manual di kanan akan generate dan kirim email AI, lalu status inquiry ikut berubah.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {FOLLOW_UP_LEVELS.map((item) => {
+                  const due = daysSince(inquiry.createdAt) >= item.days;
+                  return (
+                    <button
+                      key={item.level}
+                      type="button"
+                      onClick={() => sendFollowUp(inquiry, item.level)}
+                      disabled={followUpSending === `${inquiry.id}:${item.level}`}
+                      className={`h-9 rounded-[9px] px-3 text-[10px] font-bold uppercase tracking-[0.12em] transition disabled:opacity-50 ${
+                        due
+                          ? "bg-[#0B2C6B] text-white"
+                          : "border border-black/10 bg-[#F5F7FA] text-[#0B2C6B]"
+                      }`}
+                    >
+                      {followUpSending === `${inquiry.id}:${item.level}` ? "Kirim..." : item.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <div className="mt-5 grid gap-3 lg:grid-cols-[180px_1fr_auto]">
               <select
                 value={getDraft(inquiry).status}
@@ -1290,6 +1518,12 @@ function InquiriesPanel({
                 <option>Baru</option>
                 <option>Dibalas</option>
                 <option>Perlu Follow Up</option>
+                <option>Follow Up 1 Terkirim</option>
+                <option>Follow Up 2 Terkirim</option>
+                <option>Follow Up 3 Terkirim</option>
+                <option>Lanjut Diskusi</option>
+                <option>Qualified</option>
+                <option>Client</option>
                 <option>Selesai</option>
                 <option>Diarsipkan</option>
               </select>
@@ -1355,9 +1589,12 @@ function CoachPanel({
     phone: "",
     expertise: "",
     field: "",
-    category: "Coach Eksternal",
+    category: "Assessor (Insight)",
     rate: "",
     availability: "",
+    cvUrl: "",
+    linkedinUrl: "",
+    linkedinSummary: "",
     status: "active",
     bio: "",
     notes: "",
@@ -1366,6 +1603,8 @@ function CoachPanel({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [actionError, setActionError] = useState("");
+  const [uploadingCv, setUploadingCv] = useState(false);
+  const [extractingLinkedIn, setExtractingLinkedIn] = useState(false);
   const [search, setSearch] = useState("");
   const [fieldFilter, setFieldFilter] = useState("Semua");
   const [categoryFilter, setCategoryFilter] = useState("Semua");
@@ -1421,6 +1660,9 @@ function CoachPanel({
         coach.category,
         coach.status,
         coach.availability,
+        coach.cvUrl,
+        coach.linkedinUrl,
+        coach.linkedinSummary,
       ]
         .join(" ")
         .toLowerCase()
@@ -1432,18 +1674,20 @@ function CoachPanel({
   }, [categoryFilter, coaches, fieldFilter, search, statusFilter]);
 
   const fieldOptions = uniqueOptions(coaches, (coach) => coach.field);
-  const categoryOptions = uniqueOptions(coaches, (coach) => coach.category);
+  const categoryOptions = Array.from(
+    new Set([...ASSOCIATE_CATEGORIES, ...uniqueOptions(coaches, (coach) => coach.category)])
+  );
   const statusOptions = uniqueOptions(coaches, (coach) => coach.status);
   const coachOptions: Array<[string, string]> = coaches
     .filter((coach) => coach.id)
-    .map((coach) => [coach.id || "", coach.name || "Coach BinaHub"]);
+    .map((coach) => [coach.id || "", coach.name || "Assossiate BinaHub"]);
   const assignmentOptions: Array<[string, string]> = assignments
     .filter((assignment) => assignment.id)
     .map((assignment) => [
       assignment.id || "",
       `${assignment.program_name || "Program"} - ${assignment.client_name || "Klien"}`,
     ]);
-  const coachName = (id?: string) => coaches.find((coach) => coach.id === id)?.name || "Coach";
+  const coachName = (id?: string) => coaches.find((coach) => coach.id === id)?.name || "Assossiate";
 
   const submitCoachOp = async (
     resource: "assignments" | "availability" | "sessions" | "documents",
@@ -1457,7 +1701,7 @@ function CoachPanel({
       });
       await onRefresh();
     } catch (error) {
-      setOpsError(error instanceof Error ? error.message : "Gagal menyimpan data HRM.");
+      setOpsError(error instanceof Error ? error.message : "Gagal menyimpan data Project Assignment.");
     }
   };
 
@@ -1465,13 +1709,13 @@ function CoachPanel({
     resource: "assignments" | "availability" | "sessions" | "documents",
     id?: string
   ) => {
-    if (!id || !window.confirm("Hapus data operasional HRM ini?")) return;
+    if (!id || !window.confirm("Hapus data Project Assignment ini?")) return;
     setOpsError("");
     try {
       await onAction(`/api/admin/coach-ops?resource=${resource}&id=${id}`, { method: "DELETE" });
       await onRefresh();
     } catch (error) {
-      setOpsError(error instanceof Error ? error.message : "Gagal menghapus data HRM.");
+      setOpsError(error instanceof Error ? error.message : "Gagal menghapus data Project Assignment.");
     }
   };
 
@@ -1487,9 +1731,64 @@ function CoachPanel({
       setEditingId(null);
       await onRefresh();
     } catch (error) {
-      setActionError(error instanceof Error ? error.message : "Gagal menyimpan data coach.");
+      setActionError(error instanceof Error ? error.message : "Gagal menyimpan data assossiate.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const uploadCv = async (file?: File | null) => {
+    if (!file) return;
+    setUploadingCv(true);
+    setActionError("");
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Sesi admin tidak ditemukan.");
+
+      const payload = new FormData();
+      payload.append("file", file);
+      payload.append("associateId", editingId || form.name || "new-associate");
+
+      const response = await fetch("/api/admin/associate-documents", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: payload,
+      });
+      const json = await response.json();
+      if (!response.ok || !json.success) {
+        throw new Error(json.error || "Gagal upload CV.");
+      }
+      setForm((current) => ({ ...current, cvUrl: `${json.bucket}/${json.path}` }));
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Gagal upload CV.");
+    } finally {
+      setUploadingCv(false);
+    }
+  };
+
+  const extractLinkedIn = async () => {
+    setExtractingLinkedIn(true);
+    setActionError("");
+    try {
+      const result = await onAction("/api/admin/linkedin-extract", {
+        method: "POST",
+        body: JSON.stringify({
+          linkedinUrl: form.linkedinUrl,
+          profileText: form.linkedinSummary,
+        }),
+      }) as { extracted?: { summary?: string; recommendedCategory?: string; headline?: string; experienceSummary?: string } };
+
+      const extracted = result.extracted || {};
+      setForm((current) => ({
+        ...current,
+        category: extracted.recommendedCategory || current.category,
+        linkedinSummary: extracted.summary || [extracted.headline, extracted.experienceSummary].filter(Boolean).join("\n") || current.linkedinSummary,
+      }));
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Gagal ekstrak LinkedIn.");
+    } finally {
+      setExtractingLinkedIn(false);
     }
   };
 
@@ -1501,9 +1800,12 @@ function CoachPanel({
       phone: coach.phone || "",
       expertise: coach.expertise || "",
       field: coach.field || "",
-      category: coach.category || "Coach Eksternal",
+      category: coach.category || "Assessor (Insight)",
       rate: coach.rate || "",
       availability: coach.availability || "",
+      cvUrl: coach.cvUrl || "",
+      linkedinUrl: coach.linkedinUrl || "",
+      linkedinSummary: coach.linkedinSummary || "",
       status: coach.status || "active",
       bio: coach.bio || "",
       notes: coach.notes || "",
@@ -1511,32 +1813,32 @@ function CoachPanel({
   };
 
   const deleteCoach = async (coach: CoachRecord) => {
-    if (!coach.id || !window.confirm(`Hapus data coach ${coach.name || ""}?`)) return;
+    if (!coach.id || !window.confirm(`Hapus data assossiate ${coach.name || ""}?`)) return;
     setActionError("");
     try {
       await onAction(`/api/admin/coaches?id=${coach.id}`, { method: "DELETE" });
       await onRefresh();
     } catch (error) {
-      setActionError(error instanceof Error ? error.message : "Gagal menghapus data coach.");
+      setActionError(error instanceof Error ? error.message : "Gagal menghapus data assossiate.");
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="rounded-[14px] border border-[#D9A441]/25 bg-[#FFF8EA] p-6">
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9B6C17]">HRM Roadmap</p>
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9B6C17]">Assossiate Network</p>
         <h3 className="mt-3 text-3xl font-light tracking-[-0.04em] text-[#0B2C6B]">
-          Modul coach sudah disiapkan sebagai fondasi HRM.
+          Modul assossiate disiapkan sebagai fondasi Project Assignment.
         </h3>
         <p className="mt-4 max-w-3xl text-sm font-light leading-relaxed text-black/58">
-          Untuk tahap awal dashboard akan membaca tabel <code>coaches</code> jika tersedia.
-          Berikutnya modul ini bisa diperluas menjadi penugasan coach per bidang, availability,
-          pipeline engagement, catatan sesi, dan performa program.
+          Untuk tahap awal dashboard membaca tabel <code>coaches</code> sebagai pool assossiate.
+          Kategori sudah mencakup assessor, facilitator, trainer, project manager, coach,
+          tour guide, travel agency, event organizer, dan konsultan spesialis.
         </p>
       </div>
 
       {mode === "coach" && (
-      <Panel title={editingId ? "Edit Data Coach" : "Tambah Coach Manual"} action="Coach input">
+      <Panel title={editingId ? "Edit Data Assossiate" : "Tambah Assossiate Manual"} action="Assossiate input">
         {actionError && <AdminNotice>{actionError}</AdminNotice>}
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <AdminInput label="Nama" value={form.name} onChange={(value) => setForm({ ...form, name: value })} />
@@ -1544,9 +1846,25 @@ function CoachPanel({
           <AdminInput label="Telepon" value={form.phone} onChange={(value) => setForm({ ...form, phone: value })} />
           <AdminInput label="Bidang" value={form.field} onChange={(value) => setForm({ ...form, field: value })} />
           <AdminInput label="Keahlian" value={form.expertise} onChange={(value) => setForm({ ...form, expertise: value })} />
-          <AdminInput label="Kategori" value={form.category} onChange={(value) => setForm({ ...form, category: value })} />
+          <AdminSelect value={form.category} onChange={(value) => setForm({ ...form, category: value })} options={categoryOptions} />
           <AdminInput label="Rate" value={form.rate} onChange={(value) => setForm({ ...form, rate: value })} />
           <AdminInput label="Availability" value={form.availability} onChange={(value) => setForm({ ...form, availability: value })} />
+          <AdminInput label="LinkedIn URL" value={form.linkedinUrl} onChange={(value) => setForm({ ...form, linkedinUrl: value })} />
+        </div>
+        <div className="mt-3 grid gap-3 md:grid-cols-[1fr_auto]">
+          <label className="block rounded-[10px] border border-dashed border-black/12 bg-white px-3 py-3">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.16em] text-black/36">Upload Lampiran CV</span>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx,.rtf,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              onChange={(event) => uploadCv(event.target.files?.[0])}
+              className="block w-full text-xs text-black/58 file:mr-3 file:rounded-[8px] file:border-0 file:bg-[#0B2C6B] file:px-3 file:py-2 file:text-xs file:font-bold file:uppercase file:tracking-[0.12em] file:text-white"
+            />
+            {form.cvUrl && <span className="mt-2 block break-all text-xs text-[#0B2C6B]/70">{form.cvUrl}</span>}
+          </label>
+          <div className="flex h-12 items-center self-end rounded-[10px] border border-black/10 bg-white px-4 text-xs font-bold uppercase tracking-[0.14em] text-[#0B2C6B]">
+            {uploadingCv ? "Uploading..." : form.cvUrl ? "CV Tersimpan" : "Belum Ada CV"}
+          </div>
         </div>
         <div className="mt-3 grid gap-3 md:grid-cols-[180px_1fr]">
           <select
@@ -1562,14 +1880,28 @@ function CoachPanel({
           <input
             value={form.bio}
             onChange={(event) => setForm({ ...form, bio: event.target.value })}
-            placeholder="Bio singkat coach..."
+            placeholder="Bio singkat assossiate..."
             className="h-11 rounded-[10px] border border-black/10 bg-white px-3 text-sm outline-none focus:border-[#D9A441]"
           />
         </div>
         <textarea
+          value={form.linkedinSummary}
+          onChange={(event) => setForm({ ...form, linkedinSummary: event.target.value })}
+          placeholder="Tempel teks profil/export LinkedIn di sini, lalu klik Ekstrak LinkedIn untuk mengisi field otomatis..."
+          className="mt-3 min-h-20 w-full rounded-[10px] border border-black/10 bg-white px-3 py-3 text-sm outline-none focus:border-[#D9A441]"
+        />
+        <button
+          type="button"
+          onClick={extractLinkedIn}
+          disabled={extractingLinkedIn || !form.linkedinUrl}
+          className="mt-3 h-11 rounded-[10px] border border-[#D9A441]/40 bg-[#FFF8EA] px-4 text-xs font-bold uppercase tracking-[0.14em] text-[#9B6C17] disabled:opacity-50"
+        >
+          {extractingLinkedIn ? "Mengekstrak..." : "Ekstrak LinkedIn"}
+        </button>
+        <textarea
           value={form.notes}
           onChange={(event) => setForm({ ...form, notes: event.target.value })}
-          placeholder="Catatan internal HRM, preferensi penugasan, histori kerja sama..."
+          placeholder="Catatan internal assossiate, preferensi penugasan, histori kerja sama..."
           className="mt-3 min-h-24 w-full rounded-[10px] border border-black/10 bg-white px-3 py-3 text-sm outline-none focus:border-[#D9A441]"
         />
         <div className="mt-4 flex flex-wrap gap-2">
@@ -1578,7 +1910,7 @@ function CoachPanel({
             disabled={saving || !form.name}
             className="flex h-11 items-center gap-2 rounded-[10px] bg-[#0B2C6B] px-4 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50"
           >
-            {editingId ? <Save size={15} /> : <Plus size={15} />} {editingId ? "Simpan Coach" : "Tambah Coach"}
+            {editingId ? <Save size={15} /> : <Plus size={15} />} {editingId ? "Simpan Assossiate" : "Tambah Assossiate"}
           </button>
           {editingId && (
             <button
@@ -1597,12 +1929,12 @@ function CoachPanel({
 
       {mode === "hrm" && (
       <>
-      <Panel title="Operasional Coach" action="Assignment, availability, session, contract">
+      <Panel title="Project Assignment" action="Assignment, availability, session, contract">
         {opsError && <AdminNotice>{opsError}</AdminNotice>}
         <div className="grid gap-4 xl:grid-cols-2">
           <CollapsibleModule title="Assignment ke Program">
             <div className="grid gap-3 md:grid-cols-2">
-              <AdminSelect value={assignmentForm.coach_id} onChange={(value) => setAssignmentForm({ ...assignmentForm, coach_id: value })} options={[["", "Pilih coach"], ...coachOptions]} />
+              <AdminSelect value={assignmentForm.coach_id} onChange={(value) => setAssignmentForm({ ...assignmentForm, coach_id: value })} options={[["", "Pilih assossiate"], ...coachOptions]} />
               <AdminInput label="Klien" value={assignmentForm.client_name} onChange={(value) => setAssignmentForm({ ...assignmentForm, client_name: value })} />
               <AdminInput label="Program" value={assignmentForm.program_name} onChange={(value) => setAssignmentForm({ ...assignmentForm, program_name: value })} />
               <AdminInput label="Layanan" value={assignmentForm.service} onChange={(value) => setAssignmentForm({ ...assignmentForm, service: value })} />
@@ -1618,9 +1950,9 @@ function CoachPanel({
             </button>
           </CollapsibleModule>
 
-          <CollapsibleModule title="Availability Coach">
+          <CollapsibleModule title="Availability Assossiate">
             <div className="grid gap-3 md:grid-cols-2">
-              <AdminSelect value={availabilityForm.coach_id} onChange={(value) => setAvailabilityForm({ ...availabilityForm, coach_id: value })} options={[["", "Pilih coach"], ...coachOptions]} />
+              <AdminSelect value={availabilityForm.coach_id} onChange={(value) => setAvailabilityForm({ ...availabilityForm, coach_id: value })} options={[["", "Pilih assossiate"], ...coachOptions]} />
               <AdminSelect value={availabilityForm.day_of_week} onChange={(value) => setAvailabilityForm({ ...availabilityForm, day_of_week: value })} options={["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]} />
               <AdminInput label="Jam" value={availabilityForm.time_window} onChange={(value) => setAvailabilityForm({ ...availabilityForm, time_window: value })} />
               <AdminSelect value={availabilityForm.mode} onChange={(value) => setAvailabilityForm({ ...availabilityForm, mode: value })} options={["Online", "Offline", "Hybrid"]} />
@@ -1636,7 +1968,7 @@ function CoachPanel({
 
           <CollapsibleModule title="Histori Sesi & Evaluasi">
             <div className="grid gap-3 md:grid-cols-2">
-              <AdminSelect value={sessionForm.coach_id} onChange={(value) => setSessionForm({ ...sessionForm, coach_id: value })} options={[["", "Pilih coach"], ...coachOptions]} />
+              <AdminSelect value={sessionForm.coach_id} onChange={(value) => setSessionForm({ ...sessionForm, coach_id: value })} options={[["", "Pilih assossiate"], ...coachOptions]} />
               <AdminSelect value={sessionForm.assignment_id} onChange={(value) => setSessionForm({ ...sessionForm, assignment_id: value })} options={[["", "Tanpa assignment"], ...assignmentOptions]} />
               <AdminInput label="Tanggal sesi" value={sessionForm.session_date} onChange={(value) => setSessionForm({ ...sessionForm, session_date: value })} />
               <AdminInput label="Durasi menit" value={sessionForm.duration_minutes} onChange={(value) => setSessionForm({ ...sessionForm, duration_minutes: value })} />
@@ -1651,8 +1983,8 @@ function CoachPanel({
 
           <CollapsibleModule title="Dokumen & Kontrak">
             <div className="grid gap-3 md:grid-cols-2">
-              <AdminSelect value={documentForm.coach_id} onChange={(value) => setDocumentForm({ ...documentForm, coach_id: value })} options={[["", "Pilih coach"], ...coachOptions]} />
-              <AdminSelect value={documentForm.document_type} onChange={(value) => setDocumentForm({ ...documentForm, document_type: value })} options={["Kontrak", "NDA", "CV", "Sertifikat", "Invoice", "Lainnya"]} />
+              <AdminSelect value={documentForm.coach_id} onChange={(value) => setDocumentForm({ ...documentForm, coach_id: value })} options={[["", "Pilih assossiate"], ...coachOptions]} />
+              <AdminSelect value={documentForm.document_type} onChange={(value) => setDocumentForm({ ...documentForm, document_type: value })} options={["Kontrak", "NDA", "CV", "LinkedIn Export", "Sertifikat", "Invoice", "Lainnya"]} />
               <AdminInput label="Judul" value={documentForm.title} onChange={(value) => setDocumentForm({ ...documentForm, title: value })} />
               <AdminInput label="Link dokumen" value={documentForm.document_url} onChange={(value) => setDocumentForm({ ...documentForm, document_url: value })} />
               <AdminInput label="Masa berlaku" value={documentForm.expiry_date} onChange={(value) => setDocumentForm({ ...documentForm, expiry_date: value })} />
@@ -1712,7 +2044,7 @@ function CoachPanel({
           />
         </Panel>
 
-        <Panel title="Dokumen Coach" action={`${documents.length} records`}>
+        <Panel title="Dokumen Assossiate" action={`${documents.length} records`}>
           <HrmList
             items={documents}
             empty="Belum ada dokumen."
@@ -1731,9 +2063,9 @@ function CoachPanel({
       )}
 
       {mode === "coach" && (
-      <Panel title="Daftar Coach" action={`${filteredCoaches.length}/${coaches.length} records`}>
+      <Panel title="Daftar Assossiate" action={`${filteredCoaches.length}/${coaches.length} records`}>
         <div className="mb-5 grid gap-3 lg:grid-cols-[1fr_180px_180px_160px]">
-          <AdminSearch value={search} onChange={setSearch} placeholder="Cari nama, email, bidang, keahlian..." />
+          <AdminSearch value={search} onChange={setSearch} placeholder="Cari nama, email, bidang, keahlian, LinkedIn..." />
           <AdminSelect value={fieldFilter} onChange={setFieldFilter} options={["Semua", ...fieldOptions]} />
           <AdminSelect value={categoryFilter} onChange={setCategoryFilter} options={["Semua", ...categoryOptions]} />
           <AdminSelect value={statusFilter} onChange={setStatusFilter} options={["Semua", ...statusOptions]} />
@@ -1745,11 +2077,11 @@ function CoachPanel({
                 <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-[10px] bg-[#0B2C6B] text-[#D9A441]">
                   <BriefcaseBusiness size={19} />
                 </div>
-                <p className="text-base font-semibold">{coach.name || "Coach BinaHub"}</p>
+                <p className="text-base font-semibold">{coach.name || "Assossiate BinaHub"}</p>
                 <p className="mt-1 text-sm text-black/48">{coach.expertise || coach.field || "Bidang belum diisi"}</p>
-                <p className="mt-4 text-xs leading-relaxed text-black/48">{coach.bio || "Profil coach akan tampil di sini setelah data HRM diisi."}</p>
+                <p className="mt-4 text-xs leading-relaxed text-black/48">{coach.bio || coach.linkedinSummary || "Profil assossiate akan tampil di sini setelah data dilengkapi."}</p>
                 <div className="mt-5 flex flex-wrap gap-2">
-                  <Badge>{coach.category || "Coach"}</Badge>
+                  <Badge>{coach.category || "Assossiate"}</Badge>
                   <Badge tone="gold">{coach.status || "active"}</Badge>
                   {coach.availability && <Badge>{coach.availability}</Badge>}
                 </div>
@@ -1762,6 +2094,11 @@ function CoachPanel({
                       <Mail size={14} />
                     </a>
                   )}
+                  {coach.linkedinUrl && (
+                    <a href={coach.linkedinUrl} target="_blank" className="grid h-10 w-10 place-items-center rounded-[10px] border border-black/10 bg-white">
+                      <Eye size={14} />
+                    </a>
+                  )}
                   <button onClick={() => deleteCoach(coach)} className="grid h-10 w-10 place-items-center rounded-[10px] border border-red-100 bg-red-50 text-red-600">
                     <Trash2 size={14} />
                   </button>
@@ -1772,10 +2109,10 @@ function CoachPanel({
         ) : (
           <div className="rounded-[12px] border border-dashed border-black/10 bg-[#FAFAF8] p-8 text-center">
             <ShieldCheck className="mx-auto mb-4 text-[#D9A441]" size={32} />
-            <p className="text-sm font-semibold text-[#0B2C6B]">Belum ada data coach.</p>
+            <p className="text-sm font-semibold text-[#0B2C6B]">Belum ada data assossiate.</p>
             <p className="mx-auto mt-2 max-w-xl text-sm font-light leading-relaxed text-black/48">
-              Buat tabel <code>coaches</code> di Supabase untuk mulai mengisi daftar coach,
-              bidang keahlian, status kerja sama, dan catatan HRM.
+              Buat tabel <code>coaches</code> di Supabase untuk mulai mengisi daftar assossiate,
+              kategori, CV, LinkedIn, status kerja sama, dan catatan Project Assignment.
             </p>
           </div>
         )}

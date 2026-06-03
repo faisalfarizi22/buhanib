@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
-import { requireAdmin } from "../dashboard/route";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const allowedStatuses = new Set(["active", "inactive", "prospect", "archived"]);
 
@@ -16,6 +16,9 @@ function cleanCoachPayload(body: Record<string, unknown>) {
     category: String(body.category || "").trim() || null,
     rate: String(body.rate || "").trim() || null,
     availability: String(body.availability || "").trim() || null,
+    cv_url: String(body.cvUrl || body.cv_url || "").trim() || null,
+    linkedin_url: String(body.linkedinUrl || body.linkedin_url || "").trim() || null,
+    linkedin_summary: String(body.linkedinSummary || body.linkedin_summary || "").trim() || null,
     bio: String(body.bio || "").trim() || null,
     notes: String(body.notes || "").trim() || null,
     status: allowedStatuses.has(status) ? status : "active",

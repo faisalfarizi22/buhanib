@@ -3,7 +3,7 @@ import { createServerSupabase } from "@/lib/supabase";
 import { generateAssessmentProposal } from "@/lib/ai-service";
 import { sendAssessmentEmail, sendProposalEmail } from "@/lib/email-service";
 import { generatePDFBuffer, generateProposalPDFBuffer, AssessmentResult } from "@/lib/pdf-service";
-import { requireAdmin } from "../dashboard/route";
+import { requireAdmin } from "@/lib/admin-auth";
 
 function parseJson<T>(value: unknown, fallback: T): T {
   if (!value) return fallback;

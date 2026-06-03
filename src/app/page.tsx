@@ -1,4 +1,5 @@
 import { PainPointSection } from "./_sections/pain-point-section";
+import { PainPointQuizPopup } from "./_sections/pain-point-quiz-popup";
 import { HomeHero } from "./_sections/home-hero";
 import { AboutCarouselSection } from "./_sections/about-carousel-section";
 import { ServicesSection } from "./_sections/services-section";
@@ -16,6 +17,7 @@ export default function Home() {
         <HumanCoreValuesSection />
         <ServicesSection />
       </div>
+      <PainPointQuizPopup />
     </div>
   );
 }

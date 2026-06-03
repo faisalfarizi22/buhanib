@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, Clock, ChevronDown } from "lucide-react";
-import { Tag } from "@/components/ui/tag";
+import { Mail, Phone, MapPin, Send, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 
 const FAQ_ITEMS = [
   {
@@ -13,10 +12,6 @@ const FAQ_ITEMS = [
   {
     question: "Berapa lama biasanya tim BinaHub merespons?",
     answer: "Tim kami biasanya merespons dalam 1x24 jam kerja melalui email atau kontak yang Anda cantumkan di formulir.",
-  },
-  {
-    question: "Apakah harus sudah tahu layanan yang dibutuhkan?",
-    answer: "Tidak harus. Anda cukup menceritakan situasi atau tantangan utama. Kami dapat membantu memetakan apakah kebutuhannya lebih cocok ke assessment, coaching, training, culture program, atau ekosistem lain.",
   },
   {
     question: "Apakah BinaHub cocok untuk organisasi kecil?",
@@ -106,17 +101,9 @@ export default function ContactPage() {
         
         {/* Header Hero Section */}
         <div className="mb-16 text-left max-w-3xl">
-          <div className="mt-2">
-            <Tag>HUBUNGI KAMI</Tag>
-          </div>
           <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-[#0B2C6B] leading-[1.1]">
-            Ceritakan tantangan <br />
-            <span className="font-semibold text-[#0B2C6B]">organisasi Anda.</span>
+            Kontak
           </h1>
-          <p className="mt-6 text-lg text-black/45 leading-relaxed font-light">
-            Mulai dari percakapan singkat. Tim kami akan membantu membaca kebutuhan awal,
-            menjawab pertanyaan Anda, dan merekomendasikan langkah yang paling masuk akal.
-          </p>
         </div>
 
         {/* main Grid Layout */}
@@ -154,19 +141,6 @@ export default function ContactPage() {
                   <a href="mailto:info@binahub.id" className="text-[#0B2C6B] hover:text-[#D9A441] transition-colors font-medium text-sm">
                     info@binahub.id
                   </a>
-                </div>
-              </div>
-
-              {/* WhatsApp */}
-              <div className="flex gap-4 items-start">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[#D9A441]/10">
-                  <Clock size={18} className="text-[#D9A441]" />
-                </div>
-                <div>
-                  <span className="block text-[10px] font-bold text-[#0B2C6B]/40 uppercase tracking-widest mb-1">Jam Respons</span>
-                  <p className="text-[#0B2C6B]/70 leading-relaxed text-sm font-light">
-                    Tim kami biasanya merespons dalam 1x24 jam kerja setelah inquiry diterima.
-                  </p>
                 </div>
               </div>
 
@@ -247,7 +221,7 @@ export default function ContactPage() {
                   >
                     <div>
                       <h2 className="text-xl font-bold text-[#0B2C6B] tracking-tight mb-1">Mulai Percakapan</h2>
-                      <p className="text-xs text-black/40">Cukup ceritakan kebutuhan utama. Detail lainnya bisa kami gali bersama setelahnya.</p>
+                      <p className="text-xs text-black/40">Bila ada yang ingin anda diskusikan lebih lanjut, silahkan hubungi kami</p>
                     </div>
 
                     {/* Server Error Alert */}
@@ -306,7 +280,7 @@ export default function ContactPage() {
                       {/* Email Input */}
                       <div className="flex flex-col gap-1.5">
                         <label htmlFor="email" className="text-[10px] font-bold text-[#0B2C6B]/60 tracking-wider uppercase">
-                          Email Kerja <span className="text-rose-500">*</span>
+                          Email Perusahaan <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="email"
@@ -433,7 +407,7 @@ export default function ContactPage() {
                 Pertanyaan sebelum memulai.
               </h2>
               <p className="mt-7 max-w-md text-base font-light leading-relaxed text-[#0B2C6B]/62">
-                Beberapa hal yang biasanya ingin dipastikan sebelum tim organisasi mulai berdiskusi dengan BinaHub.
+                Beberapa hal yang biasanya ingin dipastikan sebelum berdiskusi dengan tim BinaHub.
               </p>
             </div>
 

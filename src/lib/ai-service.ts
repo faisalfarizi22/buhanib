@@ -272,6 +272,150 @@ Berikan JSON PERSIS:
   return JSON.parse(jsonMatch[0]);
 }
 
+export async function generateInquiryFollowUp(input: {
+  name: string;
+  email: string;
+  company?: string;
+  message?: string;
+  level: number;
+}) {
+  const followUpIntent: Record<number, string> = {
+    1: "memastikan email sebelumnya masuk dan sudah dibaca, sekaligus membuka eksplorasi kemungkinan baru",
+    2: "soft push agar calon klien terdorong menjadwalkan diskusi tanpa terasa ditekan",
+    3: "hard push dengan posisi nothing to lose, membuat keputusan lanjut atau tidak lanjut menjadi jelas",
+  };
+
+  const prompt = `
+Buat email follow up B2B dari tim BinaHub.
+Jangan menyebut AI atau otomatisasi. Bahasa Indonesia profesional, hangat, ringkas, dan langsung.
+
+DATA:
+Nama: ${input.name}
+Email: ${input.email}
+Perusahaan: ${input.company || '-'}
+Pesan awal: ${input.message || '-'}
+Follow up tingkat: ${input.level}
+Tujuan follow up: ${followUpIntent[input.level] || followUpIntent[1]}
+
+Output JSON persis:
+{
+  "subject": "<subject email>",
+  "html": "<html email sederhana dengan sapaan, isi, dan CTA untuk membalas email atau menjadwalkan diskusi>"
+}
+`;
+
+  const text = await callAI([
+    { role: 'system', content: 'Anda adalah konsultan senior BinaHub. Jawab hanya JSON valid.' },
+    { role: 'user', content: prompt },
+  ], true);
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Invalid follow up AI response format');
+  }
+
+  return JSON.parse(jsonMatch[0]);
+}
+
+export async function generateAssessmentFollowUp(input: {
+  name: string;
+  email: string;
+  company?: string;
+  channel: "result" | "proposal";
+  level: number;
+  category?: string;
+  overallScore?: number;
+  aiAnalysis?: string;
+  proposalStatus?: string;
+}) {
+  const channelContext =
+    input.channel === "result"
+      ? "follow up setelah email hasil assessment dikirim"
+      : "follow up setelah proposal penawaran dikirim";
+  const followUpIntent: Record<number, string> = {
+    1: "memastikan email sebelumnya masuk dan sudah dibaca, sekaligus membuka eksplorasi kemungkinan baru",
+    2: "soft push agar calon klien terdorong mengambil langkah diskusi berikutnya",
+    3: "hard push dengan posisi nothing to lose, membuat keputusan lanjut atau tidak lanjut menjadi jelas",
+  };
+
+  const prompt = `
+Buat email follow up B2B dari tim BinaHub.
+Jangan menyebut AI atau otomatisasi. Bahasa Indonesia profesional, hangat, ringkas, dan langsung.
+
+KONTEKS:
+Jenis follow up: ${channelContext}
+Follow up tingkat: ${input.level}
+Tujuan follow up: ${followUpIntent[input.level] || followUpIntent[1]}
+
+DATA KLIEN:
+Nama: ${input.name}
+Email: ${input.email}
+Perusahaan: ${input.company || '-'}
+Kategori assessment: ${input.category || '-'}
+Skor keseluruhan: ${input.overallScore || '-'}
+Status proposal: ${input.proposalStatus || '-'}
+Analisis ringkas: ${input.aiAnalysis || '-'}
+
+Output JSON persis:
+{
+  "subject": "<subject email spesifik>",
+  "html": "<html email sederhana dengan sapaan, isi, dan CTA untuk membalas email atau menjadwalkan diskusi>"
+}
+`;
+
+  const text = await callAI([
+    { role: 'system', content: 'Anda adalah konsultan senior BinaHub. Jawab hanya JSON valid.' },
+    { role: 'user', content: prompt },
+  ], true);
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Invalid assessment follow up AI response format');
+  }
+
+  return JSON.parse(jsonMatch[0]);
+}
+
+export async function extractLinkedInProfileFields(input: {
+  linkedinUrl: string;
+  profileText: string;
+}) {
+  const prompt = `
+Ekstrak data profil assossiate BinaHub dari teks LinkedIn/profile export berikut.
+Jangan mengarang data yang tidak ada. Jika field tidak tersedia, isi string kosong.
+
+LinkedIn URL: ${input.linkedinUrl}
+
+TEKS PROFIL:
+${input.profileText.slice(0, 12000)}
+
+Output JSON persis:
+{
+  "headline": "<headline profesional>",
+  "currentRole": "<jabatan/peran saat ini>",
+  "company": "<organisasi saat ini>",
+  "location": "<lokasi>",
+  "skills": ["<skill 1>", "<skill 2>", "<skill 3>"],
+  "certifications": ["<sertifikasi 1>"],
+  "experienceSummary": "<ringkasan pengalaman 2-4 kalimat>",
+  "recommendedCategory": "<kategori assossiate yang paling cocok>",
+  "summary": "<ringkasan siap masuk field otomatis LinkedIn>"
+}
+`;
+
+  const text = await callAI([
+    { role: 'system', content: 'Anda adalah analis profil profesional. Jawab hanya JSON valid dalam Bahasa Indonesia.' },
+    { role: 'user', content: prompt },
+  ], true);
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Invalid LinkedIn extraction response format');
+  }
+
+  return JSON.parse(jsonMatch[0]);
+}
+
 export async function chatWithAI(
   message: string, 
   history: { role: string, content: string }[], 

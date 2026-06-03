@@ -50,10 +50,10 @@ export default function PerspektifPage() {
         </div>
       </section>
 
-      <section className="pb-20">
+      <section>
         <div
           className="relative overflow-hidden bg-[#07101F] bg-cover bg-center px-6 py-14 text-white shadow-[0_22px_70px_-54px_rgba(11,44,107,0.72)] md:px-12 md:py-18 lg:px-20"
-          style={{ backgroundImage: "url('/asset/human-texture-dark-home.png')" }}
+          style={{ backgroundImage: "url('/asset/transformation-texture-bg.png')" }}
         >
           <div className="pointer-events-none absolute inset-0 bg-[#07101F]/42" />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(7,16,31,0.78)_0%,rgba(7,16,31,0.46)_48%,rgba(7,16,31,0.18)_100%)]" />
@@ -78,6 +78,12 @@ export default function PerspektifPage() {
             </Link>
           </div>
         </div>
+      </section>
+
+      <section
+        aria-hidden="true"
+        className="h-8 bg-[#F5F7FA] md:h-10"
+      >
       </section>
 
       <MethodologySection onMouseMove={handleMouse} />

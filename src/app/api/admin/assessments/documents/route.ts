@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
-import { requireAdmin } from "../../dashboard/route";
+import { requireAdmin } from "@/lib/admin-auth";
 
 type DocumentType = "result-pdf" | "proposal-pdf" | "result-email" | "proposal-email";
 

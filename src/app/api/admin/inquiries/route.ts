@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
-import { requireAdmin } from "../dashboard/route";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function PATCH(req: NextRequest) {
   const admin = await requireAdmin(req);

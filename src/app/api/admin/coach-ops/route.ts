@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
-import { requireAdmin } from "../dashboard/route";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const resources = {
   assignments: {
