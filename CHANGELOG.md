@@ -3,6 +3,74 @@
 Semua perubahan yang signifikan pada proyek ini akan didokumentasikan di file ini.
 Format yang digunakan berdasarkan [Keep a Changelog](https://keepachangelog.com/id/1.0.0/), dan proyek ini mematuhi aturan [Semantic Versioning](https://semver.org/).
 
+## [0.2.8]
+### Added
+- Menambahkan fondasi bilingual Indonesia/English berbasis Next.js App Router i18n dengan locale subpath `/id` dan `/en`.
+- Menambahkan `src/proxy.ts` untuk rewrite locale subpath tanpa memindahkan struktur route publik yang sudah ada.
+- Menambahkan dictionary layout terpusat untuk copy navbar, footer, CTA global, dan link populer.
+- Menambahkan language switcher ID/EN di area kanan navbar sebelum CTA desktop, serta versi mobile di dalam menu navigasi.
+- Menambahkan helper i18n untuk membaca locale aktif, membersihkan prefix locale, membangun link localized, dan menjaga admin/API/static asset tetap tidak dilokalisasi.
+- Menambahkan dictionary translasi konten public site untuk Home, About, Ecosystem/Layanan, Contact, Perspective, Transformation Signals, From BDN to BinaHub, Gallery, Journey, dan BinaInsight.
+- Menambahkan `PublicContentTranslator` untuk menerapkan copy English pada seluruh halaman publik, termasuk konten interaktif yang muncul setelah render seperti modal, popup, carousel, dan step assessment.
+- Menambahkan dukungan locale pada payload assessment dan chat agar bahasa aktif dari route `/id` atau `/en` mengalir sampai API.
+- Menambahkan copy native English untuk chatbot Nara, modal assessment, navigation assessment, loading assessment, guidance pertanyaan, pilihan skala, prompt AI assessment, PDF assessment, dan email hasil assessment.
+- Menambahkan copy native English untuk halaman Home, Tentang, dan Layanan/Ecosystem, termasuk hero, section sinyal perubahan, carousel positioning/vision/mission, quick diagnostic popup, daftar layanan, workflow, modal detail layanan, core values, serta copy utama halaman Tentang.
+- Menambahkan data bilingual untuk services, ecosystem products, dan core values agar card, modal, dan section lintas halaman tidak bergantung pada runtime text replacement.
+- Menambahkan copy native English untuk halaman Contact, Journey, From BDN to BinaHub, Perspektif, dan artikel Transformation Signals 2026.
+- Menambahkan data bilingual untuk timeline Journey, origin story From BDN to BinaHub, methodology Perspektif, dan seluruh 10 signal register Transformation Signals 2026.
+- Menambahkan copy native English penuh untuk step lanjutan BinaInsight, termasuk landing diagnostic, preview report, profil organisasi, instruksi, pertanyaan terbuka, loading state, modal batal, dan success state.
+- Menambahkan metadata locale-aware untuk root site, BinaInsight, not-found, error boundary, global error, dan OpenGraph image agar title, description, OG locale, canonical, serta fallback UI mengikuti mode ID/EN.
+- Menambahkan fallback error bilingual pada API assessment dan chatbot agar response validasi/server tetap konsisten dengan bahasa aktif.
+- Menambahkan SQL `supabase/v0.2.9-home-quiz-permissions.sql` untuk grant `service_role` pada tabel `home_quiz_results`.
+- Menambahkan `docs/manual-qa-checklist.md` sebagai panduan QA manual end-to-end untuk fitur publik, bilingual, quiz, contact, chatbot, assessment, admin, responsive, metadata, dan pre-deploy.
+
+### Changed
+- Membuat navbar dan footer locale-aware agar label, CTA, submenu, accordion, dan link internal mengikuti bahasa aktif.
+- Mengubah root layout agar atribut `<html lang>` mengikuti locale dari route `/id` atau `/en`.
+- Membuat internal link public yang masih hardcoded otomatis mengikuti prefix locale aktif agar user tidak keluar dari mode bahasa yang dipilih.
+- Mengubah prompt AI assessment agar menghasilkan analisis, kategori, archetype, risk projection, strategic key, dan rekomendasi dalam Bahasa Inggris saat user memakai mode EN.
+- Mengubah system prompt chatbot Nara agar menjawab dalam Bahasa Inggris saat user berada di mode EN.
+- Mengubah link CTA publik pada Home dan Tentang agar tetap mempertahankan prefix locale aktif saat user berada di mode EN.
+- Mengubah form Contact agar label, placeholder, validasi, FAQ, success state, dan response API mengikuti locale aktif.
+- Mengubah artikel Transformation Signals 2026 agar tetap Server Component tetapi membaca locale dari header rewrite `x-binahub-locale`.
+- Mengubah navigasi keluar dari flow assessment agar kembali ke home sesuai locale aktif, sehingga user mode EN tidak terlempar ke halaman ID.
+- Mengubah halaman From BDN to BinaHub agar membaca locale dari Server Component melalui header rewrite, bukan hook client, sehingga `/en/from-bdn-to-binahub` tidak masuk error boundary.
+- Mengubah endpoint Home Quick Diagnostic agar mengecek error Supabase insert secara eksplisit dan mengembalikan error nyata saat hasil quiz gagal tersimpan.
+- Mengubah popup Home Quick Diagnostic agar menampilkan pesan gagal simpan ketika API tidak berhasil menulis ke database.
+
+## [0.2.7]
+### Added
+- Menambahkan tooltip bantuan pada field penting di form Automation Center, Associate Network, dan Project Assignment agar admin memahami fungsi field, dampak data, dan risiko aksi sebelum menyimpan.
+- Menambahkan komponen form admin reusable untuk tooltip, field label, textarea, dan section form agar pola input dashboard lebih konsisten.
+
+### Changed
+- Merapikan form Automation Center menjadi alur bertahap: identitas klien, detail program, scope project, dan pilihan aksi autopilot.
+- Merapikan form Associate Network menjadi section profil dasar, status/positioning, CV & LinkedIn, serta catatan profil agar input associate lebih mudah dipindai.
+- Merapikan form Project Assignment dengan label dropdown yang lebih jelas, default open pada assignment utama, catatan multiline, dan tooltip untuk assignment, availability, sesi, evaluasi, serta dokumen.
+- Memperjelas tombol aksi form dengan title/tooltip native untuk save, generate assignment, kirim invitation, simpan assignment, simpan availability, simpan sesi, dan simpan dokumen.
+- Memecah `src/app/admin/page.tsx` menjadi shell dashboard dan modul panel terpisah: `smart-center-panel`, `assessment-panel`, dan `associate-panel` agar dashboard admin lebih sistematis dan mudah dirawat.
+- Memperbarui quality gate admin agar lint mencakup modul panel admin yang baru dipisahkan.
+- Merapikan route publik besar agar `page.tsx` menjadi wrapper tipis dan konten utama dipindah ke route-private `_components` pada About, Ecosystem/Layanan, Contact, dan Transformation Signals 2026.
+- Memecah preview visual BinaInsight dari `landing-step.tsx` ke `landing-preview.tsx` agar step flow dan visual report preview memiliki scope terpisah.
+- Memindahkan implementasi `Navbar` dan `Footer` ke `src/components/layout` dengan wrapper compatibility lama tetap tersedia.
+- Menambahkan quality gate publik `npm run quality:public` dan quality gate gabungan `npm run quality:repo`.
+
+### Documentation
+- Menambahkan `docs/repository-architecture.md` sebagai panduan struktur repo, boundary routing, pola route-private `_components`, ownership folder admin, layout global, dan aturan maintenance.
+
+## [0.2.6]
+### Added
+- Menambahkan fondasi Smart Data Center admin untuk project, project role, project assignment, smart action, automation event, komunikasi, dan generated document melalui `supabase/v0.2.6-smart-data-center.sql`.
+- Menambahkan tab `Smart Center` di dashboard admin sebagai pusat project autopilot, smart action, project pipeline, dan assignment otomatis.
+- Menambahkan AI Project Autopilot untuk membuat rencana project, kebutuhan role assossiate, rekomendasi matching assossiate, draft invitation, dan dokumen ajakan kerja sama.
+- Menambahkan endpoint admin `/api/admin/projects`, `/api/admin/project-autopilot`, dan `/api/admin/smart-actions` untuk menjalankan otomasi project dan assignment.
+- Menambahkan pengiriman email invitation assossiate otomatis beserta pencatatan komunikasi dan dokumen yang digenerate.
+
+### Changed
+- Mengembangkan konsep `Project Assignment` agar tidak hanya menjadi input manual, tetapi dapat dibentuk otomatis ketika project dibuat.
+- Menghubungkan data dashboard admin dengan project autopilot, smart actions, dan assignment AI agar admin dapat memantau tindakan otomatis dalam satu tempat.
+- Memodernisasi form dashboard admin dengan placeholder contoh, pilihan siap pakai, quick note presets, input tanggal/jam, dan dropdown operasional agar Assessment, Kontak, Inquiries, Assossiate, serta Project Assignment lebih mudah dioperasikan tanpa menurunkan fitur.
+
 ## [0.2.5]
 ### Added
 - Menambahkan popup quiz Home pada area pain point dengan trigger 5 detik atau setelah user melewati section pain point.

@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { localizePath } from "@/i18n/config";
+import { useLocale } from "@/i18n/use-locale";
 
 const HUMAN_VALUES = [
   { letter: "H", rest: "umanity", word: "Humanity" },
@@ -14,6 +16,18 @@ const HUMAN_VALUES = [
 ];
 
 export function HumanCoreValuesSection() {
+  const locale = useLocale();
+  const copy = locale === "en"
+    ? {
+        eyebrow: "Core Values",
+        intro: "Five principles that keep transformation human, ethical, impactful, growth-oriented, and meaningful.",
+        detail: "Value Details",
+      }
+    : {
+        eyebrow: "Nilai Utama",
+        intro: "Lima prinsip yang menjaga transformasi tetap manusiawi, berintegritas, berdampak, bertumbuh, dan bermakna.",
+        detail: "Detail Nilai",
+      };
   const sectionRef = useRef<HTMLElement>(null);
   const [stage, setStage] = useState(0);
 
@@ -84,7 +98,7 @@ export function HumanCoreValuesSection() {
           <div className="relative z-10 mx-auto flex w-full max-w-[1720px] flex-col gap-7">
             <div className="flex items-center justify-between gap-4">
               <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D9A441]">
-                Nilai Utama
+                {copy.eyebrow}
               </p>
             </div>
 
@@ -98,7 +112,7 @@ export function HumanCoreValuesSection() {
                     isFinal ? "text-white/62" : "text-[#0B2C6B]/72"
                   }`}
                 >
-                  Lima prinsip yang menjaga transformasi tetap manusiawi, berintegritas, berdampak, bertumbuh, dan bermakna.
+                  {copy.intro}
                 </p>
               </motion.div>
 
@@ -157,14 +171,14 @@ export function HumanCoreValuesSection() {
             className="pointer-events-none absolute inset-y-0 right-5 z-20 hidden items-center md:flex lg:right-12"
           >
             <Link
-              href="/about#nilai"
+              href={localizePath("/about#nilai", locale)}
               className={`pointer-events-auto inline-flex h-11 shrink-0 items-center justify-center rounded-full px-5 text-[10px] font-bold uppercase tracking-[0.16em] transition-all duration-500 ${
                 isFinal
                   ? "bg-[#D9A441] text-[#071A33] hover:bg-white"
                   : "bg-[#0B2C6B] text-white"
               }`}
             >
-              Detail Nilai
+              {copy.detail}
             </Link>
           </motion.div>
 
@@ -174,10 +188,10 @@ export function HumanCoreValuesSection() {
             className="absolute inset-x-5 bottom-5 z-20 md:hidden"
           >
             <Link
-              href="/about#nilai"
+              href={localizePath("/about#nilai", locale)}
               className="inline-flex h-11 w-full items-center justify-center rounded-full bg-[#D9A441] px-5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#071A33]"
             >
-              Detail Nilai
+              {copy.detail}
             </Link>
           </motion.div>
         </div>

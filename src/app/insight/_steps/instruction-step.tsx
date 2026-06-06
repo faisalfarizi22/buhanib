@@ -1,13 +1,31 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useLocale } from "@/i18n/use-locale";
 
 const SCALE_ITEMS = [
-  { val: 1, label: "SANGAT TIDAK SETUJU", color: "text-[#EF4444]", bg: "bg-[#FEF2F2]", border: "border-[#FEE2E2]" },
-  { val: 2, label: "TIDAK SETUJU", color: "text-[#F59E0B]", bg: "bg-[#FFFBEB]", border: "border-[#FEF3C7]" },
-  { val: 3, label: "NETRAL / 50:50", color: "text-[#64748B]", bg: "bg-[#F8FAFC]", border: "border-[#F1F5F9]" },
-  { val: 4, label: "SETUJU", color: "text-[#3B82F6]", bg: "bg-[#EFF6FF]", border: "border-[#DBEAFE]" },
-  { val: 5, label: "SANGAT SETUJU", color: "text-[#10B981]", bg: "bg-[#ECFDF5]", border: "border-[#D1FAE5]" },
+  { val: 1, id: "SANGAT TIDAK SETUJU", en: "STRONGLY DISAGREE", color: "text-[#EF4444]", bg: "bg-[#FEF2F2]", border: "border-[#FEE2E2]" },
+  { val: 2, id: "TIDAK SETUJU", en: "DISAGREE", color: "text-[#F59E0B]", bg: "bg-[#FFFBEB]", border: "border-[#FEF3C7]" },
+  { val: 3, id: "NETRAL / 50:50", en: "NEUTRAL / 50:50", color: "text-[#64748B]", bg: "bg-[#F8FAFC]", border: "border-[#F1F5F9]" },
+  { val: 4, id: "SETUJU", en: "AGREE", color: "text-[#3B82F6]", bg: "bg-[#EFF6FF]", border: "border-[#DBEAFE]" },
+  { val: 5, id: "SANGAT SETUJU", en: "STRONGLY AGREE", color: "text-[#10B981]", bg: "bg-[#ECFDF5]", border: "border-[#D1FAE5]" },
 ];
+
+const COPY = {
+  id: {
+    title: "Instruksi Pengisian",
+    body: "Berikan penilaian sesuai kondisi di tempat kerja Anda saat ini.",
+    bodyStrong: "Kejujuran Anda sangat krusial bagi akurasi laporan.",
+    back: "Kembali",
+    start: "Saya Mengerti, Mulai",
+  },
+  en: {
+    title: "Assessment Instructions",
+    body: "Rate each statement based on your current workplace reality.",
+    bodyStrong: "Your honesty is essential for report accuracy.",
+    back: "Back",
+    start: "I Understand, Start",
+  },
+};
 
 interface InstructionStepProps {
   onNext: () => void;
@@ -15,6 +33,9 @@ interface InstructionStepProps {
 }
 
 export function InstructionStep({ onNext, onPrev }: InstructionStepProps) {
+  const locale = useLocale();
+  const copy = COPY[locale];
+
   return (
     <motion.div
       key="instruction"
@@ -24,10 +45,10 @@ export function InstructionStep({ onNext, onPrev }: InstructionStepProps) {
       className="w-full max-w-4xl px-6 py-12 flex flex-col items-center"
     >
       <div className="mb-12 text-center">
-        <h2 className="text-3xl md:text-5xl font-light text-[#0B2C6B] mb-4">Instruksi Pengisian</h2>
+        <h2 className="text-3xl md:text-5xl font-light text-[#0B2C6B] mb-4">{copy.title}</h2>
         <p className="text-black/40 text-sm font-medium tracking-wide max-w-xl mx-auto leading-relaxed">
-          Berikan penilaian sesuai kondisi di tempat kerja Anda saat ini. <br />
-          Kejujuran Anda sangat krusial bagi akurasi laporan.
+          {copy.body} <br />
+          {copy.bodyStrong}
         </p>
       </div>
 
@@ -42,7 +63,7 @@ export function InstructionStep({ onNext, onPrev }: InstructionStepProps) {
                 {item.val}
               </div>
               <div className={`text-[11px] font-medium uppercase tracking-[0.15em] ${item.color}`}>
-                {item.label}
+                {item[locale]}
               </div>
             </div>
           ))}
@@ -54,13 +75,13 @@ export function InstructionStep({ onNext, onPrev }: InstructionStepProps) {
           onClick={onPrev} 
           className="px-8 h-14 border border-black/10 rounded-xl text-[11px] font-bold tracking-widest text-black/50 hover:bg-black/5 transition-all uppercase flex items-center gap-2"
         >
-          <ArrowLeft size={14} /> Kembali
+          <ArrowLeft size={14} /> {copy.back}
         </button>
         <button 
           onClick={onNext} 
           className="flex-1 h-14 bg-[#0B2C6B] text-white rounded-xl text-[11px] font-bold tracking-widest hover:bg-black transition-all flex items-center justify-center gap-3 uppercase shadow-lg shadow-black/10"
         >
-          Saya Mengerti, Mulai <ArrowRight size={16} />
+          {copy.start} <ArrowRight size={16} />
         </button>
       </div>
     </motion.div>

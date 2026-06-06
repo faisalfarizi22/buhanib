@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { adminError, parseValidatedBody } from "@/lib/admin-api";
 import { createServerSupabase } from "@/lib/supabase";
 import { generateAssessmentFollowUp, generateInquiryFollowUp } from "@/lib/ai-service";
 import { sendOutreachEmail } from "@/lib/email-service";
@@ -48,6 +50,17 @@ const RESULT_STOP_PROPOSAL_STATUSES = new Set([
 ]);
 
 const PROPOSAL_STOP_STATUSES = new Set(["Revisi", "Lanjut Diskusi", "Deal", "Lost", "Closed"]);
+
+const followUpBodySchema = z
+  .object({
+    inquiryId: z.string().trim().optional().default(""),
+    assessmentId: z.string().trim().optional().default(""),
+    channel: z.enum(["result", "proposal"]).optional(),
+    level: z.union([z.literal(1), z.literal(2), z.literal(3), z.string()]).optional().default(1),
+  })
+  .refine((value) => Boolean(value.inquiryId || value.assessmentId), {
+    message: "Target follow up tidak valid.",
+  });
 
 type InquiryForFollowUp = {
   id?: string;
@@ -320,10 +333,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: admin.error }, { status: admin.status });
   }
 
-  const body = await req.json();
+  const parsed = await parseValidatedBody(req, followUpBodySchema);
+  if (parsed.error || !parsed.data) {
+    return adminError(parsed.error, 400, "INVALID_FOLLOW_UP_PAYLOAD");
+  }
+
+  const body = parsed.data;
   const level = normalizeLevel(body.level || 1);
   if (!level) {
-    return NextResponse.json({ success: false, error: "Level follow up tidak valid." }, { status: 400 });
+    return adminError("Level follow up tidak valid.", 400, "INVALID_FOLLOW_UP_LEVEL");
   }
 
   const db = createServerSupabase();
@@ -336,6 +354,13 @@ export async function POST(req: NextRequest) {
     if (error || !inquiry) {
       return NextResponse.json({ success: false, error: error?.message || "Inquiry tidak ditemukan." }, { status: 404 });
     }
+    if (Number(inquiry.follow_up_level || 0) >= level) {
+      return adminError(
+        `Inquiry ini sudah mencapai follow up level ${inquiry.follow_up_level}.`,
+        409,
+        "FOLLOW_UP_ALREADY_SENT"
+      );
+    }
 
     const result = await sendFollowUpForInquiry(db, inquiry, level, admin.email);
     return NextResponse.json({ success: true, target: "inquiry", level, ...result });
@@ -345,6 +370,14 @@ export async function POST(req: NextRequest) {
     const { assessment, error } = await loadAssessment(db, assessmentId);
     if (error || !assessment) {
       return NextResponse.json({ success: false, error: error?.message || "Assessment tidak ditemukan." }, { status: 404 });
+    }
+    const currentLevel = channel === "result" ? assessment.result_follow_up_level : assessment.proposal_follow_up_level;
+    if (Number(currentLevel || 0) >= level) {
+      return adminError(
+        `Assessment ini sudah mencapai follow up ${channel} level ${currentLevel}.`,
+        409,
+        "FOLLOW_UP_ALREADY_SENT"
+      );
     }
 
     const result = await sendFollowUpForAssessment(db, assessment, channel, level, admin.email);

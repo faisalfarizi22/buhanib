@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Building2, User, Mail, Briefcase, Phone, Users, ChevronDown, Check } from "lucide-react";
 import { FormData } from "../_types";
+import { useLocale } from "@/i18n/use-locale";
 
 interface LeadCaptureStepProps {
   formData: FormData;
@@ -11,14 +12,79 @@ interface LeadCaptureStepProps {
 }
 
 const EMPLOYEE_OPTIONS = [
-  { value: "< 5", label: "< 5 Karyawan" },
-  { value: "5 - 19", label: "5 - 19 Karyawan" },
-  { value: "20 - 99", label: "20 - 99 Karyawan" },
-  { value: "100 - 499", label: "100 - 499 Karyawan" },
-  { value: "500+", label: "500+ Karyawan" },
+  { value: "< 5", id: "< 5 Karyawan", en: "< 5 Employees" },
+  { value: "5 - 19", id: "5 - 19 Karyawan", en: "5 - 19 Employees" },
+  { value: "20 - 99", id: "20 - 99 Karyawan", en: "20 - 99 Employees" },
+  { value: "100 - 499", id: "100 - 499 Karyawan", en: "100 - 499 Employees" },
+  { value: "500+", id: "500+ Karyawan", en: "500+ Employees" },
 ];
 
+const COPY = {
+  id: {
+    title: "Profil Organisasi",
+    subtitle: "Berikan informasi dasar untuk personalisasi laporan diagnostik tim Anda.",
+    contextTitle: "Data awal membantu laporan membaca konteks organisasi Anda.",
+    contextBody:
+      "Informasi ini digunakan untuk menyesuaikan analisis, bukan untuk membuat proses terasa administratif.",
+    badges: [
+      ["5-7 menit", "Estimasi pengisian"],
+      ["49 indikator", "Membaca 7 dimensi"],
+      ["Privat", "Dikirim ke Email & WhatsApp"],
+    ],
+    fields: {
+      name: "Nama Lengkap *",
+      role: "Jabatan *",
+      company: "Nama Perusahaan *",
+      employees: "Jumlah Karyawan *",
+      email: "Email Profesional *",
+      whatsapp: "WhatsApp Aktif *",
+    },
+    placeholders: {
+      name: "Contoh: Budi Santoso",
+      role: "Contoh: CEO / HR Director",
+      company: "Nama PT / Instansi",
+      employees: "Pilih skala perusahaan...",
+      email: "email@perusahaan.com",
+      whatsapp: "0812xxxx",
+    },
+    back: "Kembali",
+    next: "Lanjut ke Instruksi",
+  },
+  en: {
+    title: "Organization Profile",
+    subtitle: "Share basic information so we can personalize your team diagnostic report.",
+    contextTitle: "Initial data helps the report read your organizational context.",
+    contextBody:
+      "This information is used to tailor the analysis, not to make the process feel administrative.",
+    badges: [
+      ["5-7 minutes", "Estimated completion"],
+      ["49 indicators", "Across 7 dimensions"],
+      ["Private", "Sent to Email & WhatsApp"],
+    ],
+    fields: {
+      name: "Full Name *",
+      role: "Role *",
+      company: "Company Name *",
+      employees: "Number of Employees *",
+      email: "Professional Email *",
+      whatsapp: "Active WhatsApp *",
+    },
+    placeholders: {
+      name: "Example: Sarah Johnson",
+      role: "Example: CEO / HR Director",
+      company: "Company / Institution name",
+      employees: "Select company scale...",
+      email: "name@company.com",
+      whatsapp: "+62 812xxxx",
+    },
+    back: "Back",
+    next: "Continue to Instructions",
+  },
+};
+
 export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCaptureStepProps) {
+  const locale = useLocale();
+  const copy = COPY[locale];
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const inputClass =
@@ -35,9 +101,9 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
       className="w-full max-w-6xl px-6 py-12 flex flex-col items-center"
     >
       <div className="mb-12 text-center">
-        <h2 className="text-3xl md:text-5xl font-light text-[#0B2C6B] mb-4">Profil Organisasi</h2>
+        <h2 className="text-3xl md:text-5xl font-light text-[#0B2C6B] mb-4">{copy.title}</h2>
         <p className="text-black/40 text-sm font-medium tracking-wide">
-          Berikan informasi dasar untuk personalisasi laporan diagnostik tim Anda.
+          {copy.subtitle}
         </p>
       </div>
 
@@ -49,18 +115,14 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#D9A441]">Diagnostic Context</p>
               <h3 className="mt-5 text-3xl font-light leading-tight">
-                Data awal membantu laporan membaca konteks organisasi Anda.
+                {copy.contextTitle}
               </h3>
               <p className="mt-5 text-sm font-light leading-relaxed text-white/58">
-                Informasi ini digunakan untuk menyesuaikan analisis, bukan untuk membuat proses terasa administratif.
+                {copy.contextBody}
               </p>
             </div>
             <div className="grid gap-3">
-              {[
-                ["5-7 menit", "Estimasi pengisian"],
-                ["49 indikator", "Membaca 7 dimensi"],
-                ["Privat", "Dikirim ke Email & WhatsApp"],
-              ].map(([value, label]) => (
+              {copy.badges.map(([value, label]) => (
                 <div key={value} className="rounded-[12px] border border-white/10 bg-white/[0.075] px-5 py-4">
                   <p className="text-sm font-bold text-white">{value}</p>
                   <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white/36">{label}</p>
@@ -77,12 +139,12 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8 md:mb-12">
           <div className="space-y-1">
             <label className={labelClass}>
-              <User size={14} className="text-[#D9A441]" /> Nama Lengkap *
+              <User size={14} className="text-[#D9A441]" /> {copy.fields.name}
             </label>
             <input
               required
               type="text"
-              placeholder="Contoh: Budi Santoso"
+              placeholder={copy.placeholders.name}
               value={formData.name}
               onChange={(e) => onChange({ name: e.target.value })}
               className={inputClass}
@@ -90,12 +152,12 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
           </div>
           <div className="space-y-1">
             <label className={labelClass}>
-              <Briefcase size={14} className="text-[#D9A441]" /> Jabatan *
+              <Briefcase size={14} className="text-[#D9A441]" /> {copy.fields.role}
             </label>
             <input
               required
               type="text"
-              placeholder="Contoh: CEO / HR Director"
+              placeholder={copy.placeholders.role}
               value={formData.role}
               onChange={(e) => onChange({ role: e.target.value })}
               className={inputClass}
@@ -104,12 +166,12 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
 
           <div className="space-y-1">
             <label className={labelClass}>
-              <Building2 size={14} className="text-[#D9A441]" /> Nama Perusahaan *
+              <Building2 size={14} className="text-[#D9A441]" /> {copy.fields.company}
             </label>
             <input
               required
               type="text"
-              placeholder="Nama PT / Instansi"
+              placeholder={copy.placeholders.company}
               value={formData.company}
               onChange={(e) => onChange({ company: e.target.value })}
               className={inputClass}
@@ -117,7 +179,7 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
           </div>
           <div className="space-y-1">
             <label className={labelClass}>
-              <Users size={14} className="text-[#D9A441]" /> Jumlah Karyawan *
+              <Users size={14} className="text-[#D9A441]" /> {copy.fields.employees}
             </label>
             <div className="relative">
               <div 
@@ -125,7 +187,7 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
                 className={`${inputClass} cursor-pointer flex items-center justify-between group hover:border-black/30`}
               >
                 <span className={formData.employees ? "text-black" : "text-black/20"}>
-                  {formData.employees ? EMPLOYEE_OPTIONS.find(o => o.value === formData.employees)?.label : "Pilih skala perusahaan..."}
+                  {formData.employees ? EMPLOYEE_OPTIONS.find(o => o.value === formData.employees)?.[locale] : copy.placeholders.employees}
                 </span>
                 <ChevronDown size={16} className={`transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""} text-black/20 group-hover:text-black/40`} />
               </div>
@@ -156,7 +218,7 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
                                   : "hover:bg-black/[0.03] text-black/60 hover:text-black"
                               }`}
                             >
-                              <span className="text-sm font-medium">{opt.label}</span>
+                              <span className="text-sm font-medium">{opt[locale]}</span>
                               {isSelected && <Check size={14} className="text-white" />}
                             </div>
                           );
@@ -171,12 +233,12 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
 
           <div className="space-y-1">
             <label className={labelClass}>
-              <Mail size={14} className="text-[#D9A441]" /> Email Profesional *
+              <Mail size={14} className="text-[#D9A441]" /> {copy.fields.email}
             </label>
             <input
               required
               type="email"
-              placeholder="email@perusahaan.com"
+              placeholder={copy.placeholders.email}
               value={formData.email}
               onChange={(e) => onChange({ email: e.target.value })}
               className={inputClass}
@@ -184,12 +246,12 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
           </div>
           <div className="space-y-1">
             <label className={labelClass}>
-              <Phone size={14} className="text-[#D9A441]" /> WhatsApp Aktif *
+              <Phone size={14} className="text-[#D9A441]" /> {copy.fields.whatsapp}
             </label>
             <input
               required
               type="tel"
-              placeholder="0812xxxx"
+              placeholder={copy.placeholders.whatsapp}
               value={formData.whatsapp}
               onChange={(e) => onChange({ whatsapp: e.target.value })}
               className={inputClass}
@@ -203,13 +265,13 @@ export function LeadCaptureStep({ formData, onChange, onNext, onPrev }: LeadCapt
             onClick={onPrev}
             className="px-8 h-14 border border-black/10 rounded-xl text-[11px] font-medium tracking-widest text-black/40 hover:bg-black/5 transition-all uppercase flex items-center gap-2"
           >
-            <ArrowLeft size={14} /> Kembali
+            <ArrowLeft size={14} /> {copy.back}
           </button>
           <button
             type="submit"
             className="flex-1 h-14 bg-[#0B2C6B] text-white rounded-xl text-[11px] font-medium tracking-widest hover:bg-black transition-all flex items-center justify-center gap-3 uppercase shadow-lg shadow-black/10"
           >
-            Lanjut ke Instruksi <ArrowRight size={16} />
+            {copy.next} <ArrowRight size={16} />
           </button>
         </div>
         </form>

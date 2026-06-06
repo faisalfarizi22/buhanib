@@ -15,7 +15,6 @@ export function Counter({ end, suffix = "", trigger = true }: CounterProps) {
 
   useEffect(() => {
     if (!inView || !trigger) {
-      if (!trigger) setCount(0);
       return;
     }
 
@@ -40,7 +39,7 @@ export function Counter({ end, suffix = "", trigger = true }: CounterProps) {
 
   return (
     <span ref={ref} className="tabular-nums">
-      {count.toLocaleString()}
+      {(trigger ? count : 0).toLocaleString()}
       {suffix}
     </span>
   );

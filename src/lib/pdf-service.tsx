@@ -1,6 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font, Svg, Polygon, Circle, Image } from '@react-pdf/renderer';
 import { AssessmentData, DIMENSIONS } from './validations';
+import type { Locale } from '@/i18n/config';
 
 Font.register({
   family: 'Inter',
@@ -64,12 +65,136 @@ const MATURITY_LEVELS = [
   { label: 'Unggul', min: 90, max: 100 },
 ];
 
-function getMaturityLevel(score: number) {
-  return MATURITY_LEVELS.find((level) => score >= level.min && score <= level.max) || MATURITY_LEVELS[0];
+const MATURITY_LEVELS_EN = [
+  { label: 'Starter', min: 0, max: 39 },
+  { label: 'Developing', min: 40, max: 59 },
+  { label: 'Professional', min: 60, max: 74 },
+  { label: 'Advanced', min: 75, max: 89 },
+  { label: 'Leading', min: 90, max: 100 },
+];
+
+function getPdfCopy(locale: Locale = 'id') {
+  return locale === 'en'
+    ? {
+        localeDate: 'en-US',
+        documentTitle: 'Diagnostic Report',
+        compactSubtitle: 'Cross-dimensional reasoning Â· 7-dimension score distribution',
+        fiscalYear: 'FISCAL YEAR',
+        preparedFor: 'PREPARED FOR',
+        company: 'COMPANY',
+        issueDate: 'ISSUE DATE',
+        overallScore: 'Overall Index Score',
+        stage: 'Stage',
+        totalDimensions: 'Total Dimensions',
+        coreCriteria: 'Core Criteria',
+        teamScale: 'Team Scale',
+        organizationScale: 'Organization Scale',
+        classification: 'Classification',
+        confidential: 'Confidential',
+        highPriority: 'High Priority',
+        orgProfile: 'Organization Profile',
+        strategicBuilder: 'Strategic Builder',
+        maturityLadder: 'Organization Maturity Ladder',
+        orgPrefix: 'Organization',
+        nextEvolution: 'Next Evolution',
+        gapToNext: 'Gap to Next Stage',
+        currentStage: 'Current Stage',
+        mainStrength: 'Main Strength',
+        mainBottleneck: 'Main Bottleneck',
+        strengthText: 'Strongest dimension based on assessment score distribution.',
+        bottleneckText: 'Priority area that most determines the next acceleration.',
+        executiveSummary: 'Executive Summary & Strategic Analysis',
+        mapTitle: 'Diagnostic Intelligence Map',
+        mapSectionTitle: 'Performance Map & 7-Dimension Organizational Analysis',
+        mapSectionSubtitle: 'Score distribution visualization and operational efficiency comparison',
+        balanceDistribution: 'Balance Distribution',
+        scoreBoard: 'Performance Scoreboard',
+        diagnosticReasoning: 'Diagnostic Reasoning',
+        riskProjection: '12-18 Month Risk Projection',
+        strategicOverview: 'Strategic Diagnostic Overview',
+        strategicOverviewSubtitle: 'Main priorities Â· 90-day action focus',
+        priorityActions: 'Priority Action Recommendations',
+        priorityActionsSubtitle: 'Top three priorities based on the BinaHub 7-dimension diagnostic result',
+        strategy: 'STRATEGY',
+        consultantKey: 'Strategic Key from the Consulting Team',
+        roadmapTitle: 'Transformation Roadmap',
+        roadmapSubtitle: 'Follow-up roadmap Â· next consultation steps',
+        roadmapSection: 'Follow-up Roadmap & Next Steps',
+        roadmapSectionSubtitle: 'Supporting recommendations to strengthen implementation rhythm after the main priorities begin',
+        nextSteps: 'Next Steps',
+        nextStepsText: 'Discuss this result with the BinaHub team to translate diagnostic priorities into an implementation roadmap that fits your organization context.',
+        footer: 'Â© 2025 BinaHub Â· Strategic Transformation Division Â· Confidential Document',
+        page: 'Page',
+        of: 'of',
+        reportHeaderLabel: 'Performance Diagnostic Report',
+        reportHeaderTitle: 'Human Synergy &',
+        reportHeaderSubtitle: 'Strategic Maturity Diagnostic',
+        maturityLevels: MATURITY_LEVELS_EN,
+      }
+    : {
+        localeDate: 'id-ID',
+        documentTitle: 'Laporan Diagnostik',
+        compactSubtitle: 'Penalaran lintas dimensi Â· distribusi skor 7 dimensi',
+        fiscalYear: 'TAHUN FISKAL',
+        preparedFor: 'DISUSUN UNTUK',
+        company: 'PERUSAHAAN',
+        issueDate: 'TANGGAL ISU',
+        overallScore: 'Skor Indeks Keseluruhan',
+        stage: 'Tahap',
+        totalDimensions: 'Total Dimensi',
+        coreCriteria: 'Kriteria Inti',
+        teamScale: 'Skala Tim',
+        organizationScale: 'Skala Organisasi',
+        classification: 'Klasifikasi',
+        confidential: 'Rahasia',
+        highPriority: 'Prioritas Tinggi',
+        orgProfile: 'Profil Organisasi',
+        strategicBuilder: 'Pembangun Strategis',
+        maturityLadder: 'Tangga Kematangan Organisasi',
+        orgPrefix: 'Organisasi',
+        nextEvolution: 'Evolusi Berikutnya',
+        gapToNext: 'Gap ke Tahap Berikutnya',
+        currentStage: 'Tahap Saat Ini',
+        mainStrength: 'Kekuatan Utama',
+        mainBottleneck: 'Hambatan Utama',
+        strengthText: 'Dimensi terkuat berdasarkan distribusi skor assessment.',
+        bottleneckText: 'Area prioritas yang paling menentukan akselerasi berikutnya.',
+        executiveSummary: 'Ringkasan Eksekutif & Analisis Strategis',
+        mapTitle: 'Peta Intelijen Diagnostik',
+        mapSectionTitle: 'Peta Kinerja & Analisis 7 Dimensi Organisasi',
+        mapSectionSubtitle: 'Visualisasi distribusi skor dan perbandingan efisiensi operasional',
+        balanceDistribution: 'Distribusi Keseimbangan',
+        scoreBoard: 'Papan Skor Performa',
+        diagnosticReasoning: 'Penalaran Diagnostik',
+        riskProjection: 'Proyeksi Risiko 12-18 Bulan',
+        strategicOverview: 'Ikhtisar Strategis Diagnostik',
+        strategicOverviewSubtitle: 'Prioritas utama Â· fokus aksi 90 hari',
+        priorityActions: 'Rekomendasi Tindakan Prioritas',
+        priorityActionsSubtitle: 'Tiga prioritas awal berdasarkan hasil diagnostik 7 dimensi BinaHub',
+        strategy: 'STRATEGI',
+        consultantKey: 'Kunci Strategis dari Tim Konsultan',
+        roadmapTitle: 'Roadmap Transformasi',
+        roadmapSubtitle: 'Roadmap lanjutan Â· langkah konsultasi berikutnya',
+        roadmapSection: 'Roadmap Lanjutan & Langkah Berikutnya',
+        roadmapSectionSubtitle: 'Rekomendasi pendukung untuk memperkuat ritme implementasi setelah prioritas utama berjalan',
+        nextSteps: 'Langkah Berikutnya',
+        nextStepsText: 'Diskusikan hasil ini bersama tim BinaHub untuk menerjemahkan prioritas diagnostik menjadi roadmap implementasi yang relevan dengan konteks organisasi Anda.',
+        footer: 'Â© 2025 BinaHub Â· Divisi Transformasi Strategis Â· Dokumen Rahasia',
+        page: 'Halaman',
+        of: 'dari',
+        reportHeaderLabel: 'Laporan Diagnostik Performa',
+        reportHeaderTitle: 'Human Synergy &',
+        reportHeaderSubtitle: 'Diagnostik Kematangan Strategis',
+        maturityLevels: MATURITY_LEVELS,
+      }
 }
 
-function getNextMaturityLevel(score: number) {
-  return MATURITY_LEVELS.find((level) => score < level.min) || null;
+function getMaturityLevel(score: number, levels = MATURITY_LEVELS) {
+  return levels.find((level) => score >= level.min && score <= level.max) || levels[0];
+}
+
+function getNextMaturityLevel(score: number, levels = MATURITY_LEVELS) {
+  return levels.find((level) => score < level.min) || null;
 }
 
 const styles = StyleSheet.create({
@@ -160,11 +285,11 @@ function CompactHeader({ title, subtitle }: { title: string; subtitle: string })
   );
 }
 
-function Footer({ page }: { page: number }) {
+function Footer({ page, copy }: { page: number; copy: ReturnType<typeof getPdfCopy> }) {
   return (
     <View style={styles.footer}>
-      <Text style={styles.footerText}>© 2025 BinaHub · Divisi Transformasi Strategis · Dokumen Rahasia</Text>
-      <Text style={styles.footerPage}>Halaman {page} dari 4</Text>
+      <Text style={styles.footerText}>{copy.footer}</Text>
+      <Text style={styles.footerPage}>{copy.page} {page} {copy.of} 4</Text>
     </View>
   );
 }
@@ -176,7 +301,8 @@ function compactText(text = '', maxLength = 280) {
   return `${trimmed.slice(0, lastSpace > 180 ? lastSpace : maxLength).trim()}...`;
 }
 
-const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentData; result: AssessmentResult; logoPath?: string }) => {
+const AssessmentPDF = ({ formData, result, logoPath, locale = 'id' }: { formData: AssessmentData; result: AssessmentResult; logoPath?: string; locale?: Locale }) => {
+  const copy = getPdfCopy(locale);
   const scores = result.scores;
   const sortedDimensions = [...DIMENSIONS].sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
   const topDimension = sortedDimensions[0];
@@ -189,23 +315,33 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
     return { x: 65 + r * Math.cos(angle), y: 65 + r * Math.sin(angle) };
   }).map((p) => `${p.x},${p.y}`).join(' ');
 
-  const date = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  const date = new Date().toLocaleDateString(copy.localeDate, { day: 'numeric', month: 'long', year: 'numeric' });
   const logoSrc = logoPath || 'https://buhanib.vercel.app/full-logo.png';
-  const maturityLevel = getMaturityLevel(scores.overall);
-  const nextMaturityLevel = getNextMaturityLevel(scores.overall);
+  const maturityLevel = getMaturityLevel(scores.overall, copy.maturityLevels);
+  const nextMaturityLevel = getNextMaturityLevel(scores.overall, copy.maturityLevels);
   const gapToNext = nextMaturityLevel ? Math.max(0, nextMaturityLevel.min - scores.overall) : 0;
-  const scoreInterpretation = result.scoreInterpretation || `Skor ${scores.overall} menempatkan ${formData.company} pada kategori ${result.category}, dengan kekuatan relatif pada ${topDimension} dan prioritas penguatan pada ${lowestDimension}.`;
-  const strategicKey = result.strategicKey || `Dalam 90 hari ke depan, fokus utama adalah memperkuat dimensi ${lowestDimension} agar kapasitas organisasi lebih terhubung dengan ritme eksekusi harian.`;
-  const riskProjection = result.riskProjection || `Jika dimensi ${lowestDimension} tidak diperkuat, organisasi berisiko mengalami perlambatan eksekusi saat tuntutan pertumbuhan meningkat.`;
+  const scoreInterpretation = result.scoreInterpretation || (locale === 'en'
+    ? `A score of ${scores.overall} places ${formData.company} in the ${result.category} category, with relative strength in ${topDimension} and a strengthening priority in ${lowestDimension}.`
+    : `Skor ${scores.overall} menempatkan ${formData.company} pada kategori ${result.category}, dengan kekuatan relatif pada ${topDimension} dan prioritas penguatan pada ${lowestDimension}.`);
+  const strategicKey = result.strategicKey || (locale === 'en'
+    ? `Over the next 90 days, the main focus is strengthening ${lowestDimension} so organizational capability is better connected to daily execution rhythm.`
+    : `Dalam 90 hari ke depan, fokus utama adalah memperkuat dimensi ${lowestDimension} agar kapasitas organisasi lebih terhubung dengan ritme eksekusi harian.`);
+  const riskProjection = result.riskProjection || (locale === 'en'
+    ? `If ${lowestDimension} is not strengthened, the organization risks slower execution as growth demands increase.`
+    : `Jika dimensi ${lowestDimension} tidak diperkuat, organisasi berisiko mengalami perlambatan eksekusi saat tuntutan pertumbuhan meningkat.`);
   const primaryRecommendations = result.recommendations.slice(0, 3);
   const secondaryRecommendations = result.recommendations.slice(3);
   const crossInsights = result.crossDimensionalInsights?.length ? result.crossDimensionalInsights : [
-    `Dimensi ${topDimension} menjadi kekuatan relatif, sementara ${lowestDimension} menjadi area prioritas yang perlu ditangani.`,
-    `Perbedaan skor antardimensi menunjukkan perlunya menghubungkan potensi strategis dengan disiplin implementasi yang lebih konsisten.`,
+    locale === 'en'
+      ? `${topDimension} is a relative strength, while ${lowestDimension} is the priority area to address.`
+      : `Dimensi ${topDimension} menjadi kekuatan relatif, sementara ${lowestDimension} menjadi area prioritas yang perlu ditangani.`,
+    locale === 'en'
+      ? `The gap across dimensions shows the need to connect strategic potential with more consistent implementation discipline.`
+      : `Perbedaan skor antardimensi menunjukkan perlunya menghubungkan potensi strategis dengan disiplin implementasi yang lebih konsisten.`,
   ];
 
   return (
-    <Document title={`Laporan Diagnostik - ${formData.company}`}>
+    <Document title={`${copy.documentTitle} - ${formData.company}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <Svg style={styles.headerMotif} width="200" height="200">
@@ -216,57 +352,57 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
             <Image src={logoSrc} style={styles.logoImage} />
           </View>
           <View style={styles.headerTitleBlock}>
-            <Text style={styles.headerLabel}>Laporan Diagnostik Performa</Text>
-            <Text style={styles.headerTitle}>Human Synergy &</Text>
-            <Text style={styles.headerSubtitle}>Diagnostik Kematangan Strategis</Text>
+            <Text style={styles.headerLabel}>{copy.reportHeaderLabel}</Text>
+            <Text style={styles.headerTitle}>{copy.reportHeaderTitle}</Text>
+            <Text style={styles.headerSubtitle}>{copy.reportHeaderSubtitle}</Text>
           </View>
           <View style={styles.metaRow}>
-            <View style={styles.metaItem}><Text style={styles.metaLabel}>TAHUN FISKAL</Text><Text style={styles.metaValue}>2024-2025</Text></View>
-            <View style={styles.metaItem}><Text style={styles.metaLabel}>DISUSUN UNTUK</Text><Text style={styles.metaValue}>{formData.name.toUpperCase()}</Text></View>
-            <View style={styles.metaItem}><Text style={styles.metaLabel}>PERUSAHAAN</Text><Text style={styles.metaValue}>{formData.company.toUpperCase()}</Text></View>
-            <View style={styles.metaItem}><Text style={styles.metaLabel}>TANGGAL ISU</Text><Text style={styles.metaValue}>{date.toUpperCase()}</Text></View>
+            <View style={styles.metaItem}><Text style={styles.metaLabel}>{copy.fiscalYear}</Text><Text style={styles.metaValue}>2024-2025</Text></View>
+            <View style={styles.metaItem}><Text style={styles.metaLabel}>{copy.preparedFor}</Text><Text style={styles.metaValue}>{formData.name.toUpperCase()}</Text></View>
+            <View style={styles.metaItem}><Text style={styles.metaLabel}>{copy.company}</Text><Text style={styles.metaValue}>{formData.company.toUpperCase()}</Text></View>
+            <View style={styles.metaItem}><Text style={styles.metaLabel}>{copy.issueDate}</Text><Text style={styles.metaValue}>{date.toUpperCase()}</Text></View>
           </View>
           <View style={styles.headerAccent} />
         </View>
 
         <View style={styles.kpiRow}>
           <View style={styles.kpiCard}>
-            <Text style={styles.kpiLabel}>Skor Indeks Keseluruhan</Text>
+            <Text style={styles.kpiLabel}>{copy.overallScore}</Text>
             <Text style={styles.kpiValue}>{scores.overall}</Text>
-            <View style={styles.kpiBadge}><Text style={styles.kpiBadgeText}>Tahap: {result.category}</Text></View>
+            <View style={styles.kpiBadge}><Text style={styles.kpiBadgeText}>{copy.stage}: {result.category}</Text></View>
           </View>
           <View style={styles.kpiCard}>
-            <Text style={styles.kpiLabel}>Total Dimensi</Text>
+            <Text style={styles.kpiLabel}>{copy.totalDimensions}</Text>
             <Text style={styles.kpiValue}>7</Text>
-            <View style={styles.kpiBadge}><Text style={styles.kpiBadgeText}>Kriteria Inti</Text></View>
+            <View style={styles.kpiBadge}><Text style={styles.kpiBadgeText}>{copy.coreCriteria}</Text></View>
           </View>
           <View style={styles.kpiCard}>
-            <Text style={styles.kpiLabel}>Skala Tim</Text>
+            <Text style={styles.kpiLabel}>{copy.teamScale}</Text>
             <Text style={styles.kpiValue}>{formData.employees || '-'}</Text>
-            <View style={styles.kpiBadge}><Text style={styles.kpiBadgeText}>Skala Organisasi</Text></View>
+            <View style={styles.kpiBadge}><Text style={styles.kpiBadgeText}>{copy.organizationScale}</Text></View>
           </View>
           <View style={styles.kpiCard}>
-            <Text style={styles.kpiLabel}>Klasifikasi</Text>
-            <Text style={[styles.kpiValue, { fontSize: 14, marginTop: 4 }]}>Rahasia</Text>
-            <View style={styles.kpiBadge}><Text style={styles.kpiBadgeText}>Prioritas Tinggi</Text></View>
+            <Text style={styles.kpiLabel}>{copy.classification}</Text>
+            <Text style={[styles.kpiValue, { fontSize: 14, marginTop: 4 }]}>{copy.confidential}</Text>
+            <View style={styles.kpiBadge}><Text style={styles.kpiBadgeText}>{copy.highPriority}</Text></View>
           </View>
         </View>
 
         <View style={styles.content}>
           <View style={styles.profileCard} wrap={false}>
-            <Text style={styles.profileLabel}>Profil Organisasi</Text>
-            <Text style={styles.profileTitle}>{result.archetype || 'Pembangun Strategis'}</Text>
+            <Text style={styles.profileLabel}>{copy.orgProfile}</Text>
+            <Text style={styles.profileTitle}>{result.archetype || copy.strategicBuilder}</Text>
             <Text style={styles.profileText}>{scoreInterpretation}</Text>
           </View>
 
           <View style={styles.maturityCard} wrap={false}>
             <View style={styles.maturityHeader}>
               <View>
-                <Text style={styles.maturityLabel}>Tangga Kematangan Organisasi</Text>
-                <Text style={styles.maturityCurrent}>Organisasi {maturityLevel.label}</Text>
+                <Text style={styles.maturityLabel}>{copy.maturityLadder}</Text>
+                <Text style={styles.maturityCurrent}>{copy.orgPrefix} {maturityLevel.label}</Text>
               </View>
               <Text style={styles.maturityNext}>
-                {nextMaturityLevel ? `Evolusi Berikutnya: ${nextMaturityLevel.label}\nGap ke Tahap Berikutnya: +${gapToNext} poin` : 'Tahap Saat Ini: Unggul\nGap ke Tahap Berikutnya: -'}
+                {nextMaturityLevel ? `${copy.nextEvolution}: ${nextMaturityLevel.label}\n${copy.gapToNext}: +${gapToNext}` : `${copy.currentStage}: ${maturityLevel.label}\n${copy.gapToNext}: -`}
               </Text>
             </View>
             <View style={styles.maturityTrack}>
@@ -283,39 +419,39 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
 
           <View style={styles.twoColumn} wrap={false}>
             <View style={[styles.miniCard, { borderTopColor: NAVY }]}>
-              <Text style={styles.miniLabel}>Kekuatan Utama</Text>
+              <Text style={styles.miniLabel}>{copy.mainStrength}</Text>
               <Text style={styles.miniTitle}>{topDimension}</Text>
-              <Text style={styles.miniText}>Dimensi terkuat berdasarkan distribusi skor assessment.</Text>
+              <Text style={styles.miniText}>{copy.strengthText}</Text>
             </View>
             <View style={[styles.miniCard, { borderTopColor: GOLD }]}>
-              <Text style={styles.miniLabel}>Hambatan Utama</Text>
+              <Text style={styles.miniLabel}>{copy.mainBottleneck}</Text>
               <Text style={styles.miniTitle}>{lowestDimension}</Text>
-              <Text style={styles.miniText}>Area prioritas yang paling menentukan akselerasi berikutnya.</Text>
+              <Text style={styles.miniText}>{copy.bottleneckText}</Text>
             </View>
           </View>
 
           <View style={styles.summaryCard} wrap={false}>
-            <Text style={styles.summaryTitle}>Ringkasan Eksekutif & Analisis Strategis</Text>
+            <Text style={styles.summaryTitle}>{copy.executiveSummary}</Text>
               <Text style={styles.summaryText}>{compactText(result.aiAnalysis, 620)}</Text>
           </View>
         </View>
-        <Footer page={1} />
+        <Footer page={1} copy={copy} />
       </Page>
 
       <Page size="A4" style={styles.page}>
-        <CompactHeader title="Peta Intelijen Diagnostik" subtitle="Penalaran lintas dimensi · distribusi skor 7 dimensi" />
+        <CompactHeader title={copy.mapTitle} subtitle={copy.compactSubtitle} />
         <View style={styles.content}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionBar} />
             <View>
-              <Text style={styles.sectionTitle}>Peta Kinerja & Analisis 7 Dimensi Organisasi</Text>
-              <Text style={styles.sectionSubtitle}>Visualisasi distribusi skor dan perbandingan efisiensi operasional</Text>
+              <Text style={styles.sectionTitle}>{copy.mapSectionTitle}</Text>
+              <Text style={styles.sectionSubtitle}>{copy.mapSectionSubtitle}</Text>
             </View>
           </View>
 
           <View style={styles.visualGrid} wrap={false}>
             <View style={styles.visualBox}>
-              <Text style={styles.visualTitle}>Distribusi Keseimbangan</Text>
+              <Text style={styles.visualTitle}>{copy.balanceDistribution}</Text>
               <Svg width="150" height="150" viewBox="0 0 130 130" style={{ alignSelf: 'center' }}>
                 {[0.25, 0.5, 0.75, 1].map((scale, idx) => {
                   const pts = DIMENSIONS.map((_, i) => {
@@ -333,7 +469,7 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
             </View>
 
             <View style={[styles.visualBox, { flex: 1.4 }]}>
-              <Text style={styles.visualTitle}>Papan Skor Performa</Text>
+              <Text style={styles.visualTitle}>{copy.scoreBoard}</Text>
               {DIMENSIONS.map((dim) => (
                 <View key={dim} style={styles.barRow}>
                   <Text style={styles.barLabel}>{dim}</Text>
@@ -349,28 +485,28 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
           <View style={styles.twoColumn}>
             {crossInsights.slice(0, 2).map((insight, i) => (
               <View key={i} wrap={false} style={[styles.miniCard, { borderTopColor: i === 0 ? NAVY : GOLD }]}>
-                <Text style={styles.miniLabel}>Penalaran Diagnostik 0{i + 1}</Text>
+                <Text style={styles.miniLabel}>{copy.diagnosticReasoning} 0{i + 1}</Text>
                 <Text style={styles.miniText}>{compactText(insight, 330)}</Text>
               </View>
             ))}
           </View>
 
           <View style={styles.riskCard} wrap={false}>
-            <Text style={styles.summaryTitle}>Proyeksi Risiko 12-18 Bulan</Text>
+            <Text style={styles.summaryTitle}>{copy.riskProjection}</Text>
             <Text style={styles.summaryText}>{compactText(riskProjection, 520)}</Text>
           </View>
         </View>
-        <Footer page={2} />
+        <Footer page={2} copy={copy} />
       </Page>
 
       <Page size="A4" style={styles.page}>
-        <CompactHeader title="Ikhtisar Strategis Diagnostik" subtitle="Prioritas utama · fokus aksi 90 hari" />
+        <CompactHeader title={copy.strategicOverview} subtitle={copy.strategicOverviewSubtitle} />
         <View style={styles.content}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionBar} />
             <View>
-              <Text style={styles.sectionTitle}>Rekomendasi Tindakan Prioritas</Text>
-              <Text style={styles.sectionSubtitle}>Tiga prioritas awal berdasarkan hasil diagnostik 7 dimensi BinaHub</Text>
+              <Text style={styles.sectionTitle}>{copy.priorityActions}</Text>
+              <Text style={styles.sectionSubtitle}>{copy.priorityActionsSubtitle}</Text>
             </View>
           </View>
 
@@ -378,7 +514,7 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
             {primaryRecommendations.map((rec, i) => (
               <View key={i} wrap={false} style={styles.recCard}>
                 <View style={styles.recIcon}><View style={styles.recIconInner} /></View>
-                <Text style={{ fontSize: 7, color: SILVER, fontWeight: 700, marginBottom: 4 }}>STRATEGI 0{i + 1} · {rec.service}</Text>
+                <Text style={{ fontSize: 7, color: SILVER, fontWeight: 700, marginBottom: 4 }}>{copy.strategy} 0{i + 1} · {rec.service}</Text>
                 <Text style={styles.recTitle}>{compactText(rec.title, 86)}</Text>
                 {rec.diagnosis && <Text style={styles.recDiagnosis}>{compactText(rec.diagnosis, 180)}</Text>}
                 <Text style={styles.recDesc}>{compactText(rec.description, 260)}</Text>
@@ -387,21 +523,21 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
           </View>
 
           <View style={styles.callout} wrap={false}>
-            <Text style={styles.summaryTitle}>Kunci Strategis dari Tim Konsultan</Text>
+            <Text style={styles.summaryTitle}>{copy.consultantKey}</Text>
             <Text style={styles.summaryText}>{compactText(strategicKey, 560)}</Text>
           </View>
         </View>
-        <Footer page={3} />
+        <Footer page={3} copy={copy} />
       </Page>
 
       <Page size="A4" style={styles.page}>
-        <CompactHeader title="Roadmap Transformasi" subtitle="Roadmap lanjutan · langkah konsultasi berikutnya" />
+        <CompactHeader title={copy.roadmapTitle} subtitle={copy.roadmapSubtitle} />
         <View style={styles.content}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionBar} />
             <View>
-              <Text style={styles.sectionTitle}>Roadmap Lanjutan & Langkah Berikutnya</Text>
-              <Text style={styles.sectionSubtitle}>Rekomendasi pendukung untuk memperkuat ritme implementasi setelah prioritas utama berjalan</Text>
+              <Text style={styles.sectionTitle}>{copy.roadmapSection}</Text>
+              <Text style={styles.sectionSubtitle}>{copy.roadmapSectionSubtitle}</Text>
             </View>
           </View>
 
@@ -409,7 +545,7 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
             {secondaryRecommendations.map((rec, i) => (
               <View key={i} wrap={false} style={[styles.recCard, { width: '48.5%' }]}>
                 <View style={styles.recIcon}><View style={styles.recIconInner} /></View>
-                <Text style={{ fontSize: 7, color: SILVER, fontWeight: 700, marginBottom: 4 }}>STRATEGI 0{i + 4} · {rec.service}</Text>
+                <Text style={{ fontSize: 7, color: SILVER, fontWeight: 700, marginBottom: 4 }}>{copy.strategy} 0{i + 4} · {rec.service}</Text>
                 <Text style={styles.recTitle}>{compactText(rec.title, 96)}</Text>
                 {rec.diagnosis && <Text style={styles.recDiagnosis}>{compactText(rec.diagnosis, 220)}</Text>}
                 <Text style={styles.recDesc}>{compactText(rec.description, 320)}</Text>
@@ -418,19 +554,20 @@ const AssessmentPDF = ({ formData, result, logoPath }: { formData: AssessmentDat
           </View>
 
           <View style={{ marginTop: 22, backgroundColor: '#FFFFFF', padding: 18, borderRadius: 8, borderLeftWidth: 4, borderLeftColor: GOLD }} wrap={false}>
-            <Text style={styles.summaryTitle}>Langkah Berikutnya</Text>
+            <Text style={styles.summaryTitle}>{copy.nextSteps}</Text>
             <Text style={styles.summaryText}>
-              Diskusikan hasil ini bersama tim BinaHub untuk menerjemahkan prioritas diagnostik menjadi roadmap implementasi yang relevan dengan konteks organisasi Anda.
+              {copy.nextStepsText}
             </Text>
           </View>
         </View>
-        <Footer page={4} />
+        <Footer page={4} copy={copy} />
       </Page>
     </Document>
   );
 };
 
 const ProposalPDF = ({ formData, proposal, logoPath }: { formData: AssessmentData; proposal: ProposalResult; logoPath?: string }) => {
+  const copy = getPdfCopy('id');
   const date = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   const logoSrc = logoPath || 'https://buhanib.vercel.app/full-logo.png';
   const packages = proposal.packages?.length ? proposal.packages.slice(0, 3) : [
@@ -490,11 +627,11 @@ const ProposalPDF = ({ formData, proposal, logoPath }: { formData: AssessmentDat
           <View style={styles.summaryCard} wrap={false}>
             <Text style={styles.summaryTitle}>Ruang Lingkup Rekomendasi</Text>
             {(proposal.scope || []).slice(0, 6).map((item, index) => (
-              <Text key={index} style={styles.summaryText}>• {item}</Text>
+              <Text key={index} style={styles.summaryText}>â€¢ {item}</Text>
             ))}
           </View>
         </View>
-        <Footer page={1} />
+        <Footer page={1} copy={copy} />
       </Page>
 
       <Page size="A4" style={styles.page}>
@@ -519,22 +656,22 @@ const ProposalPDF = ({ formData, proposal, logoPath }: { formData: AssessmentDat
                 <Text style={styles.recDesc}>{pack.duration}</Text>
                 <Text style={[styles.miniLabel, { marginTop: 8 }]}>Cakupan</Text>
                 {pack.scope.slice(0, 5).map((item, itemIndex) => (
-                  <Text key={itemIndex} style={styles.recDesc}>• {item}</Text>
+                  <Text key={itemIndex} style={styles.recDesc}>â€¢ {item}</Text>
                 ))}
                 <Text style={[styles.miniLabel, { marginTop: 8 }]}>Output</Text>
                 {pack.deliverables.slice(0, 5).map((item, itemIndex) => (
-                  <Text key={itemIndex} style={styles.recDesc}>• {item}</Text>
+                  <Text key={itemIndex} style={styles.recDesc}>â€¢ {item}</Text>
                 ))}
               </View>
             ))}
           </View>
 
           <View style={styles.callout} wrap={false}>
-            <Text style={styles.summaryTitle}>Langkah Berikutnya</Text>
+            <Text style={styles.summaryTitle}>{copy.nextSteps}</Text>
             <Text style={styles.summaryText}>{proposal.nextStep || 'Jadwalkan konsultasi untuk memfinalisasi kebutuhan, ruang lingkup, peserta, timeline, dan opsi paket yang paling sesuai.'}</Text>
           </View>
         </View>
-        <Footer page={2} />
+        <Footer page={2} copy={copy} />
       </Page>
     </Document>
   );
@@ -556,13 +693,13 @@ async function getLogoBase64() {
   return logoBase64;
 }
 
-export async function generatePDFBuffer(formData: AssessmentData, result: AssessmentResult): Promise<Buffer> {
+export async function generatePDFBuffer(formData: AssessmentData, result: AssessmentResult, locale: Locale = 'id'): Promise<Buffer> {
   const { renderToBuffer } = await import('@react-pdf/renderer');
 
   const logoBase64 = await getLogoBase64();
 
   // @ts-ignore
-  return await renderToBuffer(<AssessmentPDF formData={formData} result={result} logoPath={logoBase64} />);
+  return await renderToBuffer(<AssessmentPDF formData={formData} result={result} logoPath={logoBase64} locale={locale} />);
 }
 
 export async function generateProposalPDFBuffer(formData: AssessmentData, proposal: ProposalResult): Promise<Buffer> {
@@ -572,3 +709,5 @@ export async function generateProposalPDFBuffer(formData: AssessmentData, propos
   // @ts-ignore
   return await renderToBuffer(<ProposalPDF formData={formData} proposal={proposal} logoPath={logoBase64} />);
 }
+
+

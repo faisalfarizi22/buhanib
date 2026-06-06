@@ -26,14 +26,17 @@ const ContactInquirySchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  let isEnglish = false;
+
   try {
     const rawBody = await req.json();
+    isEnglish = rawBody?.locale === 'en';
 
     // 1. Zod Validation
     const validationResult = ContactInquirySchema.safeParse(rawBody);
     if (!validationResult.success) {
       return NextResponse.json(
-        { success: false, error: 'Validasi form gagal', details: validationResult.error.format() },
+        { success: false, error: isEnglish ? 'Form validation failed' : 'Validasi form gagal', details: validationResult.error.format() },
         { status: 400 }
       );
     }
@@ -193,13 +196,15 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Inquiry Anda berhasil terkirim. Tim kami akan segera menghubungi Anda.',
+      message: isEnglish
+        ? 'Your inquiry has been sent successfully. Our team will contact you shortly.'
+        : 'Inquiry Anda berhasil terkirim. Tim kami akan segera menghubungi Anda.',
     });
 
   } catch (error: unknown) {
     console.error('[Contact API Error]', error);
     return NextResponse.json(
-      { success: false, error: 'Terjadi kesalahan internal server.', details: getErrorMessage(error) },
+      { success: false, error: isEnglish ? 'An internal server error occurred.' : 'Terjadi kesalahan internal server.', details: getErrorMessage(error) },
       { status: 500 }
     );
   }

@@ -4,18 +4,26 @@ import { chatWithAI } from '@/lib/ai-service';
 import { ChatRequestSchema } from '@/lib/validations';
 
 export async function POST(req: NextRequest) {
+  let requestLocale = 'id';
+
   try {
     const rawBody = await req.json();
+    requestLocale = rawBody?.context?.locale === 'en' ? 'en' : 'id';
     
     const validationResult = ChatRequestSchema.safeParse(rawBody);
     if (!validationResult.success) {
       return NextResponse.json(
-        { success: false, error: 'Validasi pesan gagal', details: validationResult.error.format() },
+        {
+          success: false,
+          error: requestLocale === 'en' ? 'Message validation failed' : 'Validasi pesan gagal',
+          details: validationResult.error.format(),
+        },
         { status: 400 }
       );
     }
     
     const { message, sessionId, history, context } = validationResult.data;
+    const locale = context?.locale || 'id';
     const supabase = createServerSupabase();
 
     let session = null;
@@ -56,14 +64,18 @@ export async function POST(req: NextRequest) {
             }, { onConflict: 'email' });
 
             // Provide a graceful text response to replace the JSON output for the user
-            aiResponseText = `Terima kasih, ${toolCall.args.name}. Data email Anda (${toolCall.args.email}) sudah saya simpan. Ada hal spesifik tentang operasional bisnis atau SDM yang ingin kita diskusikan sekarang?`;
+            aiResponseText = locale === 'en'
+              ? `Thank you, ${toolCall.args.name}. I have saved your email (${toolCall.args.email}). Is there a specific business operations or people transformation topic you would like to discuss now?`
+              : `Terima kasih, ${toolCall.args.name}. Data email Anda (${toolCall.args.email}) sudah saya simpan. Ada hal spesifik tentang operasional bisnis atau SDM yang ingin kita diskusikan sekarang?`;
           }
         }
       } catch (e) {
         console.error('[Nara Agent] Tool parsing failed:', e);
         // Fallback if parsing fails
         if (aiResponseText.includes('{"tool":')) {
-           aiResponseText = "Mohon maaf, saya sedang mengalami sedikit gangguan sistem. Bisa diulangi?";
+           aiResponseText = locale === 'en'
+            ? "Sorry, I am experiencing a small system issue. Could you repeat that?"
+            : "Mohon maaf, saya sedang mengalami sedikit gangguan sistem. Bisa diulangi?";
         }
       }
     }
@@ -107,7 +119,7 @@ export async function POST(req: NextRequest) {
     console.error('[Chat API Error]', error);
     return NextResponse.json({ 
       success: false, 
-      error: 'Terjadi kesalahan internal server.',
+      error: requestLocale === 'en' ? 'An internal server error occurred.' : 'Terjadi kesalahan internal server.',
     }, { status: 500 });
   }
 }

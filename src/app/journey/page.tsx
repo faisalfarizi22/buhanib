@@ -5,6 +5,7 @@ import { Quote } from "lucide-react";
 import Image from "next/image";
 import { Tag } from "@/components/ui/tag";
 import { PixelIcon } from "@/components/pixel-icon";
+import { useLocale } from "@/i18n/use-locale";
 
 const chapters = [
   {
@@ -77,7 +78,104 @@ const chapters = [
   },
 ];
 
+const chaptersEn: typeof chapters = [
+  {
+    label: "Chapter 01",
+    year: "2010",
+    title: "Rooted in Learning",
+    emphasis: "Through Experience",
+    image: "/BDN.png",
+    imageAlt: "BDN Team Building 2010",
+    imageMode: "contain",
+    kicker: "Heritage Since 2010",
+    drop: "B",
+    body: [
+      <>
+        inaHub was not born in a vacuum. Our roots are firmly planted in the long dedication of <span className="font-bold">BDN (Bina Daya Nugraha)</span> -- a training company and team building program organizer that has contributed to Indonesia&apos;s people development industry since 2010.
+      </>,
+      <>At the beginning of the decade, we realized that the best learning does not happen only by listening to theory in a rigid classroom. People learn deeply when they move, interact, face challenges together, and reflect on those experiences directly.</>,
+    ],
+  },
+  {
+    label: "Chapter 02",
+    year: "10,000+",
+    title: "Trusted by",
+    emphasis: "80+ National Organizations",
+    image: "/gallery/2.jpg",
+    imageAlt: "10,000+ BinaHub Alumni",
+    imageMode: "cover",
+    kicker: "Track Record",
+    drop: "O",
+    body: [
+      <>
+        ver more than 15 years, BDN has had the honor of accompanying more than <span className="font-bold">10,000 participants</span> across industries: state-owned enterprise directors, multinational managers, leading education institutions, and nonprofit organizations.
+      </>,
+      <>Every learning module was tested directly in the field, shaping resilient collaboration and strong team synergy. These real experiences became the foundation for understanding the anatomy of organizational culture in Indonesia.</>,
+    ],
+  },
+  {
+    label: "Chapter 03",
+    year: "Global",
+    title: "Global Business Simulation",
+    emphasis: "",
+    image: "/asset/bsksims2.png",
+    imageAlt: "BSKSims Strategic Partnerships",
+    imageMode: "cover",
+    kicker: "Global Simulation",
+    drop: "O",
+    body: [
+      <>
+        ur commitment to bringing the best standards is reflected in becoming the official partner in Indonesia for <span className="font-bold">BSKSims (www.bsksims.com)</span> -- a leading strategic decision simulation platform from the United States.
+      </>,
+      <>Through this global collaboration, we integrate business simulation technology into leadership development and talent assessment systems in Indonesia. The interactive simulation pushes future leaders to make precise tactical decisions amid dynamic and competitive digital markets.</>,
+    ],
+  },
+  {
+    label: "Chapter 04",
+    year: "AI Era",
+    title: "The Birth of BinaHub:",
+    emphasis: "Humanizing the Future",
+    image: "/logo.png",
+    imageAlt: "BinaHub Future Capability Partner",
+    imageMode: "logo",
+    kicker: "Future Capability",
+    drop: "T",
+    body: [
+      <>he world of work continues to move at extraordinary disruption speed. The rise of artificial intelligence and automation brings new challenges for human existence inside organizations.</>,
+      <>
+        BinaHub was born as BDN&apos;s <span className="font-bold">sister company</span> to answer this macro challenge. If BDN focused fully on experience-based training (<span className="font-bold">experiential learning</span>), BinaHub goes further as a <span className="font-bold">holistic organizational transformation partner</span> that connects human capacity, cultural depth, technology ecosystem strength, and AI data analytics precision.
+      </>,
+    ],
+  },
+];
+
+const COPY = {
+  id: {
+    tag: "TENTANG KAMI",
+    title: "Perjalanan",
+    titleAccent: "Kami.",
+    desc: "Menghubungkan rekam jejak pelatihan berbasis pengalaman selama 15 tahun menuju gerbang transformasi organisasi masa depan di era AI.",
+    meta: "Sister company of PT Bina Daya Nugraha - Est 2010",
+    quote: "Masa depan tidak hanya membutuhkan organisasi yang lebih cerdas secara teknologi, tetapi juga organisasi yang jauh lebih matang secara manusiawi.",
+    cite: "BinaHub Filosofi Transformasi",
+    chapters,
+  },
+  en: {
+    tag: "ABOUT US",
+    title: "Our",
+    titleAccent: "Journey.",
+    desc: "Connecting 15 years of experience-based learning track record to the gateway of future organizational transformation in the AI era.",
+    meta: "Sister company of PT Bina Daya Nugraha - Est 2010",
+    quote: "The future does not only need organizations that are more technologically intelligent, but also organizations that are far more humanly mature.",
+    cite: "BinaHub Transformation Philosophy",
+    chapters: chaptersEn,
+  },
+};
+
 export default function JourneyPage() {
+  const locale = useLocale();
+  const copy = COPY[locale];
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#F4F6F8] pt-28 font-sans text-[#4A4C54] antialiased">
       <section className="px-4 md:px-8">
@@ -96,19 +194,19 @@ export default function JourneyPage() {
             <div>
               <div className="flex items-center gap-4">
                 <PixelIcon type="about" size={34} />
-                <Tag>TENTANG KAMI</Tag>
+                <Tag>{copy.tag}</Tag>
               </div>
               <h1 className="mt-8 text-5xl font-light leading-[0.92] tracking-[-0.06em] text-white sm:text-7xl md:text-8xl lg:text-[112px]">
-                Perjalanan
-                <span className="block italic text-[#D9A441]">Kami.</span>
+                {copy.title}
+                <span className="block italic text-[#D9A441]">{copy.titleAccent}</span>
               </h1>
             </div>
             <div className="border-l border-[#D9A441]/70 pl-6 md:pl-8">
               <p className="max-w-2xl text-xl font-light leading-relaxed text-white/76 md:text-2xl">
-                Menghubungkan rekam jejak pelatihan berbasis pengalaman selama 15 tahun menuju gerbang transformasi organisasi masa depan di era AI.
+                {copy.desc}
               </p>
               <p className="mt-8 text-[11px] font-bold uppercase tracking-[0.24em] text-white/45">
-                Sister company of PT Bina Daya Nugraha - Est 2010
+                {copy.meta}
               </p>
             </div>
           </div>
@@ -120,7 +218,7 @@ export default function JourneyPage() {
           <div className="relative">
             <div className="absolute left-[12px] top-10 hidden h-[calc(100%-5rem)] w-px bg-[#D9A441]/28 lg:block" />
             <div className="space-y-16 md:space-y-24">
-              {chapters.map((chapter, index) => (
+              {copy.chapters.map((chapter, index) => (
                 <ChapterBlock key={chapter.label} chapter={chapter} index={index} />
               ))}
             </div>
@@ -134,10 +232,10 @@ export default function JourneyPage() {
             <Quote size={30} />
           </div>
           <blockquote className="mx-auto mt-8 max-w-4xl text-2xl font-light italic leading-relaxed tracking-[-0.02em] md:text-4xl">
-            &ldquo;Masa depan tidak hanya membutuhkan organisasi yang lebih cerdas secara teknologi, tetapi juga organisasi yang jauh lebih matang secara manusiawi.&rdquo;
+            &ldquo;{copy.quote}&rdquo;
           </blockquote>
           <cite className="mt-8 block text-xs font-bold uppercase not-italic tracking-[0.24em] text-white/40">
-            BinaHub Filosofi Transformasi
+            {copy.cite}
           </cite>
         </div>
       </section>

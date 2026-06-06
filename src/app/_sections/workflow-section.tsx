@@ -4,49 +4,91 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tag } from "@/components/ui/tag";
 import { PixelIcon } from "@/components/pixel-icon";
+import { useLocale } from "@/i18n/use-locale";
 
-const WORKFLOW_STEPS = [
-  {
-    n: "diagnose",
-    title: "Diagnose",
-    desc: "Memahami kondisi saat ini dan tantangan unik organisasi Anda.",
-    detail:
-      "Melalui BinaInsights, kami menggali karakter, dinamika tim, dan akar permasalahan organisasi. Tahap ini membantu menemukan blind spot kepemimpinan sebelum intervensi dirancang.",
-    image: "/asset/Diagnose.png",
+const COPY = {
+  id: {
+    tag: "ALUR KERJA",
+    title: "Transformasi sebagai perjalanan, bukan rangkaian sesi.",
+    desc: "Empat langkah ini menjaga proses tetap sederhana bagi peserta, tetapi cukup dalam untuk menghasilkan perubahan perilaku dan dampak yang dapat dibuktikan.",
+    steps: [
+      {
+        n: "diagnose",
+        title: "Diagnose",
+        desc: "Memahami kondisi saat ini dan tantangan unik organisasi Anda.",
+        detail: "Melalui BinaInsights, kami menggali karakter, dinamika tim, dan akar permasalahan organisasi. Tahap ini membantu menemukan blind spot kepemimpinan sebelum intervensi dirancang.",
+        image: "/asset/Diagnose.png",
+      },
+      {
+        n: "design",
+        title: "Design",
+        desc: "Merancang intervensi yang disesuaikan dengan kebutuhan spesifik tim.",
+        detail: "BinaAcademy merancang kurikulum dan jalur pembelajaran yang menjawab kebutuhan bisnis. Setiap program disusun sebagai sistem, bukan kelas lepas yang cepat dilupakan.",
+        image: "/asset/Design.png",
+      },
+      {
+        n: "develop",
+        title: "Develop",
+        desc: "Membangun kapabilitas melalui pembelajaran transformatif.",
+        detail: "BinaLab dan BinaCoach membangun perubahan perilaku melalui pengalaman, refleksi, dan coaching. Fokusnya adalah kapasitas internal yang bertahan setelah program selesai.",
+        image: "/asset/Develop.png",
+      },
+      {
+        n: "deliver",
+        title: "Deliver",
+        desc: "Memastikan hasil nyata dan dampak yang berkelanjutan.",
+        detail: "BinaImpact dan BinaWorks memastikan pembelajaran berubah menjadi tindakan, strategi menjadi eksekusi, dan transformasi menghasilkan bukti yang dapat dilihat.",
+        image: "/asset/Deliver.png",
+      },
+    ],
   },
-  {
-    n: "design",
-    title: "Design",
-    desc: "Merancang intervensi yang disesuaikan dengan kebutuhan spesifik tim.",
-    detail:
-      "BinaAcademy merancang kurikulum dan jalur pembelajaran yang menjawab kebutuhan bisnis. Setiap program disusun sebagai sistem, bukan kelas lepas yang cepat dilupakan.",
-    image: "/asset/Design.png",
+  en: {
+    tag: "WORKFLOW",
+    title: "Transformation as a journey, not a series of sessions.",
+    desc: "These four steps keep the process simple for participants while remaining deep enough to create behavior change and measurable impact.",
+    steps: [
+      {
+        n: "diagnose",
+        title: "Diagnose",
+        desc: "Understand your current condition and your organization's unique challenges.",
+        detail: "Through BinaInsights, we uncover character patterns, team dynamics, and organizational root causes. This stage helps reveal leadership blind spots before interventions are designed.",
+        image: "/asset/Diagnose.png",
+      },
+      {
+        n: "design",
+        title: "Design",
+        desc: "Design interventions tailored to the specific needs of your team.",
+        detail: "BinaAcademy designs curriculum and learning paths that answer business needs. Every program is built as a system, not a one-off class that is quickly forgotten.",
+        image: "/asset/Design.png",
+      },
+      {
+        n: "develop",
+        title: "Develop",
+        desc: "Build capability through transformative learning.",
+        detail: "BinaLab and BinaCoach build behavior change through experience, reflection, and coaching. The focus is internal capacity that lasts after the program ends.",
+        image: "/asset/Develop.png",
+      },
+      {
+        n: "deliver",
+        title: "Deliver",
+        desc: "Ensure real outcomes and sustainable impact.",
+        detail: "BinaImpact and BinaWorks ensure learning turns into action, strategy becomes execution, and transformation produces visible proof.",
+        image: "/asset/Deliver.png",
+      },
+    ],
   },
-  {
-    n: "develop",
-    title: "Develop",
-    desc: "Membangun kapabilitas melalui pembelajaran transformatif.",
-    detail:
-      "BinaLab dan BinaCoach membangun perubahan perilaku melalui pengalaman, refleksi, dan coaching. Fokusnya adalah kapasitas internal yang bertahan setelah program selesai.",
-    image: "/asset/Develop.png",
-  },
-  {
-    n: "deliver",
-    title: "Deliver",
-    desc: "Memastikan hasil nyata dan dampak yang berkelanjutan.",
-    detail:
-      "BinaImpact dan BinaWorks memastikan pembelajaran berubah menjadi tindakan, strategi menjadi eksekusi, dan transformasi menghasilkan bukti yang dapat dilihat.",
-    image: "/asset/Deliver.png",
-  },
-];
+};
 
 interface WorkflowSectionProps {
   onMouseMove: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
+  const locale = useLocale();
+  const copy = COPY[locale];
+  const steps = copy.steps;
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeStep = WORKFLOW_STEPS[activeIndex];
+  const activeStep = steps[activeIndex];
 
   return (
     <section
@@ -63,15 +105,14 @@ export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
           <div>
             <PixelIcon type="workflow" size={40} />
             <div className="mt-4">
-              <Tag>ALUR KERJA</Tag>
+              <Tag>{copy.tag}</Tag>
             </div>
             <h2 className="mt-5 text-4xl font-light leading-[1.05] tracking-tight text-[#0B2C6B] md:text-5xl">
-              Transformasi sebagai perjalanan, bukan rangkaian sesi.
+              {copy.title}
             </h2>
           </div>
           <p className="text-sm font-light leading-relaxed text-black/58 md:text-base">
-            Empat langkah ini menjaga proses tetap sederhana bagi peserta, tetapi cukup dalam untuk
-            menghasilkan perubahan perilaku dan dampak yang dapat dibuktikan.
+            {copy.desc}
           </p>
         </div>
 
@@ -123,7 +164,7 @@ export function WorkflowSection({ onMouseMove }: WorkflowSectionProps) {
 
               <div className="relative">
                 <div className="grid gap-3 grid-cols-2 sm:grid-cols-2 md:grid-cols-4">
-                  {WORKFLOW_STEPS.map((step, index) => {
+                  {steps.map((step, index) => {
                     const isActive = index === activeIndex;
 
                     return (

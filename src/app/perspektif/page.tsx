@@ -3,8 +3,43 @@
 import { MethodologySection } from "@/app/_sections/methodology-section";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { localizePath } from "@/i18n/config";
+import { useLocale } from "@/i18n/use-locale";
+
+const COPY = {
+  id: {
+    eyebrow: "Perspektif BinaHub",
+    title: <>Transformasi gagal ketika <span className="italic font-normal text-[#D9A441]">manusia dilupakan.</span></>,
+    desc: "AI, data, dan sistem hanya bermakna ketika memperkuat cara manusia berpikir, belajar, bekerja sama, dan mengambil keputusan.",
+    principles: [
+      ["Human before system", "Perubahan dimulai dari kesadaran, bukan dari tools."],
+      ["Learning before automation", "Teknologi harus mempercepat pembelajaran, bukan menggantikannya."],
+      ["Impact before activity", "Program bernilai ketika perilaku dan kinerja ikut berubah."],
+    ],
+    briefingEyebrow: "Executive Briefing",
+    briefingTitle: "Transformation Signals 2026",
+    briefingDesc: "Ringkasan strategis tentang tekanan ekonomi, workforce shift, dan gap transformasi yang perlu dibaca sebelum merancang agenda people development.",
+    cta: "Baca Briefing",
+  },
+  en: {
+    eyebrow: "BinaHub Perspective",
+    title: <>Transformation fails when <span className="italic font-normal text-[#D9A441]">people are forgotten.</span></>,
+    desc: "AI, data, and systems only matter when they strengthen how people think, learn, collaborate, and make decisions.",
+    principles: [
+      ["Human before system", "Change starts from awareness, not from tools."],
+      ["Learning before automation", "Technology should accelerate learning, not replace it."],
+      ["Impact before activity", "A program creates value when behavior and performance also change."],
+    ],
+    briefingEyebrow: "Executive Briefing",
+    briefingTitle: "Transformation Signals 2026",
+    briefingDesc: "A strategic summary of economic pressure, workforce shifts, and transformation gaps to read before designing a people development agenda.",
+    cta: "Read Briefing",
+  },
+};
 
 export default function PerspektifPage() {
+  const locale = useLocale();
+  const copy = COPY[locale];
   const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const rect = el.getBoundingClientRect();
@@ -22,25 +57,20 @@ export default function PerspektifPage() {
         </div>
         <div className="relative z-10 mx-auto max-w-5xl">
           <div className="mb-6 inline-flex rounded-full bg-black/[0.04] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[#0B2C6B]/52">
-            Perspektif BinaHub
+            {copy.eyebrow}
           </div>
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter leading-[1.05] text-[#0B2C6B] mb-7">
-            Transformasi gagal ketika <span className="italic font-normal text-[#D9A441]">manusia dilupakan.</span>
+            {copy.title}
         </h1>
           <p className="text-lg md:text-xl text-[#4A4C54]/72 font-light leading-[1.85] max-w-3xl mx-auto">
-            AI, data, dan sistem hanya bermakna ketika memperkuat cara manusia berpikir, belajar,
-            bekerja sama, dan mengambil keputusan.
+            {copy.desc}
           </p>
         </div>
       </section>
 
       <section className="px-6 md:px-12 lg:px-20 pb-16">
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
-          {[
-            ["Human before system", "Perubahan dimulai dari kesadaran, bukan dari tools."],
-            ["Learning before automation", "Teknologi harus mempercepat pembelajaran, bukan menggantikannya."],
-            ["Impact before activity", "Program bernilai ketika perilaku dan kinerja ikut berubah."],
-          ].map(([title, desc]) => (
+          {copy.principles.map(([title, desc]) => (
             <div key={title} className="rounded-[12px] border border-black/[0.06] bg-[#FCFCFB] p-6 shadow-[0_16px_48px_-42px_rgba(11,44,107,0.34)]">
               <span className="block h-px w-10 bg-[#D9A441]/60" />
               <h2 className="mt-5 text-xl font-medium tracking-tight text-[#0B2C6B]">{title}</h2>
@@ -60,20 +90,20 @@ export default function PerspektifPage() {
           <div className="relative z-10 mx-auto grid max-w-7xl gap-8 md:grid-cols-[1fr_auto] md:items-end">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.26em] text-[#D9A441]">
-                Executive Briefing
+                {copy.briefingEyebrow}
               </p>
               <h2 className="mt-4 max-w-3xl text-3xl font-light leading-tight tracking-tight md:text-5xl">
-                Transformation Signals 2026
+                {copy.briefingTitle}
               </h2>
               <p className="mt-5 max-w-2xl text-sm font-light leading-relaxed text-white/62 md:text-base">
-                Ringkasan strategis tentang tekanan ekonomi, workforce shift, dan gap transformasi yang perlu dibaca sebelum merancang agenda people development.
+                {copy.briefingDesc}
               </p>
             </div>
             <Link
-              href="/perspektif/transformation-signals-2026"
+              href={localizePath("/perspektif/transformation-signals-2026", locale)}
               className="inline-flex h-12 items-center justify-center gap-3 rounded-full bg-[#D9A441] px-6 text-[11px] font-bold uppercase tracking-[0.16em] text-[#0B2C6B] transition-colors hover:bg-white"
             >
-              Baca Briefing
+              {copy.cta}
               <ArrowRight size={15} />
             </Link>
           </div>

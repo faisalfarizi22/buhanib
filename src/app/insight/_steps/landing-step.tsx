@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, BarChart3, Radar } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { DIMENSIONS } from "../questions";
 import { PixelIcon } from "@/components/pixel-icon";
+import { DiagnosticPreview, ReportPreview } from "./landing-preview";
+import { useLocale } from "@/i18n/use-locale";
 
 interface LandingStepProps {
   onStart: () => void;
@@ -21,22 +23,93 @@ const DIMENSION_COPY: Record<string, string> = {
   Impact: "Melihat bukti dampak program dan ROI pengembangan SDM.",
 };
 
+const DIMENSION_COPY_EN: Record<string, string> = {
+  Insights: "Find the root causes of performance issues, not just surface-level symptoms.",
+  Lab: "Measure competency readiness and team problem-solving capability.",
+  Coach: "Identify leadership, feedback, and growth mindset bottlenecks.",
+  Play: "Read team energy, motivation, engagement, and connection quality.",
+  Academy: "Assess learning path structure and organizational learning culture.",
+  Works: "Map KPI clarity, work processes, and execution discipline.",
+  Impact: "See evidence of program impact and people-development ROI.",
+};
+
+const COPY = {
+  id: {
+    heroTitle: "Diagnosis performa",
+    heroHighlight: "berbasis data.",
+    heroBody:
+      "Diagnostik mendalam berbasis data untuk menemukan blind spot performa, membaca kesiapan transformasi, dan menentukan prioritas pengembangan tim.",
+    start: "Mulai Diagnostik",
+    preview: "Lihat Preview Hasil",
+    stats: ["5-7 Menit", "49 Indikator", "7 Dimensi"],
+    productEyebrow: "Product Experience",
+    productTitle: "Apa yang akan Anda dapatkan dari",
+    productBody:
+      "BinaInsight membantu organisasi melihat performa secara lebih jernih: apa yang sudah kuat, apa yang menghambat, dan area mana yang perlu diprioritaskan.",
+    benefits: [
+      {
+        title: "Skor 7 dimensi yang presisi",
+        desc: "Insights, Lab, Coach, Play, Academy, Works, dan Impact dihitung dari 49 indikator.",
+      },
+      {
+        title: "Kategori kesiapan organisasi",
+        desc: "Hasil diklasifikasikan menjadi Pemula, Berkembang, Profesional, atau Unggulan.",
+      },
+      {
+        title: "Rekomendasi prioritas",
+        desc: "Laporan menampilkan area terendah, analisis singkat, dan aksi pengembangan yang relevan.",
+      },
+    ],
+    spectrumTitle: "Pilih fokus pengukuran organisasi.",
+    spectrumBody:
+      "Tujuh area ini dibaca sebagai satu spektrum. Pilih salah satu dimensi untuk melihat sinyal yang ingin dipahami sebelum menentukan prioritas intervensi.",
+    spectrumTags: ["Diagnose root cause", "Map capability gaps", "Prioritize intervention"],
+    ctaMeta: "5-7 menit - 49 indikator - laporan terkirim",
+    ctaTitle: "Dalam 7 menit, temukan area yang paling",
+    ctaHighlight: "menghambat performa tim.",
+  },
+  en: {
+    heroTitle: "Data-driven",
+    heroHighlight: "performance diagnostic.",
+    heroBody:
+      "A deep data-informed diagnostic to uncover performance blind spots, read transformation readiness, and define team development priorities.",
+    start: "Start Diagnostic",
+    preview: "View Report Preview",
+    stats: ["5-7 Minutes", "49 Indicators", "7 Dimensions"],
+    productEyebrow: "Product Experience",
+    productTitle: "What will you get from",
+    productBody:
+      "BinaInsight helps organizations see performance more clearly: what is already strong, what slows progress, and which areas deserve priority.",
+    benefits: [
+      {
+        title: "Precise 7-dimension score",
+        desc: "Insights, Lab, Coach, Play, Academy, Works, and Impact are calculated from 49 indicators.",
+      },
+      {
+        title: "Organizational readiness category",
+        desc: "Results are classified as Beginner, Developing, Professional, or Excellent.",
+      },
+      {
+        title: "Priority recommendations",
+        desc: "The report highlights the lowest areas, brief analysis, and relevant development actions.",
+      },
+    ],
+    spectrumTitle: "Choose the organization's measurement focus.",
+    spectrumBody:
+      "These seven areas are read as one spectrum. Select a dimension to see the signals worth understanding before setting intervention priorities.",
+    spectrumTags: ["Diagnose root cause", "Map capability gaps", "Prioritize intervention"],
+    ctaMeta: "5-7 minutes - 49 indicators - report delivered",
+    ctaTitle: "In 7 minutes, find the area that most",
+    ctaHighlight: "limits team performance.",
+  },
+};
+
 type DimensionIconType = "insights" | "lab" | "coach" | "play" | "academy" | "works" | "impact";
 
-const SAMPLE_SCORES = [
-  { label: "Insights", value: 82, signal: "Data performa sudah kuat", tone: "bg-[#D9A441]" },
-  { label: "Lab", value: 71, signal: "Kompetensi perlu ditajamkan", tone: "bg-[#8FA3C7]" },
-  { label: "Coach", value: 64, signal: "Bottleneck leadership terdeteksi", tone: "bg-[#C86B2B]" },
-  { label: "Play", value: 76, signal: "Energi tim relatif positif", tone: "bg-[#6EA27B]" },
-  { label: "Academy", value: 68, signal: "Learning path belum konsisten", tone: "bg-[#0B2C6B]" },
-  { label: "Works", value: 61, signal: "Ritme eksekusi perlu diperjelas", tone: "bg-[#C86B2B]" },
-  { label: "Impact", value: 57, signal: "Dampak program belum terukur", tone: "bg-[#B9471D]" },
-];
-
-const SAMPLE_OVERALL = Math.round(SAMPLE_SCORES.reduce((sum, item) => sum + item.value, 0) / SAMPLE_SCORES.length);
-const SAMPLE_PRIORITY = [...SAMPLE_SCORES].sort((a, b) => a.value - b.value)[0];
-
 export function LandingStep({ onStart }: LandingStepProps) {
+  const locale = useLocale();
+  const copy = COPY[locale];
+  const dimensionCopy = locale === "en" ? DIMENSION_COPY_EN : DIMENSION_COPY;
   const [activeDimension, setActiveDimension] = useState(0);
   const activeName = DIMENSIONS[activeDimension];
 
@@ -74,12 +147,11 @@ export function LandingStep({ onStart }: LandingStepProps) {
                 BinaInsight Diagnostic
               </div>
               <h1 className="max-w-4xl text-4xl sm:text-5xl md:text-6xl lg:text-[4.45rem] xl:text-[4.9rem] font-light tracking-tight leading-[1.04] mb-6 text-white">
-                Diagnosis performa <br />{" "}
-                <span className="text-[#D9A441] font-light italic">berbasis data.</span>
+                {copy.heroTitle} <br />{" "}
+                <span className="text-[#D9A441] font-light italic">{copy.heroHighlight}</span>
               </h1>
               <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-xl mb-10 leading-relaxed">
-                Diagnostik mendalam berbasis data untuk menemukan blind spot performa,
-                membaca kesiapan transformasi, dan menentukan prioritas pengembangan tim.
+                {copy.heroBody}
               </p>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-10">
                 <button
@@ -87,7 +159,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
                   className="w-full sm:w-auto group relative inline-flex items-center justify-center h-14 md:h-16 px-10 md:px-12 bg-[#0B2C6B] text-[#D9A441] rounded-full text-[13px] font-bold tracking-widest hover:bg-[#08245A] transition-all overflow-hidden uppercase shadow-xl shadow-[#0B2C6B]/30 border border-[#D9A441]/20"
                 >
                   <span className="relative z-10 flex items-center gap-3">
-                    MULAI DIAGNOSTIK
+                    {copy.start}
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </span>
                 </button>
@@ -95,15 +167,15 @@ export function LandingStep({ onStart }: LandingStepProps) {
                   href="#about-insight"
                   className="rounded-full border border-white/18 px-6 py-4 text-white/72 hover:text-white hover:bg-white/10 text-[11px] font-bold tracking-widest uppercase transition-colors"
                 >
-                  Lihat Preview Hasil
+                  {copy.preview}
                 </a>
               </div>
               <div className="flex flex-wrap items-center gap-4 text-white/54 text-[10px] font-medium tracking-[0.2em] uppercase border-t border-white/10 pt-8">
-                <span>5-7 Menit</span>
+                <span>{copy.stats[0]}</span>
                 <div className="w-1 h-1 rounded-full bg-white/20" />
-                <span>49 Indikator</span>
+                <span>{copy.stats[1]}</span>
                 <div className="w-1 h-1 rounded-full bg-white/20" />
-                <span>7 Dimensi</span>
+                <span>{copy.stats[2]}</span>
               </div>
             </div>
 
@@ -117,21 +189,16 @@ export function LandingStep({ onStart }: LandingStepProps) {
         <div className="max-w-6xl mx-auto grid md:grid-cols-[0.9fr_1.1fr] gap-16 items-center">
           <div>
             <div className="text-[10px] font-bold tracking-[0.3em] text-[#D9A441] uppercase mb-4">
-              Product Experience
+              {copy.productEyebrow}
             </div>
             <h2 className="text-3xl md:text-5xl font-light leading-tight mb-8 text-[#0B2C6B]">
-              Apa yang akan Anda dapatkan dari <span className="italic">BinaInsight?</span>
+              {copy.productTitle} <span className="italic">BinaInsight?</span>
             </h2>
             <p className="text-black/58 text-lg leading-relaxed mb-10 font-light">
-              BinaInsight membantu organisasi melihat performa secara lebih jernih:
-              apa yang sudah kuat, apa yang menghambat, dan area mana yang perlu diprioritaskan.
+              {copy.productBody}
             </p>
             <div className="space-y-7">
-              {[
-                { title: "Skor 7 dimensi yang presisi", desc: "Insights, Lab, Coach, Play, Academy, Works, dan Impact dihitung dari 49 indikator." },
-                { title: "Kategori kesiapan organisasi", desc: "Hasil diklasifikasikan menjadi Pemula, Berkembang, Profesional, atau Unggulan." },
-                { title: "Rekomendasi prioritas", desc: "Laporan menampilkan area terendah, analisis singkat, dan aksi pengembangan yang relevan." },
-              ].map((item, i) => (
+              {copy.benefits.map((item, i) => (
                 <div key={i} className="flex gap-5 group">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] border border-black/[0.03] bg-[#F5F7FA] transition-all duration-300 group-hover:bg-[#0B2C6B] group-hover:text-white">
                     <Check size={20} className={i === 0 ? "text-[#D9A441]" : ""} />
@@ -181,10 +248,10 @@ export function LandingStep({ onStart }: LandingStepProps) {
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#D9A441]">7 Dimensions</p>
                 <h2 className="mt-5 max-w-3xl text-4xl font-light leading-[1.02] tracking-[-0.05em] md:text-6xl lg:text-[4.2rem]">
-                  Pilih fokus pengukuran organisasi.
+                  {copy.spectrumTitle}
                 </h2>
                 <p className="mt-6 max-w-xl text-sm font-light leading-relaxed text-white/62 md:text-base">
-                  Tujuh area ini dibaca sebagai satu spektrum. Pilih salah satu dimensi untuk melihat sinyal yang ingin dipahami sebelum menentukan prioritas intervensi.
+                  {copy.spectrumBody}
                 </p>
 
                 <div className="mt-8 hidden items-center gap-4 lg:flex">
@@ -235,16 +302,16 @@ export function LandingStep({ onStart }: LandingStepProps) {
                       </p>
                       <h3 className="mt-4 text-6xl font-light tracking-[-0.055em] text-white xl:text-7xl">{activeName}</h3>
                       <p className="mt-6 max-w-xl text-xl font-light leading-[1.65] text-white/68">
-                        {DIMENSION_COPY[activeName]}
+                        {dimensionCopy[activeName]}
                       </p>
                     </motion.div>
                   </div>
                 </div>
 
                 <div className="mt-6 grid grid-cols-3 border-y border-white/12 text-[10px] font-bold uppercase tracking-[0.18em] text-white/42">
-                  <span className="border-r border-white/12 py-4">Diagnose root cause</span>
-                  <span className="border-r border-white/12 px-5 py-4">Map capability gaps</span>
-                  <span className="px-5 py-4">Prioritize intervention</span>
+                  <span className="border-r border-white/12 py-4">{copy.spectrumTags[0]}</span>
+                  <span className="border-r border-white/12 px-5 py-4">{copy.spectrumTags[1]}</span>
+                  <span className="px-5 py-4">{copy.spectrumTags[2]}</span>
                 </div>
               </div>
 
@@ -275,7 +342,7 @@ export function LandingStep({ onStart }: LandingStepProps) {
                     <PixelIcon type={activeName.toLowerCase() as DimensionIconType} size={40} />
                   </div>
                   <h3 className="text-4xl font-light tracking-[-0.04em] text-white">{activeName}</h3>
-                  <p className="mt-4 text-sm font-light leading-relaxed text-white/68">{DIMENSION_COPY[activeName]}</p>
+                  <p className="mt-4 text-sm font-light leading-relaxed text-white/68">{dimensionCopy[activeName]}</p>
                 </motion.div>
               </div>
               {/* <div className="divide-y divide-white/12 border-y border-white/12 lg:hidden">
@@ -314,10 +381,10 @@ export function LandingStep({ onStart }: LandingStepProps) {
 
           <div className="relative z-10">
             <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.24em] text-[#D9A441]">
-              5-7 menit • 49 indikator • laporan terkirim
+              {copy.ctaMeta}
             </p>
             <h3 className="text-2xl md:text-4xl font-light text-white tracking-tight">
-              Dalam 7 menit, temukan area yang paling <span className="text-[#D9A441] font-bold italic">menghambat performa tim.</span>
+              {copy.ctaTitle} <span className="text-[#D9A441] font-bold italic">{copy.ctaHighlight}</span>
             </h3>
           </div>
 
@@ -325,148 +392,11 @@ export function LandingStep({ onStart }: LandingStepProps) {
             onClick={onStart}
             className="relative z-10 group flex items-center gap-4 px-8 h-14 bg-white text-[#0B2C6B] rounded-full text-xs font-bold tracking-widest hover:bg-[#D9A441] transition-all shadow-xl"
           >
-            MULAI DIAGNOSTIK
+            {copy.start}
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       </section>
     </motion.div>
-  );
-}
-
-function DiagnosticPreview() {
-  const [tilt, setTilt] = useState({ x: 0, y: 0, active: false });
-
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-
-    setTilt({
-      x: -x * 12,
-      y: y * 10,
-      active: true,
-    });
-  };
-
-  return (
-    <div
-      onPointerMove={handlePointerMove}
-      onPointerLeave={() => setTilt({ x: 0, y: 0, active: false })}
-      className="hidden md:block w-full justify-self-start max-w-[400px] [perspective:1400px]"
-    >
-      <motion.div
-        animate={{
-          y: [0, -7, 0],
-          rotateX: tilt.y + 5,
-          rotateY: tilt.x - 10,
-          rotateZ: tilt.active ? 0 : [-1.1, 0.7, -1.1],
-          x: tilt.active ? tilt.x * 1.2 : 0,
-          scale: tilt.active ? 1.015 : 1,
-        }}
-        transition={{
-          y: { duration: 12, repeat: Infinity, ease: "easeInOut" },
-          rotateZ: { duration: 12, repeat: Infinity, ease: "easeInOut" },
-          rotateX: { type: "spring", stiffness: 120, damping: 20 },
-          rotateY: { type: "spring", stiffness: 120, damping: 20 },
-          x: { type: "spring", stiffness: 120, damping: 20 },
-          scale: { type: "spring", stiffness: 120, damping: 20 },
-        }}
-        className="relative [transform-style:preserve-3d] will-change-transform"
-      >
-        <div className="absolute inset-5 translate-x-10 translate-y-8 rounded-[14px] border border-white/10 bg-white/[0.08] shadow-2xl shadow-black/10 backdrop-blur-md [transform:translateZ(-92px)]" />
-        <div className="absolute inset-3 translate-x-5 translate-y-4 rounded-[14px] border border-white/12 bg-[#D9A441]/[0.08] shadow-2xl shadow-black/10 backdrop-blur-md [transform:translateZ(-48px)]" />
-
-        <div className="relative rounded-[16px] border border-white/16 bg-white/[0.11] p-4 shadow-[0_34px_90px_-42px_rgba(0,0,0,0.65)] backdrop-blur-xl [transform-style:preserve-3d]">
-          <div className="mb-4 flex items-center justify-between [transform:translateZ(34px)]">
-            <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/52">Preview</span>
-            <span className="rounded-full bg-[#D9A441]/15 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#D9A441]">Live Map</span>
-          </div>
-          <div className="rounded-[14px] bg-white p-5 shadow-[0_18px_48px_-34px_rgba(11,44,107,0.45)] [transform:translateZ(72px)]">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[#F5F7FA]">
-                <Radar size={19} className="text-[#0B2C6B]" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[#0B2C6B]">Hasil Penilaian</p>
-                <p className="text-xs text-black/40">Simulasi output assessment</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-[0.9fr_1.1fr] gap-3">
-              <div className="rounded-[12px] bg-[#0B2C6B] p-4 text-white shadow-xl shadow-[#0B2C6B]/18">
-                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/44">Overall</p>
-                <p className="mt-2 text-4xl font-light">{SAMPLE_OVERALL}</p>
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-[#D9A441]">Profesional</p>
-              </div>
-              <div className="rounded-[12px] bg-[#F5F7FA] p-4">
-                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-black/34">Prioritas</p>
-                <p className="mt-2 text-lg font-light text-[#0B2C6B]">{SAMPLE_PRIORITY.label}</p>
-                <p className="mt-1 text-xs leading-relaxed text-black/46">{SAMPLE_PRIORITY.signal}</p>
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-3 gap-2">
-              {SAMPLE_SCORES.slice(0, 3).map((item) => (
-                <div key={item.label} className="rounded-[10px] bg-[#F5F7FA] p-3">
-                  <p className="text-[8px] font-bold uppercase tracking-widest text-black/34">{item.label}</p>
-                  <p className="mt-1 text-lg font-light text-[#0B2C6B]">{item.value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-function ReportPreview() {
-  return (
-    <div className="relative z-10 w-full rounded-[14px] border border-black/[0.04] bg-white p-5 shadow-[0_18px_58px_-46px_rgba(11,44,107,0.42)] md:p-7">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#D9A441]">Sample Report</p>
-          <h3 className="mt-2 text-2xl font-light text-[#0B2C6B]">Priority Map</h3>
-        </div>
-        <BarChart3 className="text-[#0B2C6B]" size={26} />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-[12px] bg-[#0B2C6B] p-4 text-white">
-          <p className="text-[9px] font-bold uppercase tracking-widest text-white/38">Overall Score</p>
-          <p className="mt-1 text-3xl font-light">{SAMPLE_OVERALL}/100</p>
-          <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-[#D9A441]">Profesional</p>
-        </div>
-        <div className="rounded-[12px] bg-[#F5F7FA] p-4">
-          <p className="text-[9px] font-bold uppercase tracking-widest text-black/34">Lowest Signal</p>
-          <p className="mt-1 text-2xl font-light text-[#0B2C6B]">{SAMPLE_PRIORITY.label}</p>
-          <p className="mt-1 text-[10px] leading-relaxed text-black/46">{SAMPLE_PRIORITY.signal}</p>
-        </div>
-      </div>
-      <div className="mt-5 grid grid-cols-7 gap-1.5">
-        {SAMPLE_SCORES.map((item) => (
-          <div key={item.label} className="flex h-24 items-end rounded-xl bg-[#F5F7FA] px-1.5 pb-1.5">
-            <div className={`w-full rounded-lg ${item.tone}`} style={{ height: `${Math.max(item.value, 24)}%` }} />
-          </div>
-        ))}
-      </div>
-      <div className="mt-2 grid grid-cols-7 gap-1.5 text-center">
-        {SAMPLE_SCORES.map((item) => (
-          <span key={item.label} className="truncate text-[8px] font-bold uppercase tracking-wider text-black/34">
-            {item.label.slice(0, 3)}
-          </span>
-        ))}
-      </div>
-      <div className="mt-5 space-y-3">
-        {[
-          ["Kategori assessment", "Profesional"],
-          ["Prioritas intervensi", SAMPLE_PRIORITY.label],
-          ["Output laporan", "Analisis + 5 rekomendasi"],
-        ].map(([label, value]) => (
-          <div key={label} className="flex items-center justify-between rounded-[10px] border border-black/[0.04] px-4 py-3">
-            <span className="text-sm text-black/58">{label}</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#0B2C6B]">{value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }

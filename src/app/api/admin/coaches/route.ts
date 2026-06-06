@@ -1,8 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { adminError, logAdminEvent, parseValidatedBody } from "@/lib/admin-api";
 import { createServerSupabase } from "@/lib/supabase";
 import { requireAdmin } from "@/lib/admin-auth";
 
 const allowedStatuses = new Set(["active", "inactive", "prospect", "archived"]);
+
+const coachBodySchema = z.object({
+  id: z.string().trim().optional(),
+  name: z.string().trim().min(1, "Nama associate wajib diisi."),
+  email: z.string().trim().email("Email associate tidak valid.").or(z.literal("")).optional().default(""),
+  phone: z.string().trim().optional().default(""),
+  expertise: z.string().trim().optional().default(""),
+  field: z.string().trim().optional().default(""),
+  category: z.string().trim().optional().default(""),
+  rate: z.string().trim().optional().default(""),
+  availability: z.string().trim().optional().default(""),
+  cvUrl: z.string().trim().optional().default(""),
+  cv_url: z.string().trim().optional().default(""),
+  linkedinUrl: z.string().trim().optional().default(""),
+  linkedin_url: z.string().trim().optional().default(""),
+  linkedinSummary: z.string().trim().optional().default(""),
+  linkedin_summary: z.string().trim().optional().default(""),
+  bio: z.string().trim().optional().default(""),
+  notes: z.string().trim().optional().default(""),
+  status: z.enum(["active", "inactive", "prospect", "archived"]).optional().default("active"),
+});
 
 function cleanCoachPayload(body: Record<string, unknown>) {
   const status = String(body.status || "active").toLowerCase();
@@ -31,20 +54,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: admin.error }, { status: admin.status });
   }
 
-  const payload = cleanCoachPayload(await req.json());
-  if (!payload.name) {
-    return NextResponse.json({ success: false, error: "Nama coach wajib diisi." }, { status: 400 });
+  const parsed = await parseValidatedBody(req, coachBodySchema);
+  if (parsed.error || !parsed.data) {
+    return adminError(parsed.error, 400, "INVALID_COACH_PAYLOAD");
   }
 
-  const { data, error } = await createServerSupabase()
+  const db = createServerSupabase();
+  const payload = cleanCoachPayload(parsed.data);
+  const { data, error } = await db
     .from("coaches")
     .insert(payload)
     .select()
     .single();
 
   if (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return adminError(error.message, 500, "COACH_CREATE_FAILED");
   }
+
+  await logAdminEvent(db, {
+    eventType: "associate_created",
+    targetType: "coach",
+    targetId: data.id,
+    actor: admin.email,
+    payload: { name: data.name, email: data.email, status: data.status },
+    message: `Associate ${data.name} dibuat.`,
+  });
 
   return NextResponse.json({ success: true, coach: data });
 }
@@ -55,14 +89,20 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ success: false, error: admin.error }, { status: admin.status });
   }
 
-  const body = await req.json();
-  const id = String(body.id || "");
-  if (!id) {
-    return NextResponse.json({ success: false, error: "ID coach tidak ditemukan." }, { status: 400 });
+  const parsed = await parseValidatedBody(req, coachBodySchema.extend({ id: z.string().trim().min(1, "ID associate wajib diisi.") }));
+  if (parsed.error || !parsed.data) {
+    return adminError(parsed.error, 400, "INVALID_COACH_PAYLOAD");
   }
 
+  const body = parsed.data;
+  const id = String(body.id || "");
+  if (!id) {
+    return adminError("ID associate tidak ditemukan.", 400, "COACH_ID_REQUIRED");
+  }
+
+  const db = createServerSupabase();
   const payload = cleanCoachPayload(body);
-  const { data, error } = await createServerSupabase()
+  const { data, error } = await db
     .from("coaches")
     .update(payload)
     .eq("id", id)
@@ -70,8 +110,17 @@ export async function PATCH(req: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return adminError(error.message, 500, "COACH_UPDATE_FAILED");
   }
+
+  await logAdminEvent(db, {
+    eventType: "associate_updated",
+    targetType: "coach",
+    targetId: id,
+    actor: admin.email,
+    payload: { name: data.name, email: data.email, status: data.status },
+    message: `Associate ${data.name} diperbarui.`,
+  });
 
   return NextResponse.json({ success: true, coach: data });
 }
@@ -84,13 +133,38 @@ export async function DELETE(req: NextRequest) {
 
   const id = req.nextUrl.searchParams.get("id");
   if (!id) {
-    return NextResponse.json({ success: false, error: "ID coach tidak ditemukan." }, { status: 400 });
+    return adminError("ID associate tidak ditemukan.", 400, "COACH_ID_REQUIRED");
   }
 
-  const { error } = await createServerSupabase().from("coaches").delete().eq("id", id);
-  if (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  const db = createServerSupabase();
+  const { data: activeAssignment } = await db
+    .from("coach_assignments")
+    .select("id")
+    .eq("coach_id", id)
+    .in("status", ["Planned", "Active"])
+    .limit(1)
+    .maybeSingle();
+
+  if (activeAssignment) {
+    return adminError(
+      "Associate masih terhubung ke assignment aktif. Arsipkan atau selesaikan assignment terlebih dahulu.",
+      409,
+      "COACH_HAS_ACTIVE_ASSIGNMENT"
+    );
   }
+
+  const { error } = await db.from("coaches").delete().eq("id", id);
+  if (error) {
+    return adminError(error.message, 500, "COACH_DELETE_FAILED");
+  }
+
+  await logAdminEvent(db, {
+    eventType: "associate_deleted",
+    targetType: "coach",
+    targetId: id,
+    actor: admin.email,
+    message: `Associate ${id} dihapus.`,
+  });
 
   return NextResponse.json({ success: true });
 }

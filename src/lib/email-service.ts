@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 import { AssessmentData } from './validations';
 import { AssessmentResult } from './pdf-service';
+import type { Locale } from '@/i18n/config';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -37,8 +38,51 @@ export async function sendAssessmentEmail(
   formData: AssessmentData,
   result: AssessmentResult,
   pdfBuffer?: Buffer,
-  assessmentId?: string
+  assessmentId?: string,
+  locale: Locale = 'id'
 ) {
+  const isEnglish = locale === 'en';
+  const copy = isEnglish
+    ? {
+        title: 'Executive Report',
+        preheader: 'BinaHub Insight Diagnostic',
+        heading: 'Confidential Executive Assessment',
+        greeting: `Dear <strong>${formData.name}</strong>,`,
+        intro: `Thank you for completing the BinaHub Insight diagnostic process. Your initial report has been processed and attached as a PDF so it can be reviewed more fully by the internal team at ${formData.company}.`,
+        overallScore: 'Overall Score',
+        stage: 'Stage',
+        noteTitle: 'Introductory Note',
+        noteBody: 'This email serves as the official introduction to the completed diagnostic result. The full analysis, development priorities, cross-dimensional reasoning, and initial recommendations are available in the attached PDF.',
+        referenceTitle: 'Reference Document',
+        pdfNote: '<strong>The full PDF report</strong> contains visualization details, diagnostic insights, strategic priorities, and an initial roadmap. This email is intentionally brief so the main document remains the official reference.',
+        proposalIntro: 'If you would like to understand the program format, scope, and investment direction most relevant to this diagnostic result, you can request an initial proposal from our team.',
+        proposalCta: 'Request Proposal',
+        chatCta: 'Ask an initial question through the BinaHub assistant',
+        footer: 'People Transformation & Future Capability Partner',
+        auto: 'This email was sent automatically. If you need assistance, reply to',
+        subject: `Confidential Executive Assessment · ${formData.company}`,
+        fileName: `Diagnostic_Report_${formData.company.replace(/\s+/g, '_')}.pdf`,
+      }
+    : {
+        title: 'Laporan Eksekutif',
+        preheader: 'Diagnostik BinaHub Insight',
+        heading: 'Asesmen Eksekutif Rahasia',
+        greeting: `Yth. <strong>Bapak/Ibu ${formData.name}</strong>,`,
+        intro: `Terima kasih telah menyelesaikan proses diagnostik BinaHub Insight. Laporan awal Anda telah kami proses dan kami lampirkan dalam bentuk PDF agar dapat ditinjau secara lebih utuh oleh tim internal ${formData.company}.`,
+        overallScore: 'Skor Keseluruhan',
+        stage: 'Tahap',
+        noteTitle: 'Catatan Pendahuluan',
+        noteBody: 'Email ini bersifat sebagai pengantar resmi atas hasil diagnostik yang telah diselesaikan. Seluruh detail analisis, prioritas pengembangan, penalaran lintas dimensi, dan rekomendasi awal tersedia dalam PDF terlampir.',
+        referenceTitle: 'Dokumen Rujukan',
+        pdfNote: '<strong>Laporan lengkap (PDF)</strong> berisi detail visualisasi, insight diagnostik, prioritas strategis, dan roadmap awal. Badan email ini kami buat ringkas agar dokumen utama tetap menjadi rujukan resmi.',
+        proposalIntro: 'Jika Bapak/Ibu ingin mengetahui bentuk program, ruang lingkup, dan arah investasi yang paling relevan dengan hasil diagnostik ini, silakan minta penawaran awal dari tim kami.',
+        proposalCta: 'Minta Penawaran',
+        chatCta: 'Ajukan pertanyaan awal melalui asisten BinaHub',
+        footer: 'Mitra Transformasi Manusia & Kapabilitas Masa Depan',
+        auto: 'Email ini dikirim secara otomatis. Jika butuh bantuan, balas ke',
+        subject: `Asesmen Eksekutif Rahasia · ${formData.company}`,
+        fileName: `Laporan_Diagnostik_${formData.company.replace(/\s+/g, '_')}.pdf`,
+      };
   // Brand Colors
   const navy = '#0B2C6B';
   const gold = '#D9A441';
@@ -46,6 +90,7 @@ export async function sendAssessmentEmail(
   const scoreInterpretation = result.scoreInterpretation || `Skor ${result.scores.overall} menempatkan ${formData.company} pada kategori ${result.category}. Ini menunjukkan fondasi organisasi yang dapat diperkuat melalui prioritas strategis yang lebih tajam.`;
   const crossInsights: string[] = [];
   const appUrl = getAppUrl();
+  const localizedAppUrl = appUrl ? `${appUrl}${isEnglish ? '/en' : ''}` : '';
   const proposalUrl = assessmentId && appUrl
     ? `${appUrl}/api/proposal/request?assessmentId=${encodeURIComponent(assessmentId)}`
     : `${appUrl || '#'}?proposal=request`;
@@ -57,16 +102,16 @@ export async function sendAssessmentEmail(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laporan Eksekutif - ${COMPANY_NAME}</title>
+  <title>${copy.title} - ${COMPANY_NAME}</title>
 </head>
 <body style="margin:0;padding:0;background-color:#E2E8F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:#FFFFFF;border-radius:8px;overflow:hidden;margin-top:40px;margin-bottom:40px;box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
     
     <!-- Header -->
     <div style="padding:40px;background-color:${navy};text-align:center;border-bottom:4px solid ${gold};background-image:radial-gradient(circle at 85% 20%, rgba(217,164,65,0.18), transparent 26%), linear-gradient(135deg, rgba(255,255,255,0.05), transparent 45%);">
-      <div style="color:${gold};font-size:10px;text-transform:uppercase;letter-spacing:3px;margin-bottom:15px;font-weight:700;">Diagnostik BinaHub Insight</div>
+      <div style="color:${gold};font-size:10px;text-transform:uppercase;letter-spacing:3px;margin-bottom:15px;font-weight:700;">${copy.preheader}</div>
       <h1 style="color:#FFFFFF;font-size:26px;font-weight:600;margin:0 0 10px;letter-spacing:0px;">
-        Asesmen Eksekutif Rahasia
+        ${copy.heading}
       </h1>
       <p style="color:rgba(255,255,255,0.8);margin:0;font-size:16px;font-weight:300;">${formData.company}</p>
     </div>
@@ -74,18 +119,18 @@ export async function sendAssessmentEmail(
     <!-- Body -->
     <div style="padding:40px;">
       <p style="color:${navy};font-size:16px;margin:0 0 20px;font-weight:400;">
-        Yth. <strong>Bapak/Ibu ${formData.name}</strong>,
+        ${copy.greeting}
       </p>
       <p style="color:#475569;font-size:15px;line-height:1.6;margin:0 0 35px;font-weight:400;">
-        Terima kasih telah menyelesaikan proses diagnostik BinaHub Insight. Laporan awal Anda telah kami proses dan kami lampirkan dalam bentuk PDF agar dapat ditinjau secara lebih utuh oleh tim internal ${formData.company}.
+        ${copy.intro}
       </p>
 
       <!-- Score Card -->
       <div style="background:${offWhite};border-radius:12px;padding:35px;text-align:center;margin:0 0 35px;border:1px solid #E2E8F0;">
-        <p style="color:#64748B;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:0 0 15px;font-weight:600;">Skor Keseluruhan</p>
+        <p style="color:#64748B;font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:0 0 15px;font-weight:600;">${copy.overallScore}</p>
         <div style="font-size:64px;font-weight:700;color:${navy};margin:0 0 15px;line-height:1;">${result.scores.overall}</div>
         <div style="display:inline-block;background:${gold};color:${navy};padding:6px 20px;border-radius:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">
-          Tahap: ${result.category}
+          ${copy.stage}: ${result.category}
         </div>
         <p style="color:#475569;font-size:14px;line-height:1.6;margin:22px 0 0;font-weight:400;">
           ${scoreInterpretation}
@@ -98,9 +143,9 @@ export async function sendAssessmentEmail(
       </div>
 
       <!-- Analysis -->
-      <h2 style="color:${navy};font-size:18px;font-weight:600;margin:0 0 15px;border-left:3px solid ${gold};padding-left:12px;">Catatan Pendahuluan</h2>
+      <h2 style="color:${navy};font-size:18px;font-weight:600;margin:0 0 15px;border-left:3px solid ${gold};padding-left:12px;">${copy.noteTitle}</h2>
       <div style="background:#FFFFFF;padding:0 0 35px 0;">
-        <p style="color:#475569;font-size:15px;line-height:1.7;margin:0;font-weight:400;">Email ini bersifat sebagai pengantar resmi atas hasil diagnostik yang telah diselesaikan. Seluruh detail analisis, prioritas pengembangan, penalaran lintas dimensi, dan rekomendasi awal tersedia dalam PDF terlampir.</p>
+        <p style="color:#475569;font-size:15px;line-height:1.7;margin:0;font-weight:400;">${copy.noteBody}</p>
       </div>
 
       ${crossInsights.length ? `
@@ -114,7 +159,7 @@ export async function sendAssessmentEmail(
       ` : ''}
 
       <!-- Recommendation Highlights -->
-      <h2 style="color:${navy};font-size:18px;font-weight:600;margin:0 0 15px;border-left:3px solid ${gold};padding-left:12px;">Dokumen Rujukan</h2>
+      <h2 style="color:${navy};font-size:18px;font-weight:600;margin:0 0 15px;border-left:3px solid ${gold};padding-left:12px;">${copy.referenceTitle}</h2>
       ${result.recommendations.slice(0, 0).map((rec) => `
         <div style="padding:20px;background:${offWhite};border-radius:8px;margin-bottom:12px;border:1px solid #E2E8F0;border-left:4px solid ${navy};">
           <div style="color:${gold};font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase;">Prioritas Strategis — ${rec.service}</div>
@@ -134,21 +179,21 @@ export async function sendAssessmentEmail(
       <!-- PDF Note -->
       <div style="background:${offWhite};border-radius:8px;padding:25px;text-align:center;margin:35px 0;">
         <p style="color:#475569;font-size:14px;margin:0;line-height:1.6;">
-          <strong>Laporan lengkap (PDF)</strong> berisi detail visualisasi, insight diagnostik, prioritas strategis, dan roadmap awal. Badan email ini kami buat ringkas agar dokumen utama tetap menjadi rujukan resmi.
+          ${copy.pdfNote}
         </p>
       </div>
 
       <!-- CTA -->
       <div style="text-align:center;margin:45px 0 10px;">
-        <p style="color:#475569;font-size:14px;margin-bottom:20px;">Jika Bapak/Ibu ingin mengetahui bentuk program, ruang lingkup, dan arah investasi yang paling relevan dengan hasil diagnostik ini, silakan minta penawaran awal dari tim kami.</p>
+        <p style="color:#475569;font-size:14px;margin-bottom:20px;">${copy.proposalIntro}</p>
         <a href="${proposalUrl}" 
            style="display:inline-block;background-color:${navy};color:#FFFFFF;text-decoration:none;padding:16px 40px;border-radius:6px;font-weight:600;font-size:15px;letter-spacing:0.5px;box-shadow: 0 4px 6px rgba(10,26,58,0.2);">
-          Minta Penawaran
+          ${copy.proposalCta}
         </a>
         <div style="margin-top:25px;">
-          <a href="${appUrl || '#'}?chat=open&name=${encodeURIComponent(formData.name)}&company=${encodeURIComponent(formData.company)}&score=${result.scores.overall}" 
+          <a href="${localizedAppUrl || appUrl || '#'}?chat=open&name=${encodeURIComponent(formData.name)}&company=${encodeURIComponent(formData.company)}&score=${result.scores.overall}" 
              style="color:${navy};font-size:13px;font-weight:600;text-decoration:underline;">
-            Ajukan pertanyaan awal melalui asisten BinaHub
+            ${copy.chatCta}
           </a>
         </div>
       </div>
@@ -158,8 +203,8 @@ export async function sendAssessmentEmail(
     <div style="padding:30px 40px;border-top:1px solid #E2E8F0;text-align:center;background-color:${offWhite};">
       <p style="color:${navy};font-size:12px;margin:0;font-weight:600;letter-spacing:1px;text-transform:uppercase;">${COMPANY_NAME}</p>
       <p style="color:#94A3B8;font-size:11px;margin:8px 0 0;">
-        Mitra Transformasi Manusia & Kapabilitas Masa Depan<br>
-        Email ini dikirim secara otomatis. Jika butuh bantuan, balas ke ${process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'hello@binahub.id'}
+        ${copy.footer}<br>
+        ${copy.auto} ${process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'hello@binahub.id'}
       </p>
     </div>
   </div>
@@ -174,7 +219,7 @@ export async function sendAssessmentEmail(
     const clientRes = await resend.emails.send({
       from: `${COMPANY_NAME} <${FROM}>`,
       to: formData.email,
-      subject: `Asesmen Eksekutif Rahasia · ${formData.company}`,
+      subject: copy.subject,
       html: htmlBody,
       tags: [
         { name: 'category', value: 'assessment_result' },
@@ -182,7 +227,7 @@ export async function sendAssessmentEmail(
       ],
       attachments: pdfBuffer
         ? [{ 
-            filename: `Laporan_Diagnostik_${formData.company.replace(/\s+/g, '_')}.pdf`, 
+            filename: copy.fileName, 
             content: pdfBuffer.toString('base64') 
           }]
         : [],
@@ -230,6 +275,27 @@ export async function sendOutreachEmail(
     headers: {
       'List-Unsubscribe': `<${getAppUrl()}/unsubscribe>`,
     },
+  });
+}
+
+export async function sendAssociateInvitationEmail(
+  to: string,
+  name: string,
+  subject: string,
+  htmlContent: string,
+  projectName?: string
+) {
+  return resend.emails.send({
+    from: `${COMPANY_NAME} <${FROM}>`,
+    to,
+    subject,
+    html: htmlContent
+      .replaceAll('{{name}}', name)
+      .replaceAll('{{project}}', projectName || 'Project BinaHub'),
+    tags: [
+      { name: 'category', value: 'associate_invitation' },
+      { name: 'project', value: resendTagValue(projectName) },
+    ],
   });
 }
 

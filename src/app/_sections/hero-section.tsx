@@ -6,29 +6,55 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PixelBackground from "@/components/pixel-background";
+import { localizePath } from "@/i18n/config";
+import { useLocale } from "@/i18n/use-locale";
 
-const TITLES = [
-  { white: "AI Power", gold: "Human synergy" },
-  { white: "AI for", gold: "Human Growth" },
-  { white: "Building Adaptive", gold: "Organizations" },
-  { white: "Human-Centered", gold: "Intelligence" },
-  { white: "AI That", gold: "Develops People" },
-  { white: "Technology With", gold: "Human Direction" }
-];
+const COPY = {
+  id: {
+    titles: [
+      { white: "AI Power", gold: "Human synergy" },
+      { white: "AI for", gold: "Human Growth" },
+      { white: "Building Adaptive", gold: "Organizations" },
+      { white: "Human-Centered", gold: "Intelligence" },
+      { white: "AI That", gold: "Develops People" },
+      { white: "Technology With", gold: "Human Direction" },
+    ],
+    desc: "Menciptakan masa depan organisasi yang adaptif terhadap teknologi dan bertumbuh secara manusiawi.",
+    journey: "Perjalanan Anda Dimulai dari sini",
+    cta: "Mulai",
+    scroll: "Scroll",
+  },
+  en: {
+    titles: [
+      { white: "AI Power", gold: "Human Synergy" },
+      { white: "AI for", gold: "Human Growth" },
+      { white: "Building Adaptive", gold: "Organizations" },
+      { white: "Human-Centered", gold: "Intelligence" },
+      { white: "AI That", gold: "Develops People" },
+      { white: "Technology With", gold: "Human Direction" },
+    ],
+    desc: "Creating a future-ready organization that adapts to technology while growing in a deeply human way.",
+    journey: "Your journey starts here",
+    cta: "Start",
+    scroll: "Scroll",
+  },
+};
 
 interface HeroSectionProps {
   heroReady: boolean;
 }
 
 export function HeroSection({ heroReady }: HeroSectionProps) {
+  const locale = useLocale();
+  const copy = COPY[locale];
   const [titleIndex, setTitleIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTitleIndex((prev) => (prev + 1) % TITLES.length);
+      setTitleIndex((prev) => (prev + 1) % copy.titles.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [copy.titles.length]);
 
   return (
     <section id="home-hero" className="relative z-0 w-full overflow-x-hidden bg-[#F5F7FA] px-4 pt-20 mb-8 md:px-8 md:pt-28 md:mb-16">
@@ -101,9 +127,9 @@ export function HeroSection({ heroReady }: HeroSectionProps) {
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="absolute inset-0 text-3xl max-[499px]:text-[2rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-8xl font-light text-white leading-[1.1] tracking-tight"
               >
-                {TITLES[titleIndex].white} <br />
+                {copy.titles[titleIndex].white} <br />
                 <span className="italic font-sans" style={{ color: "#D9A441" }}>
-                  {TITLES[titleIndex].gold}
+                  {copy.titles[titleIndex].gold}
                 </span>
               </motion.h1>
             </AnimatePresence>
@@ -119,7 +145,7 @@ export function HeroSection({ heroReady }: HeroSectionProps) {
                 "opacity 1s cubic-bezier(0.16,1,0.3,1) 100ms, filter 1s cubic-bezier(0.16,1,0.3,1) 100ms, transform 1s cubic-bezier(0.16,1,0.3,1) 100ms",
             }}
           >
-            Menciptakan masa depan organisasi yang adaptif terhadap teknologi dan bertumbuh secara manusiawi.
+            {copy.desc}
           </p>
 
           {/* CTA Buttons */}
@@ -134,14 +160,14 @@ export function HeroSection({ heroReady }: HeroSectionProps) {
           >
             <div className="flex items-center gap-2.5">
               <span className="text-white/60 text-sm italic hidden md:flex items-center tracking-wide shrink-0">
-                Perjalanan Anda Dimulai dari sini <ArrowRight className="inline ml-2.5" size={16}/>
+                {copy.journey} <ArrowRight className="inline ml-2.5" size={16}/>
               </span>
 
               <Link
-                href="/insight"
+                href={localizePath("/insight", locale)}
                 className="group relative inline-flex h-12 max-[499px]:h-10 shrink-0 items-center justify-center gap-3 overflow-hidden rounded-full border border-[#D9A441]/30 bg-[#D9A441] px-7 max-[499px]:px-5 text-[11px] max-[499px]:text-[10px] font-bold uppercase tracking-[0.14em] text-[#0B2C6B] shadow-[0_18px_44px_-26px_rgba(217,164,65,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_24px_56px_-28px_rgba(217,164,65,0.85)] active:scale-95"
               >
-                Mulai
+                {copy.cta}
                 <ChevronRight size={14} strokeWidth={2.2} className="transition-transform duration-300 group-hover:translate-x-0.5" />
               </Link>
             </div>
@@ -157,7 +183,7 @@ export function HeroSection({ heroReady }: HeroSectionProps) {
           }}
         >
           <span className="text-[10px] tracking-[0.3em] text-white/30 uppercase font-medium">
-            Scroll
+            {copy.scroll}
           </span>
           <div className="w-[1px] h-12 bg-gradient-to-b from-white/30 to-transparent relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1/2 bg-white/55 animate-scroll-line" />

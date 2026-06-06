@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import { ArrowLeft, ArrowRight, AlertTriangle, X, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, AlertTriangle, X } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { FormData } from "./_types";
@@ -14,9 +13,16 @@ import { InstructionStep } from "./_steps/instruction-step";
 import { QuestionsStep } from "./_steps/questions-step";
 import { OpenQuestionsStep } from "./_steps/open-questions-step";
 import { SuccessStep } from "./_steps/success-step";
-import { PixelIcon } from "@/components/pixel-icon";
+import { PixelIcon, type IconType } from "@/components/pixel-icon";
+import { localizePath } from "@/i18n/config";
+import { useLocale } from "@/i18n/use-locale";
 
 const TOTAL_STEPS = 10;
+const SPEED_LINES = [
+  { width: 46, duration: 0.48 },
+  { width: 72, duration: 0.66 },
+  { width: 58, duration: 0.54 },
+];
 const STEP_CONTEXT = [
   { eyebrow: "Profil Organisasi", title: "Personalisasi laporan diagnostik" },
   { eyebrow: "Instruksi", title: "Kalibrasi cara menjawab" },
@@ -27,7 +33,18 @@ const STEP_CONTEXT = [
   { eyebrow: "Konteks Strategis", title: "Menangkap prioritas 3-6 bulan" },
 ];
 
+const STEP_CONTEXT_EN = [
+  { eyebrow: "Organization Profile", title: "Personalize the diagnostic report" },
+  { eyebrow: "Instructions", title: "Calibrate how to answer" },
+  ...DIMENSIONS.map((dimension) => ({
+    eyebrow: `${dimension} Dimension`,
+    title: `Analyzing ${dimension}`,
+  })),
+  { eyebrow: "Strategic Context", title: "Capture the next 3-6 month priorities" },
+];
+
 export default function InsightPage() {
+  const locale = useLocale();
   const [step, setStep] = useState(-1);
   const [formData, setFormData] = useState<FormData>({
     email: "", company: "", employees: "", name: "",
@@ -53,7 +70,7 @@ export default function InsightPage() {
     if (step > 0 && step < 10) {
       window.history.pushState({ trap: true }, "", window.location.href);
     }
-    const handlePopState = (e: PopStateEvent) => {
+    const handlePopState = () => {
       if (step > 0 && step < 10) {
         setShowExitConfirm(true);
         window.history.pushState({ trap: true }, "", window.location.href);
@@ -79,7 +96,7 @@ export default function InsightPage() {
 
   const confirmBack = () => {
     setShowExitConfirm(false);
-    window.location.href = "/";
+    window.location.href = localizePath("/", locale);
   };
 
   // ── Handlers ────────────────────────────────────────────────────────────────
@@ -105,6 +122,7 @@ export default function InsightPage() {
         body: JSON.stringify({
           ...formData,
           answers: answers,
+          locale,
         }),
       });
 
@@ -114,12 +132,12 @@ export default function InsightPage() {
         nextStep();
       } else {
         const fullError = data.details ? `${data.error} (${data.details})` : data.error;
-        alert("Gagal mengirim asesmen: " + (fullError || "Terjadi kesalahan"));
+        alert(copy.submitError + (fullError || copy.genericError));
         setIsSubmitting(false);
       }
     } catch (error) {
       console.error("Submission error:", error);
-      alert("Terjadi kesalahan koneksi saat mengirim data.");
+      alert(copy.connectionError);
       setIsSubmitting(false);
     }
   };
@@ -135,7 +153,40 @@ export default function InsightPage() {
   };
 
   const progressPercent = step >= 0 ? Math.min(100, (step / TOTAL_STEPS) * 100) : 0;
-  const currentContext = step >= 0 && step < 10 ? STEP_CONTEXT[step] : null;
+  const currentContext = step >= 0 && step < 10 ? (locale === "en" ? STEP_CONTEXT_EN : STEP_CONTEXT)[step] : null;
+  const copy = locale === "en"
+    ? {
+        submitError: "Failed to submit assessment: ",
+        genericError: "An error occurred",
+        connectionError: "A connection error occurred while submitting data.",
+        cancelTitle: "Cancel Assessment?",
+        cancelBody: "You will lose all data you have entered.",
+        cancelConfirm: "Are you sure you want to stop this process?",
+        continue: "CONTINUE ASSESSMENT",
+        exit: "EXIT & CANCEL",
+        done: "DONE",
+        step: "STEP",
+        of: "OF",
+        back: "BACK",
+        nextClosing: "CONTINUE TO CLOSING",
+        nextPage: "NEXT PAGE",
+      }
+    : {
+        submitError: "Gagal mengirim asesmen: ",
+        genericError: "Terjadi kesalahan",
+        connectionError: "Terjadi kesalahan koneksi saat mengirim data.",
+        cancelTitle: "Batalkan Asesmen?",
+        cancelBody: "Anda akan kehilangan semua data yang telah diisi.",
+        cancelConfirm: "Apakah Anda yakin ingin menghentikan proses ini?",
+        continue: "LANJUTKAN ASESMEN",
+        exit: "KELUAR & BATALKAN",
+        done: "SELESAI",
+        step: "TAHAP",
+        of: "DARI",
+        back: "KEMBALI",
+        nextClosing: "LANJUT KE PENUTUP",
+        nextPage: "HALAMAN BERIKUTNYA",
+      };
 
   return (
     <div className="min-h-screen bg-[#F5F7FA] text-[#4A4C54] font-sans flex flex-col selection:bg-[#0B2C6B] selection:text-white relative overflow-x-hidden">
@@ -167,16 +218,16 @@ export default function InsightPage() {
                 <div className="mx-auto mb-8 flex h-20 w-20 rotate-3 items-center justify-center rounded-[14px] border border-red-100 bg-red-50 text-red-500 shadow-xl shadow-red-500/10">
                   <AlertTriangle size={36} strokeWidth={2} />
                 </div>
-                <h3 className="text-2xl font-bold text-[#0B2C6B] mb-3 tracking-tight">Batalkan Asesmen?</h3>
+                <h3 className="text-2xl font-bold text-[#0B2C6B] mb-3 tracking-tight">{copy.cancelTitle}</h3>
                 <p className="text-black/40 text-base mb-10 leading-relaxed font-light">
-                  Anda akan kehilangan semua data yang telah diisi. <br /> Apakah Anda yakin ingin menghentikan proses ini?
+                  {copy.cancelBody} <br /> {copy.cancelConfirm}
                 </p>
                 <div className="grid grid-cols-1 gap-3">
                   <button onClick={() => setShowExitConfirm(false)} className="group relative h-16 w-full overflow-hidden rounded-[12px] bg-[#0B2C6B] text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-xl transition-all hover:bg-black">
-                    <span className="relative z-10">LANJUTKAN ASESMEN</span>
+                    <span className="relative z-10">{copy.continue}</span>
                   </button>
                   <button onClick={confirmBack} className="h-16 w-full rounded-[12px] border border-black/5 bg-white text-[11px] font-bold uppercase tracking-[0.2em] text-[#0B2C6B]/55 transition-all hover:bg-black/5">
-                    <span className="relative z-10">KELUAR & BATALKAN</span>
+                    <span className="relative z-10">{copy.exit}</span>
                   </button>
                 </div>
               </div>
@@ -207,7 +258,7 @@ export default function InsightPage() {
               if (step > 0 && step < 10) {
                 setShowExitConfirm(true);
               } else {
-                window.location.href = "/";
+                window.location.href = localizePath("/", locale);
               }
             }}
             className="flex items-center hover:opacity-70 transition-opacity"
@@ -222,7 +273,7 @@ export default function InsightPage() {
           </button>
           <div className="text-right">
             <div className="text-[10px] font-bold tracking-[0.2em] text-black/24 uppercase">
-              {step === 10 ? "SELESAI" : `TAHAP ${step + 1} DARI ${TOTAL_STEPS}`}
+              {step === 10 ? copy.done : `${copy.step} ${step + 1} ${copy.of} ${TOTAL_STEPS}`}
             </div>
             {currentContext && (
               <div className="mt-1 hidden text-[11px] font-medium text-[#0B2C6B]/60 md:block">
@@ -253,7 +304,7 @@ export default function InsightPage() {
 
         {/* Dynamic Full Screen Loading Overlay */}
         <AnimatePresence>
-          {isSubmitting && <LoadingOverlay />}
+          {isSubmitting && <LoadingOverlay locale={locale} />}
         </AnimatePresence>
       </main>
 
@@ -268,7 +319,7 @@ export default function InsightPage() {
             onClick={prevStep}
             className="h-12 px-6 rounded-xl border border-black/10 bg-white shadow-sm flex items-center text-black/60 hover:text-black hover:border-black/30 hover:bg-black/[0.02] transition-all text-xs font-medium uppercase tracking-widest"
           >
-            <span><ArrowLeft size={16} className="mr-2 inline" /> KEMBALI</span>
+            <span><ArrowLeft size={16} className="mr-2 inline" /> {copy.back}</span>
           </button>
           <button
             onClick={nextStep}
@@ -276,7 +327,7 @@ export default function InsightPage() {
             className="h-12 px-8 rounded-xl bg-[#0B2C6B] text-white flex items-center gap-2 font-medium text-xs tracking-widest uppercase transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black shadow-md shadow-black/20"
           >
             <span>
-              {step === 8 ? "LANJUT KE PENUTUP" : "HALAMAN BERIKUTNYA"}
+              {step === 8 ? copy.nextClosing : copy.nextPage}
               <ArrowRight size={16} className="ml-2 inline" />
             </span>
           </button>
@@ -286,15 +337,25 @@ export default function InsightPage() {
   );
 }
 
-function LoadingOverlay() {
-  const messages = [
-    "Menerima dan memverifikasi data Anda...",
-    "Tim konsultan kami sedang menyusun kerangka analisis...",
-    "Memetakan performa ke dalam 7 dimensi operasional...",
-    "Merumuskan prioritas strategis dan rekomendasi eksekutif...",
-    "Menyusun laporan akhir BinaHub Insight...",
-    "Hampir selesai, menyiapkan pengiriman ke email Anda..."
-  ];
+function LoadingOverlay({ locale }: { locale: "id" | "en" }) {
+  const isEnglish = locale === "en";
+  const messages = isEnglish
+    ? [
+        "Receiving and verifying your data...",
+        "Our consulting team is preparing the analysis framework...",
+        "Mapping performance across 7 operational dimensions...",
+        "Formulating strategic priorities and executive recommendations...",
+        "Preparing the final BinaHub Insight report...",
+        "Almost done, preparing delivery to your email..."
+      ]
+    : [
+        "Menerima dan memverifikasi data Anda...",
+        "Tim konsultan kami sedang menyusun kerangka analisis...",
+        "Memetakan performa ke dalam 7 dimensi operasional...",
+        "Merumuskan prioritas strategis dan rekomendasi eksekutif...",
+        "Menyusun laporan akhir BinaHub Insight...",
+        "Hampir selesai, menyiapkan pengiriman ke email Anda..."
+      ];
   const [msgIdx, setMsgIdx] = useState(0);
 
   useEffect(() => {
@@ -328,7 +389,9 @@ function LoadingOverlay() {
       </motion.h2>
 
       <p className="text-sm text-black/40 max-w-md font-light">
-        Mohon jangan menutup halaman ini. Tim kami sedang memproses parameter bisnis Anda untuk hasil yang akurat.
+        {isEnglish
+          ? "Please do not close this page. Our team is processing your business parameters for an accurate result."
+          : "Mohon jangan menutup halaman ini. Tim kami sedang memproses parameter bisnis Anda untuk hasil yang akurat."}
       </p>
     </motion.div>
   );
@@ -336,8 +399,8 @@ function LoadingOverlay() {
 
 function PixelLoader() {
   // Dino Runner Style with 8 Ecosystem Pillars
-  const pillars = [
-    "insights", "lab", "coach", "journey", 
+  const pillars: IconType[] = [
+    "insights", "lab", "coach", "journey",
     "play", "academy", "impact", "works"
   ];
 
@@ -355,7 +418,7 @@ function PixelLoader() {
         >
           {[...pillars, ...pillars].map((type, i) => (
             <div key={i} className="flex flex-col items-center justify-end shrink-0 opacity-100">
-              <PixelIcon type={type as any} size={32} />
+              <PixelIcon type={type} size={32} />
               <div className="w-[1px] h-4 bg-[#0B2C6B]/20 mt-1" />
             </div>
           ))}
@@ -372,14 +435,14 @@ function PixelLoader() {
 
         {/* Speed Lines */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(3)].map((_, i) => (
+          {SPEED_LINES.map((line, i) => (
             <motion.div
               key={i}
               className="absolute h-[1px] bg-[#D9A441]/40"
-              initial={{ x: 320, y: 30 + i * 30, width: 30 + Math.random() * 50 }}
+              initial={{ x: 320, y: 30 + i * 30, width: line.width }}
               animate={{ x: -100 }}
               transition={{ 
-                duration: 0.4 + Math.random() * 0.4, 
+                duration: line.duration, 
                 repeat: Infinity, 
                 ease: "linear",
                 delay: i * 0.1

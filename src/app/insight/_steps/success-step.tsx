@@ -1,13 +1,50 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Check, Mail, ArrowRight, Bell } from "lucide-react";
+import { localizePath } from "@/i18n/config";
+import { useLocale } from "@/i18n/use-locale";
 
 interface SuccessStepProps {
   name: string;
   company: string;
 }
 
+const COPY = {
+  id: {
+    title: "Terima Kasih",
+    message: "Asesmen untuk",
+    messageSuffix:
+      "telah berhasil kami terima. Hasil analisa strategis lengkap akan dikirimkan langsung ke",
+    messageEnd: "Anda segera setelah tim kami melakukan validasi.",
+    notification: "Notifikasi",
+    notificationBody:
+      "Pastikan untuk memeriksa folder Inbox atau Spam pada email korporasi Anda dalam 1x24 jam ke depan.",
+    preview: "Preview Area Analisis",
+    previewBody:
+      "Berdasarkan struktur assessment, laporan Anda akan membaca pola yang berkaitan dengan:",
+    home: "Kembali ke Beranda",
+  },
+  en: {
+    title: "Thank You",
+    message: "The assessment for",
+    messageSuffix:
+      "has been successfully received. The complete strategic analysis will be sent directly to your",
+    messageEnd: "after our team completes validation.",
+    notification: "Notification",
+    notificationBody:
+      "Please check your corporate email Inbox or Spam folder within the next 24 hours.",
+    preview: "Analysis Area Preview",
+    previewBody:
+      "Based on the assessment structure, your report will read patterns related to:",
+    home: "Back to Home",
+  },
+};
+
 export function SuccessStep({ name, company }: SuccessStepProps) {
+  const locale = useLocale();
+  const copy = COPY[locale];
+  const firstName = name.split(" ")[0] || (locale === "en" ? "there" : "Anda");
+
   return (
     <motion.div
       key="success"
@@ -29,11 +66,11 @@ export function SuccessStep({ name, company }: SuccessStepProps) {
         </motion.div>
         
         <h2 className="text-4xl md:text-5xl font-light text-[#0B2C6B] mb-6 leading-tight">
-          Terima Kasih, <span className="text-[#D9A441] italic font-medium">{name.split(" ")[0]}!</span>
+          {copy.title}, <span className="text-[#D9A441] italic font-medium">{firstName}!</span>
         </h2>
         
         <p className="text-[#0B2C6B]/60 text-lg md:text-xl mb-12 leading-relaxed font-light">
-          Asesmen untuk <strong>{company}</strong> telah berhasil kami terima. Hasil analisa strategis lengkap akan dikirimkan langsung ke <strong>Email & WhatsApp</strong> Anda segera setelah tim kami melakukan validasi.
+          {copy.message} <strong>{company}</strong> {copy.messageSuffix} <strong>Email & WhatsApp</strong> {copy.messageEnd}
         </p>
 
         <div className="mb-12 flex items-start gap-4 rounded-[14px] border border-black/[0.03] bg-[#F5F7FA] p-6 text-left">
@@ -41,19 +78,19 @@ export function SuccessStep({ name, company }: SuccessStepProps) {
             <Bell size={20} className="text-[#D9A441]" />
           </div>
           <div>
-            <span className="block text-[10px] font-bold text-[#0B2C6B] uppercase tracking-widest mb-1">Notifikasi</span>
+            <span className="block text-[10px] font-bold text-[#0B2C6B] uppercase tracking-widest mb-1">{copy.notification}</span>
             <p className="text-[12px] text-black/40 leading-relaxed font-medium">
-              Pastikan untuk memeriksa folder <strong>Inbox</strong> atau <strong>Spam</strong> pada email korporasi Anda dalam 1x24 jam ke depan.
+              {copy.notificationBody}
             </p>
           </div>
         </div>
 
         <div className="mb-12 rounded-[14px] border border-[#D9A441]/18 bg-[#D9A441]/[0.055] p-6 text-left">
           <span className="block text-[10px] font-bold text-[#D9A441] uppercase tracking-widest mb-4">
-            Preview Area Analisis
+            {copy.preview}
           </span>
           <p className="text-sm text-[#0B2C6B]/62 leading-relaxed font-light mb-5">
-            Berdasarkan struktur assessment, laporan Anda akan membaca pola yang berkaitan dengan:
+            {copy.previewBody}
           </p>
           <div className="flex flex-wrap gap-2">
             {["Leadership Alignment", "Execution Rhythm", "Learning Culture"].map((item) => (
@@ -66,10 +103,10 @@ export function SuccessStep({ name, company }: SuccessStepProps) {
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/"
+            href={localizePath("/", locale)}
             className="group flex h-16 items-center justify-center gap-3 rounded-[12px] bg-[#0B2C6B] px-12 text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-xl shadow-[#0B2C6B]/20 transition-all hover:bg-black"
           >
-            KEMBALI KE BERANDA <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            {copy.home} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </Link>
           <div className="flex items-center gap-3 px-6 text-[10px] font-bold text-[#D9A441] tracking-[0.3em] uppercase">
             <Mail size={16} /> info@binahub.id

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import {
   drawAbout,
@@ -84,11 +85,12 @@ export function PixelIcon({ type, size = 40 }: PixelIconProps) {
     const typeStr = type as string;
     const filename = typeStr === "insights" ? "insights" : typeStr.charAt(0).toUpperCase() + typeStr.slice(1);
     return (
-      <img
+      <Image
         src={`/asset/${filename}.png`}
         alt={`${type} icon`}
         width={size}
         height={size}
+        unoptimized
         style={{
           width: size,
           height: size,

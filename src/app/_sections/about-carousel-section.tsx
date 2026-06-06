@@ -7,6 +7,8 @@ import { Tag } from "@/components/ui/tag";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { UserCheck, Target, Leaf, Compass, Lightbulb } from "lucide-react";
+import { useLocale } from "@/i18n/use-locale";
+import type { Locale } from "@/i18n/config";
 
 type PillarPoint = {
   icon: ReactNode;
@@ -31,43 +33,94 @@ type PillarSlide = {
 
 type CarouselSlide = TextSlide | PillarSlide;
 
-const SLIDES: CarouselSlide[] = [
-  {
-    id: 1,
-    title: "Posisi Kami",
-    lines: ["Mitra", "Transformasi &", "Kapabilitas Masa Depan."],
-    type: "hero",
-    bgImage: "/asset/slide1.png",
+const COPY = {
+  id: {
+    slides: [
+      {
+        id: 1,
+        title: "Posisi Kami",
+        lines: ["Mitra", "Transformasi &", "Kapabilitas Masa Depan."],
+        type: "hero" as const,
+        bgImage: "/asset/slide1.png",
+      },
+      {
+        id: 2,
+        title: "Visi Kami",
+        lines: ["Masa depan di mana", "kemanusiaan dan kemajuan", "berjalan beriringan."],
+        type: "vision" as const,
+        bgImage: "/asset/slide2.png",
+      },
+      {
+        id: 3,
+        title: "Misi Kami",
+        type: "pillars" as const,
+        bgImage: "/asset/slide3.png",
+        points: [
+          { icon: <UserCheck size={22} />, title: "People Development" },
+          { icon: <Target size={22} />, title: "Adaptive Leadership & Kemampuan Beradaptasi" },
+          { icon: <Leaf size={22} />, title: "Healthy Culture" },
+          { icon: <Compass size={22} />, title: "Future Capability Partner" },
+          { icon: <Lightbulb size={22} />, title: "AI-Powered Insights" },
+        ],
+      },
+    ] satisfies CarouselSlide[],
+    heroDesc: "BinaHub membantu organisasi menata arah pengembangan manusia agar lebih relevan dengan perubahan bisnis, teknologi, dan budaya kerja.",
+    visionDesc: "Kemajuan teknologi perlu berjalan bersama kualitas manusia: kesadaran, kepemimpinan, empati, dan keberanian belajar.",
+    missionTitle: "Misi Kami",
+    missionDesc: "Lima prinsip yang menjaga transformasi tetap manusiawi, adaptif, dan dapat diterjemahkan ke dalam cara kerja organisasi.",
+    openSlide: "Buka slide",
   },
-  {
-    id: 2,
-    title: "Visi Kami",
-    lines: [
-      "Masa depan di mana",
-      "kemanusiaan dan kemajuan",
-      "berjalan beriringan.",
-    ],
-    type: "vision",
-    bgImage: "/asset/slide2.png",
+  en: {
+    slides: [
+      {
+        id: 1,
+        title: "Our Position",
+        lines: ["Transformation", "Partner & Future", "Capability Builder."],
+        type: "hero" as const,
+        bgImage: "/asset/slide1.png",
+      },
+      {
+        id: 2,
+        title: "Our Vision",
+        lines: ["A future where", "humanity and progress", "move together."],
+        type: "vision" as const,
+        bgImage: "/asset/slide2.png",
+      },
+      {
+        id: 3,
+        title: "Our Mission",
+        type: "pillars" as const,
+        bgImage: "/asset/slide3.png",
+        points: [
+          { icon: <UserCheck size={22} />, title: "People Development" },
+          { icon: <Target size={22} />, title: "Adaptive Leadership & Adaptability" },
+          { icon: <Leaf size={22} />, title: "Healthy Culture" },
+          { icon: <Compass size={22} />, title: "Future Capability Partner" },
+          { icon: <Lightbulb size={22} />, title: "AI-Powered Insights" },
+        ],
+      },
+    ] satisfies CarouselSlide[],
+    heroDesc: "BinaHub helps organizations shape human development direction so it stays relevant to business change, technology, and work culture.",
+    visionDesc: "Technological progress needs to grow with human quality: awareness, leadership, empathy, and the courage to keep learning.",
+    missionTitle: "Our Mission",
+    missionDesc: "Five principles that keep transformation human, adaptive, and translatable into how organizations work.",
+    openSlide: "Open slide",
   },
-  {
-    id: 3,
-    title: "Misi Kami",
-    type: "pillars",
-    bgImage: "/asset/slide3.png",
-    points: [
-      { icon: <UserCheck size={22} />, title: "People Development" },
-      { icon: <Target size={22} />, title: "Adaptive Leadership & Kemampuan Beradaptasi" },
-      { icon: <Leaf size={22} />, title: "Healthy Culture" },
-      { icon: <Compass size={22} />, title: "Future Capability Partner" },
-      { icon: <Lightbulb size={22} />, title: "AI-Powered Insights" },
-    ],
-  },
-];
+} satisfies Record<Locale, {
+  slides: CarouselSlide[];
+  heroDesc: string;
+  visionDesc: string;
+  missionTitle: string;
+  missionDesc: string;
+  openSlide: string;
+}>;
 
 const SLIDE_DURATIONS = [6000, 6000, 5000];
 
 export function AboutCarouselSection() {
+  const locale = useLocale();
+  const copy = COPY[locale];
+  const slides = copy.slides;
   const [displaySlide, setDisplaySlide] = useState(0);
 
   const goToSlide = useCallback(
@@ -81,12 +134,12 @@ export function AboutCarouselSection() {
   useEffect(() => {
     const duration = SLIDE_DURATIONS[displaySlide] ?? 6000;
     const timer = setTimeout(() => {
-      goToSlide((displaySlide + 1) % SLIDES.length);
+      goToSlide((displaySlide + 1) % slides.length);
     }, duration);
     return () => clearTimeout(timer);
-  }, [displaySlide, goToSlide]);
+  }, [displaySlide, goToSlide, slides.length]);
 
-  const slide = SLIDES[displaySlide];
+  const slide = slides[displaySlide];
   const isPillars = slide.type === "pillars";
 
   return (
@@ -158,8 +211,8 @@ export function AboutCarouselSection() {
                   ))}
                   <p className="mt-6 max-w-xl text-sm font-light leading-relaxed text-white/62 md:mt-8 md:text-base">
                     {slide.type === "hero"
-                      ? "BinaHub membantu organisasi menata arah pengembangan manusia agar lebih relevan dengan perubahan bisnis, teknologi, dan budaya kerja."
-                      : "Kemajuan teknologi perlu berjalan bersama kualitas manusia: kesadaran, kepemimpinan, empati, dan keberanian belajar."}
+                      ? copy.heroDesc
+                      : copy.visionDesc}
                   </p>
                 </motion.div>
               )}
@@ -177,10 +230,10 @@ export function AboutCarouselSection() {
                   <div className="grid w-full gap-6 md:grid-cols-[0.78fr_1.22fr] md:items-center">
                     <div>
                       <h2 className="text-3xl font-light leading-tight tracking-tight text-white md:text-5xl">
-                        Misi Kami
+                        {copy.missionTitle}
                       </h2>
                       <p className="mt-4 max-w-sm text-xs font-light leading-relaxed text-white/62 sm:text-sm md:mt-5">
-                        Lima prinsip yang menjaga transformasi tetap manusiawi, adaptif, dan dapat diterjemahkan ke dalam cara kerja organisasi.
+                        {copy.missionDesc}
                       </p>
                     </div>
                     <div className="relative grid gap-2 sm:grid-cols-2 md:gap-3">
@@ -218,12 +271,12 @@ export function AboutCarouselSection() {
 
           {/* Slide Indicators */}
           <div className="mt-6 flex w-full shrink-0 items-center gap-2 md:mt-10 md:max-w-sm md:gap-3">
-            {SLIDES.map((item, i) => (
+            {slides.map((item, i) => (
               <button
                 key={item.id}
                 onClick={() => goToSlide(i)}
                 className="group h-3 flex-1 py-1"
-                aria-label={`Buka slide ${i + 1}: ${item.title}`}
+                aria-label={`${copy.openSlide} ${i + 1}: ${item.title}`}
               >
                 <span className="relative block h-px overflow-hidden rounded-full bg-white/24 transition-colors group-hover:bg-white/42">
                   {displaySlide === i && (

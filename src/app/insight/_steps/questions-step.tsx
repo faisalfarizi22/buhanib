@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { DIMENSIONS, QUESTIONS } from "../questions";
 import { LIKERT_OPTIONS } from "../_types";
+import { useLocale } from "@/i18n/use-locale";
+import { publicSiteTranslations } from "@/i18n/site-translations";
 
 const DIMENSION_GUIDANCE: Record<string, string> = {
   Insights: "Kami membaca bagaimana data, indikator, dan akar masalah digunakan dalam keputusan tim.",
@@ -18,6 +20,29 @@ const REINFORCEMENT = [
   "Pola kecil yang konsisten sering menjadi sinyal terbesar dalam performa tim.",
 ];
 
+const DIMENSION_GUIDANCE_EN: Record<string, string> = {
+  Insights: "We look at how data, indicators, and root causes are used in team decisions.",
+  Lab: "This dimension reviews competency fit, communication quality, and problem-solving capability.",
+  Coach: "This section assesses guidance quality, feedback, ownership, and growth mindset.",
+  Play: "We measure work energy, engagement, appreciation, and connection between team members.",
+  Academy: "This dimension maps learning structure, curriculum, and sustainable learning culture.",
+  Works: "This section reviews KPI clarity, process documentation, roles, and work monitoring rhythm.",
+  Impact: "We review how far development programs have indicators, impact evidence, and ROI visibility.",
+};
+
+const REINFORCEMENT_EN = [
+  "Honest answers are more useful than answers that look ideal.",
+  "Many organizations find blind spots when comparing daily practice with strategic expectations.",
+  "Small consistent patterns often become the biggest signal in team performance.",
+];
+
+const LIKERT_LABELS_EN: Record<number, string> = {
+  1: "Strongly Disagree",
+  2: "Disagree",
+  3: "Agree",
+  4: "Strongly Agree",
+};
+
 interface QuestionsStepProps {
   step: number;
   answers: Record<number, number>;
@@ -25,6 +50,8 @@ interface QuestionsStepProps {
 }
 
 export function QuestionsStep({ step, answers, onAnswer }: QuestionsStepProps) {
+  const locale = useLocale();
+  const isEnglish = locale === "en";
   const pageIndex = step - 2;
   const pageQuestions = QUESTIONS.slice(pageIndex * 7, pageIndex * 7 + 7);
   const dimension = DIMENSIONS[pageIndex];
@@ -39,13 +66,13 @@ export function QuestionsStep({ step, answers, onAnswer }: QuestionsStepProps) {
     >
       <div className="mb-8 max-w-3xl text-center">
         <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#D9A441]">
-          Dimensi {dimension}
+          {isEnglish ? `${dimension} Dimension` : `Dimensi ${dimension}`}
         </p>
         <h2 className="text-3xl md:text-4xl font-light text-[#0B2C6B] leading-tight">
-          Sejauh mana Anda setuju dengan pernyataan berikut?
+          {isEnglish ? "How strongly do you agree with the following statements?" : "Sejauh mana Anda setuju dengan pernyataan berikut?"}
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm font-light leading-relaxed text-black/48">
-          {DIMENSION_GUIDANCE[dimension]}
+          {isEnglish ? DIMENSION_GUIDANCE_EN[dimension] : DIMENSION_GUIDANCE[dimension]}
         </p>
       </div>
 
@@ -59,13 +86,13 @@ export function QuestionsStep({ step, answers, onAnswer }: QuestionsStepProps) {
               <div className="relative z-10">
                 <div className="mb-4 h-px w-10 bg-[#D9A441]/45" />
                 <h3 className="text-sm md:text-lg font-light text-[#0B2C6B] mb-5 text-left leading-relaxed px-2">
-                  {q.text}
+                  {isEnglish ? publicSiteTranslations[q.text] || q.text : q.text}
                 </h3>
 
                 {idx === 3 && (
                   <div className="mb-5 rounded-[12px] border border-[#D9A441]/18 bg-[#D9A441]/[0.055] px-5 py-4">
                     <p className="text-xs font-medium leading-relaxed text-[#0B2C6B]/62">
-                      {REINFORCEMENT[pageIndex % REINFORCEMENT.length]}
+                      {isEnglish ? REINFORCEMENT_EN[pageIndex % REINFORCEMENT_EN.length] : REINFORCEMENT[pageIndex % REINFORCEMENT.length]}
                     </p>
                   </div>
                 )}
@@ -86,7 +113,7 @@ export function QuestionsStep({ step, answers, onAnswer }: QuestionsStepProps) {
                           {opt.value}
                         </span>
                         <span className={`text-[7px] md:text-[9px] text-center leading-tight uppercase tracking-[0.08em] font-bold transition-colors ${isSelected ? "text-white" : "text-black/40"}`}>
-                          {opt.label}
+                          {isEnglish ? LIKERT_LABELS_EN[opt.value] || opt.label : opt.label}
                         </span>
                       </button>
                     );

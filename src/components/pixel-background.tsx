@@ -115,7 +115,7 @@ export default function PixelBackground({ ready = true }: { ready?: boolean }) {
 
             const legPhase = Math.sin(t * walkSpeed)
             let x = startX + c * pixelSize + offsetRef.current.x
-            let y = startY + r * pixelSize + offsetRef.current.y + Math.abs(legPhase) * bobAmp
+            const y = startY + r * pixelSize + offsetRef.current.y + Math.abs(legPhase) * bobAmp
 
             if (r >= 10) {
               const isLeftLeg = c < 6

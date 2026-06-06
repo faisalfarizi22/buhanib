@@ -5,10 +5,27 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight,
   BarChart3,
+  type LucideIcon,
   PlayCircle,
   Search,
   Target,
 } from "lucide-react";
+import { useLocale } from "@/i18n/use-locale";
+
+type ArchitectureTab = {
+  title: string;
+  code: string;
+  detail: string;
+  summary: string;
+  color: string;
+  imageSrc: string;
+};
+
+type OperatingStepItem = {
+  title: string;
+  icon: LucideIcon;
+  description: string;
+};
 
 interface MethodologySectionProps {
   onMouseMove?: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -42,7 +59,7 @@ const ARCHITECTURE_TABS = [
     color: "#0B8F84",
     imageSrc: "/asset/4P.png",
   },
-] as const;
+] satisfies ArchitectureTab[];
 
 const SLIDE_DURATION_MS = 6200;
 
@@ -67,19 +84,92 @@ const OPERATING_STEPS = [
     icon: BarChart3,
     description: "Mengukur dampak, memperkuat adopsi, dan memperluas keberhasilan ke skala yang lebih besar.",
   },
-] as const;
+] satisfies OperatingStepItem[];
+
+const COPY = {
+  id: {
+    tabs: ARCHITECTURE_TABS,
+    steps: OPERATING_STEPS,
+    title: "Why most transformations fail",
+    desc: "Sebagian besar transformasi tidak gagal karena kurangnya pelatihan atau teknologi. Transformasi gagal ketika kemampuan manusia, sistem organisasi, dan kepemilikan perubahan berkembang secara terpisah dan tidak selaras.",
+    architecture: "Transformation Architecture",
+    integrated: "Integrated through",
+    os: "BinaHub Transformation Operating System",
+    show: "Tampilkan",
+  },
+  en: {
+    tabs: [
+      {
+        title: "Human Capability",
+        code: "ICEO",
+        detail: "Insight -> Capability -> Execution -> Outcomes",
+        summary: "Helps individuals, teams, and leaders build the capabilities needed to create real change.",
+        color: "#0B5EB7",
+        imageSrc: "/asset/ICEO.png",
+      },
+      {
+        title: "Transformation Ownership",
+        code: "OWN",
+        detail: "Ownership -> Way of Working -> Nurturing",
+        summary: "Builds sponsorship, governance, internal champions, and continuous improvement culture so transformation does not depend on consultants.",
+        color: "#0B2C6B",
+        imageSrc: "/asset/OWN.png",
+      },
+      {
+        title: "System Enablement",
+        code: "4P",
+        detail: "Purpose -> Process -> Platform -> Performance",
+        summary: "Ensures strategy, work processes, technology, AI, and performance systems support the desired change.",
+        color: "#0B8F84",
+        imageSrc: "/asset/4P.png",
+      },
+    ],
+    steps: [
+      {
+        title: "Assess",
+        icon: Search,
+        description: "Understand the current condition, challenges, opportunities, and transformation readiness level.",
+      },
+      {
+        title: "Align",
+        icon: Target,
+        description: "Align business goals, change sponsors, priorities, and success indicators.",
+      },
+      {
+        title: "Activate",
+        icon: PlayCircle,
+        description: "Develop capabilities, strengthen systems, and execute change initiatives.",
+      },
+      {
+        title: "Accelerate",
+        icon: BarChart3,
+        description: "Measure impact, strengthen adoption, and scale success more broadly.",
+      },
+    ],
+    title: "Why most transformations fail",
+    desc: "Most transformations do not fail because of a lack of training or technology. They fail when human capability, organizational systems, and change ownership develop separately and remain misaligned.",
+    architecture: "Transformation Architecture",
+    integrated: "Integrated through",
+    os: "BinaHub Transformation Operating System",
+    show: "Show",
+  },
+};
 
 export function MethodologySection({ onMouseMove }: MethodologySectionProps) {
+  const locale = useLocale();
+  const copy = COPY[locale];
+  const tabs = copy.tabs;
+  const steps = copy.steps;
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeTab = ARCHITECTURE_TABS[activeIndex];
+  const activeTab = tabs[activeIndex];
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % ARCHITECTURE_TABS.length);
+      setActiveIndex((current) => (current + 1) % tabs.length);
     }, SLIDE_DURATION_MS);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [tabs.length]);
 
   return (
     <section
@@ -103,19 +193,17 @@ export function MethodologySection({ onMouseMove }: MethodologySectionProps) {
       <div className="relative z-10 w-full px-5 md:px-10 lg:px-16">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
             <h2 className="max-w-4xl text-3xl font-light leading-tight tracking-[-0.04em] text-white md:text-5xl">
-              Why most transformations fail
+              {copy.title}
             </h2>
             <p className="max-w-3xl text-sm font-light leading-relaxed text-white/66 md:text-base lg:justify-self-end">
-              Sebagian besar transformasi tidak gagal karena kurangnya pelatihan atau teknologi.
-              Transformasi gagal ketika kemampuan manusia, sistem organisasi, dan kepemilikan
-              perubahan berkembang secara terpisah dan tidak selaras.
+              {copy.desc}
             </p>
           </div>
 
           <div className="mt-14 border-t border-white/70 pt-7">
             <div className="flex items-center gap-4">
               <span className="h-2.5 w-2.5 rounded-full bg-white" />
-              <p className="text-sm font-bold text-white md:text-base">Transformation Architecture</p>
+              <p className="text-sm font-bold text-white md:text-base">{copy.architecture}</p>
             </div>
           </div>
 
@@ -139,7 +227,7 @@ export function MethodologySection({ onMouseMove }: MethodologySectionProps) {
 
             <div>
               <div className="mb-3 grid grid-cols-3 gap-2">
-                {ARCHITECTURE_TABS.map((item, index) => (
+                {tabs.map((item, index) => (
                   <ProgressIndicator
                     key={item.code}
                     item={item}
@@ -150,7 +238,7 @@ export function MethodologySection({ onMouseMove }: MethodologySectionProps) {
               </div>
               <div className="relative overflow-hidden bg-white shadow-[0_28px_100px_-58px_rgba(0,0,0,0.72)]">
                 <div className="relative min-h-[420px] md:min-h-[600px] xl:min-h-[720px]">
-                  {ARCHITECTURE_TABS.map((item, index) => (
+                  {tabs.map((item, index) => (
                     <ArchitectureSlide
                       key={item.code}
                       item={item}
@@ -160,7 +248,7 @@ export function MethodologySection({ onMouseMove }: MethodologySectionProps) {
                 </div>
               </div>
               <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {ARCHITECTURE_TABS.map((item, index) => (
+                {tabs.map((item, index) => (
                   <button
                     key={item.code}
                   type="button"
@@ -189,14 +277,14 @@ export function MethodologySection({ onMouseMove }: MethodologySectionProps) {
             <div className="grid gap-6 lg:grid-cols-[360px_1fr] lg:items-start">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#D9A441]">
-                  Integrated through
+                  {copy.integrated}
                 </p>
                 <h3 className="mt-3 max-w-xl text-3xl font-light leading-tight tracking-[-0.04em] md:text-4xl">
-                  BinaHub Transformation Operating System
+                  {copy.os}
                 </h3>
               </div>
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-                {OPERATING_STEPS.map((step, index) => (
+                {steps.map((step, index) => (
                   <OperatingStep key={step.title} step={step} index={index} />
                 ))}
               </div>
@@ -211,7 +299,7 @@ function ArchitectureSlide({
   item,
   isActive,
 }: {
-  item: (typeof ARCHITECTURE_TABS)[number];
+  item: ArchitectureTab;
   isActive: boolean;
 }) {
   return (
@@ -237,7 +325,7 @@ function ProgressIndicator({
   isActive,
   onClick,
 }: {
-  item: (typeof ARCHITECTURE_TABS)[number];
+  item: ArchitectureTab;
   isActive: boolean;
   onClick: () => void;
 }) {
@@ -263,7 +351,7 @@ function OperatingStep({
   step,
   index,
 }: {
-  step: (typeof OPERATING_STEPS)[number];
+  step: OperatingStepItem;
   index: number;
 }) {
   const Icon = step.icon;

@@ -2,6 +2,23 @@
 
 import { useEffect } from "react";
 
+const COPY = {
+  id: {
+    lang: "id",
+    eyebrow: "Kesalahan Sistem",
+    heading: "Terjadi gangguan tak terduga",
+    body: "Mohon maaf atas ketidaknyamanannya. Silakan muat ulang halaman ini.",
+    retry: "Coba Lagi",
+  },
+  en: {
+    lang: "en",
+    eyebrow: "System Error",
+    heading: "An unexpected issue occurred",
+    body: "We are sorry for the inconvenience. Please reload this page.",
+    retry: "Try Again",
+  },
+};
+
 export default function GlobalError({
   error,
   reset,
@@ -9,12 +26,16 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const isEnglish =
+    typeof window !== "undefined" && window.location.pathname.startsWith("/en");
+  const copy = isEnglish ? COPY.en : COPY.id;
+
   useEffect(() => {
     console.error(error);
   }, [error]);
 
   return (
-    <html lang="id">
+    <html lang={copy.lang}>
       <body
         style={{
           margin: 0,
@@ -40,10 +61,10 @@ export default function GlobalError({
             color: "#D9A441",
           }}
         >
-          Kesalahan Sistem
+          {copy.eyebrow}
         </p>
         <h1 style={{ margin: "16px 0", fontSize: "40px", fontWeight: 300 }}>
-          Terjadi gangguan tak terduga
+          {copy.heading}
         </h1>
         <p
           style={{
@@ -54,7 +75,7 @@ export default function GlobalError({
             color: "rgba(11,44,107,0.6)",
           }}
         >
-          Mohon maaf atas ketidaknyamanannya. Silakan muat ulang halaman ini.
+          {copy.body}
         </p>
         <button
           onClick={reset}
@@ -72,7 +93,7 @@ export default function GlobalError({
             cursor: "pointer",
           }}
         >
-          Coba Lagi
+          {copy.retry}
         </button>
       </body>
     </html>

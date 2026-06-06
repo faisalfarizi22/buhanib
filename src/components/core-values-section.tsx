@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { CORE_VALUES } from "@/data/core-values";
+import { getCoreValues } from "@/data/core-values";
+import { useLocale } from "@/i18n/use-locale";
 
 const premiumEase = [0.22, 1, 0.36, 1] as const;
 
@@ -44,6 +45,17 @@ function getIndonesianText(text: string) {
 }
 
 export function CoreValuesSection() {
+  const locale = useLocale();
+  const values = getCoreValues(locale);
+  const copy = locale === "en"
+    ? {
+        eyebrow: "CORE VALUES",
+        desc: "Five principles that keep transformation rooted in human dignity, integrity, impact, growth, and meaningful excellence.",
+      }
+    : {
+        eyebrow: "NILAI-NILAI UTAMA",
+        desc: "Lima prinsip yang menjaga transformasi tetap berakar pada martabat manusia, integritas, dampak, pertumbuhan, dan kualitas yang bermakna.",
+      };
   const [active, setActive] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -53,13 +65,13 @@ export function CoreValuesSection() {
     }
 
     const timer = window.setInterval(() => {
-      setActive((current) => (current + 1) % CORE_VALUES.length);
+      setActive((current) => (current + 1) % values.length);
     }, 7000);
 
     return () => window.clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, values.length]);
 
-  const value = CORE_VALUES[active];
+  const value = values[active];
 
   return (
     <section
@@ -79,7 +91,7 @@ export function CoreValuesSection() {
         >
           <div>
             <div className="inline-flex items-center rounded-full bg-black/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-black/42">
-              NILAI-NILAI UTAMA
+              {copy.eyebrow}
             </div>
             <h2 className="mt-6 text-4xl sm:text-7xl md:text-7xl lg:text-[68px] xl:text-[88px] font-light leading-none tracking-[-0.04em] text-[#0B2C6B]">
               H.U.M.A.N
@@ -87,8 +99,7 @@ export function CoreValuesSection() {
           </div>
 
           <p className="max-w-xl text-base font-light leading-[1.85] text-black/62 md:text-lg">
-            Lima prinsip yang menjaga transformasi tetap berakar pada martabat
-            manusia, integritas, dampak, pertumbuhan, dan kualitas yang bermakna.
+            {copy.desc}
           </p>
         </motion.div>
 
@@ -100,7 +111,7 @@ export function CoreValuesSection() {
             onFocus={() => setIsPaused(true)}
             onBlur={() => setIsPaused(false)}
           >
-            {CORE_VALUES.map((item, index) => {
+            {values.map((item, index) => {
               const isActive = active === index;
 
               return (
@@ -248,7 +259,7 @@ export function CoreValuesSection() {
                   transition={{ delay: 0.08, duration: 0.55, ease: premiumEase }}
                   className="mt-7 max-w-xl text-[17px] font-light leading-[1.8] text-white/82"
                 >
-                  {getIndonesianText(value.fullText)}
+                  {locale === "en" ? value.fullText : getIndonesianText(value.fullText)}
                 </motion.p>
               </div>
             </div>

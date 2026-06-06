@@ -11,6 +11,7 @@ export const AssessmentSchema = z.object({
   target: z.string().optional(),
   answers: z.record(z.string(), z.number()), // qId as string, score as number
   source: z.string().optional().default('insight_assessment'),
+  locale: z.enum(['id', 'en']).optional().default('id'),
 });
 
 export type AssessmentData = z.infer<typeof AssessmentSchema>;
@@ -26,7 +27,8 @@ export const ChatRequestSchema = z.object({
   }).passthrough()).optional().default([]),
   context: z.object({
     currentPath: z.string().optional(),
-    pageTitle: z.string().optional()
+    pageTitle: z.string().optional(),
+    locale: z.enum(['id', 'en']).optional().default('id'),
   }).passthrough().optional()
 });
 

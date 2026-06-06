@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Tag } from "@/components/ui/tag";
-import { SERVICES } from "@/data/services";
+import { getServices } from "@/data/services";
+import { useLocale } from "@/i18n/use-locale";
 
 const STICKY_TOP = 80;
 const STICKY_STEP = 16;
@@ -11,14 +12,16 @@ const SCALE_STEP = 0.04;
 const OFFSET_STEP = 8;
 
 export function StackingServiceCards() {
+  const locale = useLocale();
+  const services = getServices(locale);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [depth, setDepth] = useState<number[]>(SERVICES.map(() => 0));
+  const [depth, setDepth] = useState<number[]>(services.map(() => 0));
 
   useEffect(() => {
     function onScroll() {
-      const nextDepth = SERVICES.map((_, i) => {
+      const nextDepth = services.map((_, i) => {
         let count = 0;
-        for (let j = i + 1; j < SERVICES.length; j++) {
+        for (let j = i + 1; j < services.length; j++) {
           const el = cardRefs.current[j];
           if (!el) continue;
           const rect = el.getBoundingClientRect();
@@ -32,11 +35,11 @@ export function StackingServiceCards() {
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [services]);
 
   return (
     <div className="flex flex-col" style={{ perspective: "1400px", perspectiveOrigin: "50% 0%" }}>
-      {SERVICES.map((service, i) => {
+      {services.map((service, i) => {
         const d = depth[i];
         const scale = 1 - d * SCALE_STEP;
         const translateY = d * OFFSET_STEP;

@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, User, Sparkles, Loader2 } from 'lucide-react';
+import { MessageSquare, X, Send, User, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useLocale } from '@/i18n/use-locale';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
@@ -13,9 +14,29 @@ interface Message {
 
 export function ChatBot() {
   const pathname = usePathname();
+  const locale = useLocale();
+  const copy = useMemo(() => locale === 'en'
+    ? ({
+        greeting: 'Hi! I am Nara, BinaHub Executive Concierge. How can I help with your business operations or people transformation needs?',
+        returning: (name: string, company: string, score: string) =>
+          `Welcome back, ${name}. I am Nara, BinaHub Executive Concierge. I have received the diagnostic summary for ${company} with an index score of ${score}/100. Before we discuss the most relevant strategic recommendations, may I confirm that this profile data is correct?`,
+        systemError: 'Sorry, my system is currently having trouble. Please try again in a moment.',
+        connectionError: 'Connection lost. Please check your network and try again.',
+        typing: 'Nara is typing...',
+        placeholder: 'Type your message here...',
+      })
+    : ({
+        greeting: 'Halo! Saya Nara, Executive Concierge BinaHub. Ada yang bisa saya bantu terkait operasional bisnis atau SDM perusahaan Anda?',
+        returning: (name: string, company: string, score: string) =>
+          `Selamat datang kembali, Bapak/Ibu ${name}. Saya Nara, Executive Concierge BinaHub. Saya telah menerima ringkasan laporan diagnostik untuk ${company} dengan skor indeks ${score}/100. Sebelum kita berdiskusi lebih dalam mengenai rekomendasi strategis yang sesuai, bolehkah saya mengonfirmasi apakah data profil ini sudah benar?`,
+        systemError: 'Maaf, sistem saya sedang mengalami gangguan. Silakan coba beberapa saat lagi.',
+        connectionError: 'Koneksi terputus. Mohon periksa jaringan Anda.',
+        typing: 'Nara sedang mengetik...',
+        placeholder: 'Ketik pesan Anda di sini...',
+      }), [locale]);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Halo! Saya Nara, Executive Concierge BinaHub. Ada yang bisa saya bantu terkait operasional bisnis atau SDM perusahaan Anda?' }
+    { role: 'assistant', content: copy.greeting }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +46,22 @@ export function ChatBot() {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    void Promise.resolve().then(() => {
+      setMessages((current) => {
+        if (
+          current.length === 1 &&
+          current[0].role === 'assistant' &&
+          (current[0].content.includes('Halo! Saya Nara') || current[0].content.includes('Hi! I am Nara'))
+        ) {
+          return [{ role: 'assistant', content: copy.greeting }];
+        }
+
+        return current;
+      });
+    });
+  }, [copy.greeting]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -33,21 +70,18 @@ export function ChatBot() {
     // Check if URL has ?chat=open
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('chat') === 'open') {
-      setIsOpen(true);
-      
       const name = searchParams.get('name');
       const company = searchParams.get('company');
       const score = searchParams.get('score');
 
-      if (name && company) {
-        setAssessmentInfo({ name, company, score: score || '0' });
-        setMessages([
-          { 
-            role: 'assistant', 
-            content: `Selamat datang kembali, Bapak/Ibu ${name}. Saya Nara, Executive Concierge BinaHub. Saya telah menerima ringkasan laporan diagnostik untuk ${company} dengan skor indeks ${score}/100. Sebelum kita berdiskusi lebih dalam mengenai rekomendasi strategis yang sesuai, bolehkah saya mengonfirmasi apakah data profil ini sudah benar?` 
-          }
-        ]);
-      }
+      void Promise.resolve().then(() => {
+        setIsOpen(true);
+
+        if (name && company) {
+          setAssessmentInfo({ name, company, score: score || '0' });
+          setMessages([{ role: 'assistant', content: copy.returning(name, company, score || '0') }]);
+        }
+      });
 
       // Clean up the URL
       const newUrl = window.location.pathname;
@@ -56,7 +90,7 @@ export function ChatBot() {
 
     // Hash change & click listener for #chatbot CTAs
     if (window.location.hash === '#chatbot') {
-      setIsOpen(true);
+      void Promise.resolve().then(() => setIsOpen(true));
       window.history.replaceState(null, '', window.location.pathname);
     }
 
@@ -91,7 +125,7 @@ export function ChatBot() {
       window.removeEventListener('open-chatbot', handleOpenChat);
       document.removeEventListener('click', handleDocumentClick);
     };
-  }, []);
+  }, [copy]);
 
   useEffect(() => {
     if (isOpen) {
@@ -119,6 +153,7 @@ export function ChatBot() {
           context: {
             currentPath: window.location.pathname,
             pageTitle: document.title,
+            locale,
             assessment: assessmentInfo // Pass assessment context to AI
           }
         }),
@@ -132,11 +167,11 @@ export function ChatBot() {
           setSessionId(data.sessionId);
         }
       } else {
-        setMessages(prev => [...prev, { role: 'assistant', content: 'Maaf, sistem saya sedang mengalami gangguan. Silakan coba beberapa saat lagi.' }]);
+        setMessages(prev => [...prev, { role: 'assistant', content: copy.systemError }]);
         setIsLoading(false);
       }
-    } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Koneksi terputus. Mohon periksa jaringan Anda.' }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: copy.connectionError }]);
     } finally {
       setIsLoading(false);
     }
@@ -249,7 +284,7 @@ export function ChatBot() {
                   </div>
                   <div className="flex items-center gap-2 rounded-[12px] rounded-tl-sm border border-black/5 bg-white p-4">
                     <Loader2 className="w-4 h-4 text-[#0B2C6B] animate-spin" />
-                    <span className="text-xs text-gray-400">Nara sedang mengetik...</span>
+                    <span className="text-xs text-gray-400">{copy.typing}</span>
                   </div>
                 </div>
               )}
@@ -263,7 +298,7 @@ export function ChatBot() {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ketik pesan Anda di sini..."
+                  placeholder={copy.placeholder}
                   className="w-full bg-[#F5F7FA] border border-black/5 rounded-full py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-[#0B2C6B]/30 transition-colors"
                   disabled={isLoading}
                 />

@@ -1,11 +1,29 @@
 import { ImageResponse } from "next/og";
+import { headers } from "next/headers";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
+import { defaultLocale, hasLocale } from "@/i18n/config";
 
 export const alt = `${SITE_NAME} — ${SITE_TAGLINE}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpengraphImage() {
+const COPY = {
+  id: {
+    headline: "Memanusiawikan masa depan organisasi.",
+    footer: "People. Learning. Elevated.",
+  },
+  en: {
+    headline: "Humanizing the future of organizations.",
+    footer: "People. Learning. Elevated.",
+  },
+};
+
+export default async function OpengraphImage() {
+  const headerList = await headers();
+  const localeHeader = headerList.get("x-binahub-locale");
+  const locale = hasLocale(localeHeader) ? localeHeader : defaultLocale;
+  const copy = COPY[locale];
+
   return new ImageResponse(
     (
       <div
@@ -56,7 +74,7 @@ export default function OpengraphImage() {
               maxWidth: "940px",
             }}
           >
-            Memanusiawikan masa depan organisasi.
+            {copy.headline}
           </div>
           <div
             style={{
@@ -79,7 +97,7 @@ export default function OpengraphImage() {
             textTransform: "uppercase",
           }}
         >
-          People. Learning. Elevated.
+          {copy.footer}
         </div>
       </div>
     ),

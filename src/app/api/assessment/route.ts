@@ -6,15 +6,23 @@ import { generatePDFBuffer, AssessmentResult } from '@/lib/pdf-service';
 import { AssessmentSchema } from '@/lib/validations';
 
 export async function POST(req: NextRequest) {
+  let requestLocale = 'id';
+
   try {
     const rawBody = await req.json();
+    const isEnglish = rawBody?.locale === 'en';
+    requestLocale = isEnglish ? 'en' : 'id';
     
     // 1. Zod Validation
     const validationResult = AssessmentSchema.safeParse(rawBody);
     if (!validationResult.success) {
       console.error('[API Error] Validation failed:', validationResult.error.format());
       return NextResponse.json(
-        { success: false, error: 'Validasi data gagal', details: validationResult.error.format() },
+        {
+          success: false,
+          error: isEnglish ? 'Data validation failed' : 'Validasi data gagal',
+          details: validationResult.error.format(),
+        },
         { status: 400 }
       );
     }
@@ -61,11 +69,16 @@ export async function POST(req: NextRequest) {
     // 4. AI Analysis & Scoring
     let aiResult;
     try {
-      aiResult = await analyzeAssessment(body);
+      aiResult = await analyzeAssessment(body, body.locale);
     } catch (aiError: any) {
       console.error('[API Error] AI Analysis failed:', aiError.message);
       return NextResponse.json(
-        { success: false, error: 'Gagal melakukan analisis AI. Silakan coba beberapa saat lagi.' },
+        {
+          success: false,
+          error: body.locale === 'en'
+            ? 'Failed to run AI analysis. Please try again shortly.'
+            : 'Gagal melakukan analisis AI. Silakan coba beberapa saat lagi.',
+        },
         { status: 502 }
       );
     }
@@ -112,14 +125,14 @@ export async function POST(req: NextRequest) {
     let pdfBuffer: Buffer | undefined;
     try {
       console.log('[API] Starting PDF Generation (React-PDF)...');
-      pdfBuffer = await generatePDFBuffer(body, resultObj);
+      pdfBuffer = await generatePDFBuffer(body, resultObj, body.locale);
     } catch (pdfErr: any) {
       console.error('[API Error] PDF Generation failed:', pdfErr.message);
     }
 
     // 8. Send email
     try {
-      const emailIds = await sendAssessmentEmail(body, resultObj, pdfBuffer, assessment.id);
+      const emailIds = await sendAssessmentEmail(body, resultObj, pdfBuffer, assessment.id, body.locale);
       const sentAt = new Date().toISOString();
       const withEmailId = await supabase
         .from('assessments')
@@ -157,7 +170,11 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('[Assessment API Error]', error);
     return NextResponse.json(
-      { success: false, error: 'Terjadi kesalahan internal server.', details: error.message },
+      {
+        success: false,
+        error: requestLocale === 'en' ? 'An internal server error occurred.' : 'Terjadi kesalahan internal server.',
+        details: error.message,
+      },
       { status: 500 }
     );
   }

@@ -7,7 +7,13 @@
     "dev:turbo": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:admin": "eslint src/app/admin/page.tsx src/app/admin/_components/associate-panel.tsx src/app/admin/_components/assessment-panel.tsx src/app/admin/_components/smart-center-panel.tsx src/app/admin/_components/overview.tsx src/app/admin/_components/shared.tsx src/app/admin/_components/contacts-panel.tsx src/app/admin/_components/inquiries-panel.tsx src/app/admin/_lib/constants.ts src/app/admin/_lib/types.ts src/app/admin/_lib/utils.ts src/lib/admin-api.ts src/app/api/admin/projects/route.ts src/app/api/admin/project-autopilot/route.ts src/app/api/admin/follow-up/route.ts src/app/api/admin/coaches/route.ts src/app/api/admin/coach-ops/route.ts src/app/api/admin/smart-actions/route.ts",
+    "lint:public": "eslint src/app/about src/app/ecosystem src/app/contact src/app/perspektif src/app/insight src/app/journey src/app/from-bdn-to-binahub src/app/gallery src/app/_sections src/components",
+    "typecheck": "tsc --noEmit",
+    "quality:admin": "npm run lint:admin && npm run typecheck",
+    "quality:public": "npm run lint:public && npm run typecheck",
+    "quality:repo": "npm run quality:admin && npm run lint:public"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.5.1",

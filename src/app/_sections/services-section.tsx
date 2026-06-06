@@ -3,8 +3,27 @@
 import { Tag } from "@/components/ui/tag";
 import { PixelIcon } from "@/components/pixel-icon";
 import { StackingServiceCards } from "@/components/stacking-service-cards";
+import { useLocale } from "@/i18n/use-locale";
+
+const COPY = {
+  id: {
+    tag: "LAYANAN",
+    title: "Solusi Pembelajaran &",
+    titleSecond: "Pengembangan Terintegrasi.",
+    desc: "Delapan layanan kami dirancang siap pakai dan saling melengkapi.",
+  },
+  en: {
+    tag: "SERVICES",
+    title: "Integrated Learning &",
+    titleSecond: "Development Solutions.",
+    desc: "Eight ready-to-use services designed to complement one another.",
+  },
+};
 
 export function ServicesSection() {
+  const locale = useLocale();
+  const copy = COPY[locale];
+
   return (
     <section
       id="services"
@@ -15,14 +34,14 @@ export function ServicesSection() {
           <div>
             <PixelIcon type="ecosystem" size={40} />
             <div className="mt-4">
-              <Tag>LAYANAN</Tag>
+              <Tag>{copy.tag}</Tag>
             </div>
             <h2 className="mt-5 text-4xl md:text-5xl font-light tracking-tight leading-[1.05]">
-              Solusi Pembelajaran &<br />Pengembangan Terintegrasi.
+              {copy.title}<br />{copy.titleSecond}
             </h2>
           </div>
           <p className="text-sm text-black/45 leading-relaxed max-w-xs">
-            Delapan layanan kami dirancang siap pakai dan saling melengkapi.
+            {copy.desc}
           </p>
         </div>
 

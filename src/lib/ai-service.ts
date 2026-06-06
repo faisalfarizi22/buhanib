@@ -15,7 +15,20 @@ const openai = new OpenAI({
   },
 });
 
-async function callAI(messages: any[], jsonMode: boolean = false) {
+type AIMessage = {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+};
+
+type AIRecommendationDraft = {
+  service?: string;
+  diagnosis?: string;
+  [key: string]: unknown;
+};
+
+async function callAI(messages: AIMessage[], _jsonMode: boolean = false) {
+  void _jsonMode;
+
   if (!OPENROUTER_API_KEY) {
     throw new Error('OPENROUTER_API_KEY is missing');
   }
@@ -33,13 +46,13 @@ async function callAI(messages: any[], jsonMode: boolean = false) {
       throw new Error('Empty response from AI model');
     }
     return content;
-  } catch (error: any) {
-    console.error(`[AI Error] OpenRouter call failed:`, error.message);
+  } catch (error: unknown) {
+    console.error(`[AI Error] OpenRouter call failed:`, error instanceof Error ? error.message : error);
     throw error;
   }
 }
 
-export async function analyzeAssessment(data: AssessmentData) {
+export async function analyzeAssessment(data: AssessmentData, locale: 'id' | 'en' = data.locale || 'id') {
   // Group answers by dimension for cleaner analysis
   const dimensionScores: Record<string, number> = {};
   const dimensionDetails: Record<string, number[]> = {};
@@ -63,7 +76,77 @@ export async function analyzeAssessment(data: AssessmentData) {
   const lowestDimension = sortedDimensions[sortedDimensions.length - 1];
   const secondLowestDimension = sortedDimensions[sortedDimensions.length - 2];
 
-  const prompt = `
+  const isEnglish = locale === 'en';
+  const categoryRule = isEnglish
+    ? `- Starter: < 40%
+- Developing: 40-60%
+- Professional: 61-80%
+- Leading: > 80%`
+    : `- Pemula: < 40%
+- Berkembang: 40-60%
+- Profesional: 61-80%
+- Unggulan: > 80%`;
+  const categoryExamples = isEnglish
+    ? '<Starter|Developing|Professional|Leading>'
+    : '<Pemula|Berkembang|Profesional|Unggulan>';
+  const archetypeExamples = isEnglish
+    ? '<2-4 word English label that describes the organization profile, examples: Strategic Builder, Execution Operator, Analytics Explorer, Growth Transformer>'
+    : '<label 2-4 kata Bahasa Indonesia yang menggambarkan profil organisasi, contoh: Pembangun Strategis, Operator Eksekusi, Eksplorator Analitik, Transformer Pertumbuhan>';
+  const prompt = isEnglish ? `
+You are the Senior Consulting Team from PT BinaHub - Human Synergy Partner.
+Analyze the following diagnostic assessment data and provide a professional, sharp, and specific evaluation for the respondent's organization. NEVER mention that you are AI or an automated system. Act as a senior human consultant.
+
+Mandatory analysis style:
+- All output must be in English.
+- Diagnose first, solution second.
+- Avoid generic phrases such as "improve synergy", "optimize HR", or "drive transformation" without context.
+- Use cross-dimensional reasoning: connect at least two dimension scores to explain a pattern.
+- Explain business implications or execution risks, not just recommendations.
+- Recommendations must feel derived from the scores, challenge, goal, role, and organization scale.
+- Do not invent benchmarks or industry claims without data.
+
+RESPONDENT DATA:
+Name: ${data.name}
+Company: ${data.company}
+Scale (Employees): ${data.employees || '-'}
+Role: ${data.role || '-'}
+Main Challenge: ${data.challenge || '-'}
+Goal to Achieve: ${data.target || '-'}
+
+DIMENSION SCORES (0-100%):
+${DIMENSIONS.map(dim => `- ${dim}: ${dimensionScores[dim]}%`).join('\n')}
+
+OVERALL SCORE: ${overallScore}%
+HIGHEST DIMENSION: ${topDimension} (${dimensionScores[topDimension]}%)
+LOWEST DIMENSION: ${lowestDimension} (${dimensionScores[lowestDimension]}%)
+SECOND LOWEST DIMENSION: ${secondLowestDimension} (${dimensionScores[secondLowestDimension]}%)
+
+Return JSON exactly like this, no markdown:
+{
+  "category": "${categoryExamples}",
+  "archetype": "${archetypeExamples}",
+  "scoreInterpretation": "<2 sentences explaining the overall score contextually for this company. Explain whether this indicates a strong foundation, developing phase, or risk area.>",
+  "analysis": "<4-5 sentence executive analysis. Mention cross-dimensional patterns, main strength, main bottleneck, and business implications.>",
+  "crossDimensionalInsights": [
+    "<insight 1 connecting two or more dimensions and explaining what it means>",
+    "<insight 2 connecting two or more dimensions and explaining what it means>"
+  ],
+  "riskProjection": "<12-18 month risk projection if the main gap is not addressed. Specific, not exaggerated.>",
+  "strategicKey": "<90-day strategic key paragraph. Focus on priorities and business consequences.>",
+  "recommendations": [
+    {
+      "title": "<recommendation title>",
+      "diagnosis": "<1 sentence diagnosis explaining why this recommendation is relevant based on the data>",
+      "description": "<concrete action description personalized to the organization context>",
+      "priority": "<high|medium|low>",
+      "service": "<relevant PT BinaHub service name: Insights, Lab, Coach, Play, Academy, Works, or Impact>"
+    }
+  ]
+}
+
+Create 5 specific and actionable recommendations. Each recommendation must start from diagnosis, then action. Category rules:
+${categoryRule}
+` : `
 Kamu adalah Tim Konsultan Senior dari PT BinaHub - Human Synergy Partner.
 Analisis data diagnostic assessment berikut dan berikan penilaian profesional, tajam, dan terasa spesifik untuk organisasi responden. JANGAN PERNAH menyebutkan bahwa kamu adalah AI atau sistem otomatis. Berperanlah sebagai konsultan manusia senior.
 
@@ -94,8 +177,8 @@ DIMENSI TERENDAH KEDUA: ${secondLowestDimension} (${dimensionScores[secondLowest
 
 Berikan output dalam format JSON PERSIS seperti ini (tanpa markdown, langsung JSON):
 {
-  "category": "<Pemula|Berkembang|Profesional|Unggulan>",
-  "archetype": "<label 2-4 kata Bahasa Indonesia yang menggambarkan profil organisasi, contoh: Pembangun Strategis, Operator Eksekusi, Eksplorator Analitik, Transformer Pertumbuhan>",
+  "category": "${categoryExamples}",
+  "archetype": "${archetypeExamples}",
   "scoreInterpretation": "<2 kalimat yang menjelaskan arti skor keseluruhan secara kontekstual untuk perusahaan ini. Jelaskan apakah ini fondasi kuat, fase berkembang, atau area risiko.>",
   "analysis": "<paragraf analisis eksekutif 4-5 kalimat. Harus menyebut pola lintas dimensi, kekuatan utama, bottleneck utama, dan implikasi bisnis.>",
   "crossDimensionalInsights": [
@@ -123,7 +206,12 @@ Buat 5 rekomendasi yang spesifik dan actionable. Setiap rekomendasi harus diawal
 `;
 
   const text = await callAI([
-    { role: 'system', content: 'Anda adalah konsultan bisnis senior manusia dari PT BinaHub. Seluruh output harus berbahasa Indonesia dan berbentuk JSON saja.' },
+    {
+      role: 'system',
+      content: isEnglish
+        ? 'You are a senior human business consultant from PT BinaHub. All output must be in English and JSON only.'
+        : 'Anda adalah konsultan bisnis senior manusia dari PT BinaHub. Seluruh output harus berbahasa Indonesia dan berbentuk JSON saja.'
+    },
     { role: 'user', content: prompt }
   ], true);
 
@@ -131,22 +219,40 @@ Buat 5 rekomendasi yang spesifik dan actionable. Setiap rekomendasi harus diawal
   if (!jsonMatch) throw new Error('Invalid AI response format');
 
   const aiResult = JSON.parse(jsonMatch[0]);
-  const fallbackArchetype = overallScore >= 80 ? 'Transformer Pertumbuhan' : overallScore >= 61 ? 'Pembangun Strategis' : overallScore >= 40 ? 'Operator Berkembang' : 'Pembangun Awal';
+  const fallbackArchetype = isEnglish
+    ? overallScore >= 80 ? 'Growth Transformer' : overallScore >= 61 ? 'Strategic Builder' : overallScore >= 40 ? 'Developing Operator' : 'Early Builder'
+    : overallScore >= 80 ? 'Transformer Pertumbuhan' : overallScore >= 61 ? 'Pembangun Strategis' : overallScore >= 40 ? 'Operator Berkembang' : 'Pembangun Awal';
+  const fallbackCategory = isEnglish
+    ? overallScore > 80 ? 'Leading' : overallScore >= 61 ? 'Professional' : overallScore >= 40 ? 'Developing' : 'Starter'
+    : aiResult.category;
 
   return {
     ...aiResult,
+    category: aiResult.category || fallbackCategory,
     archetype: aiResult.archetype || fallbackArchetype,
-    scoreInterpretation: aiResult.scoreInterpretation || `Skor ${overallScore}% menempatkan ${data.company} pada kategori ${aiResult.category}. Ini menunjukkan adanya fondasi yang dapat dikembangkan lebih lanjut melalui prioritas yang lebih tajam pada dimensi ${lowestDimension}.`,
+    scoreInterpretation: aiResult.scoreInterpretation || (isEnglish
+      ? `A score of ${overallScore}% places ${data.company} in the ${fallbackCategory} category. This indicates a foundation that can be strengthened through sharper priorities around the ${lowestDimension} dimension.`
+      : `Skor ${overallScore}% menempatkan ${data.company} pada kategori ${aiResult.category}. Ini menunjukkan adanya fondasi yang dapat dikembangkan lebih lanjut melalui prioritas yang lebih tajam pada dimensi ${lowestDimension}.`),
     crossDimensionalInsights: Array.isArray(aiResult.crossDimensionalInsights) ? aiResult.crossDimensionalInsights : [
-      `Dimensi ${topDimension} menjadi kekuatan relatif, sementara ${lowestDimension} menjadi area yang paling perlu diprioritaskan.`,
-      `Kombinasi skor ini menunjukkan perlunya menghubungkan kapasitas manusia dengan ritme eksekusi yang lebih konsisten.`,
+      isEnglish
+        ? `${topDimension} is a relative strength, while ${lowestDimension} is the area that needs the clearest priority.`
+        : `Dimensi ${topDimension} menjadi kekuatan relatif, sementara ${lowestDimension} menjadi area yang paling perlu diprioritaskan.`,
+      isEnglish
+        ? `This score pattern shows the need to connect people capability with a more consistent execution rhythm.`
+        : `Kombinasi skor ini menunjukkan perlunya menghubungkan kapasitas manusia dengan ritme eksekusi yang lebih konsisten.`,
     ],
-    riskProjection: aiResult.riskProjection || `Jika dimensi ${lowestDimension} tidak diperkuat, organisasi berisiko mengalami perlambatan eksekusi saat tuntutan pertumbuhan meningkat.`,
-    strategicKey: aiResult.strategicKey || `Dalam 90 hari ke depan, fokus utama ${data.company} adalah memperkuat dimensi ${lowestDimension} dan menghubungkannya dengan prioritas operasional yang paling berdampak.`,
+    riskProjection: aiResult.riskProjection || (isEnglish
+      ? `If ${lowestDimension} is not strengthened, the organization risks slower execution as growth demands increase.`
+      : `Jika dimensi ${lowestDimension} tidak diperkuat, organisasi berisiko mengalami perlambatan eksekusi saat tuntutan pertumbuhan meningkat.`),
+    strategicKey: aiResult.strategicKey || (isEnglish
+      ? `Over the next 90 days, ${data.company}'s main focus is to strengthen ${lowestDimension} and connect it to the most consequential operational priorities.`
+      : `Dalam 90 hari ke depan, fokus utama ${data.company} adalah memperkuat dimensi ${lowestDimension} dan menghubungkannya dengan prioritas operasional yang paling berdampak.`),
     recommendations: Array.isArray(aiResult.recommendations)
-      ? aiResult.recommendations.map((rec: any) => ({
+      ? aiResult.recommendations.map((rec: AIRecommendationDraft) => ({
           ...rec,
-          diagnosis: rec.diagnosis || `Rekomendasi ini relevan karena dimensi ${rec.service || lowestDimension} menjadi sinyal penting dalam hasil diagnostik.`,
+          diagnosis: rec.diagnosis || (isEnglish
+            ? `This recommendation is relevant because ${rec.service || lowestDimension} is an important signal in the diagnostic result.`
+            : `Rekomendasi ini relevan karena dimensi ${rec.service || lowestDimension} menjadi sinyal penting dalam hasil diagnostik.`),
         }))
       : [],
     scores: {
@@ -416,12 +522,323 @@ Output JSON persis:
   return JSON.parse(jsonMatch[0]);
 }
 
+export type AssociateCandidate = {
+  id?: string;
+  name?: string;
+  email?: string;
+  category?: string;
+  expertise?: string;
+  field?: string;
+  availability?: string;
+  rate?: string;
+  linkedinSummary?: string;
+  notes?: string;
+};
+
+export type ProjectAutopilotInput = {
+  clientName: string;
+  contactName?: string;
+  contactEmail?: string;
+  programName: string;
+  service?: string;
+  projectType?: string;
+  scope?: string;
+  budgetNote?: string;
+  startDate?: string;
+  endDate?: string;
+  automationMode?: string;
+  associates?: AssociateCandidate[];
+};
+
+const DEFAULT_PROJECT_ROLES = [
+  {
+    roleTitle: "Project Manager",
+    associateCategory: "Project Manager (Works, Impact)",
+    requiredExpertise: "Koordinasi project, stakeholder management, reporting, dan quality control.",
+    priority: "High",
+  },
+  {
+    roleTitle: "Assessor",
+    associateCategory: "Assessor (Insight)",
+    requiredExpertise: "Diagnostik organisasi, analisis kebutuhan, dan pembacaan data assessment.",
+    priority: "High",
+  },
+  {
+    roleTitle: "Facilitator",
+    associateCategory: "Facilitator (Play)",
+    requiredExpertise: "Fasilitasi workshop, experiential learning, dan dinamika kelompok.",
+    priority: "Normal",
+  },
+];
+
+function fallbackProjectPlan(input: ProjectAutopilotInput) {
+  const serviceText = [input.service, input.projectType, input.scope].join(" ").toLowerCase();
+  const roles = [...DEFAULT_PROJECT_ROLES];
+
+  if (serviceText.includes("lab") || serviceText.includes("training") || serviceText.includes("trainer")) {
+    roles.push({
+      roleTitle: "Trainer",
+      associateCategory: "Trainer (Lab)",
+      requiredExpertise: "Desain dan delivery pelatihan berbasis kapabilitas.",
+      priority: "Normal",
+    });
+  }
+
+  if (serviceText.includes("ai")) {
+    roles.push({
+      roleTitle: "AI Consultant",
+      associateCategory: "Consultant AI",
+      requiredExpertise: "AI adoption, workflow automation, dan enablement teknologi.",
+      priority: "Normal",
+    });
+  }
+
+  return {
+    summary: `Project ${input.programName} untuk ${input.clientName} membutuhkan koordinasi project, pembacaan kebutuhan, dan assossiate sesuai layanan ${input.service || "BinaHub"}.`,
+    roles,
+    nextActions: [
+      "Review scope dan timeline project.",
+      "Pilih assossiate prioritas untuk setiap role.",
+      "Kirim surat ajakan kerja sama kepada assossiate terpilih.",
+    ],
+  };
+}
+
+export async function generateProjectAutopilotPlan(input: ProjectAutopilotInput) {
+  const prompt = `
+Buat rencana Project Autopilot BinaHub berdasarkan data berikut.
+Output harus JSON valid Bahasa Indonesia.
+
+DATA PROJECT:
+Klien: ${input.clientName}
+Kontak: ${input.contactName || "-"} / ${input.contactEmail || "-"}
+Program: ${input.programName}
+Layanan: ${input.service || "-"}
+Jenis project: ${input.projectType || "-"}
+Scope: ${input.scope || "-"}
+Budget/rate note: ${input.budgetNote || "-"}
+Tanggal: ${input.startDate || "-"} sampai ${input.endDate || "-"}
+
+Kategori assossiate yang tersedia:
+- Assessor (Insight)
+- Facilitator (Play)
+- Trainer (Lab)
+- Project Manager (Works, Impact)
+- Coach (Coach)
+- Tour Guide (Journey)
+- Travel Agency (Journey)
+- Event Organizer
+- Consultant AI
+- Consultant Change Management
+- Consultant SDM
+
+Berikan JSON persis:
+{
+  "summary": "<ringkasan project 2 kalimat>",
+  "roles": [
+    {
+      "roleTitle": "<nama role>",
+      "associateCategory": "<kategori assossiate>",
+      "requiredExpertise": "<keahlian yang dibutuhkan>",
+      "quantity": 1,
+      "priority": "<High|Normal|Low>",
+      "aiReason": "<alasan role dibutuhkan>"
+    }
+  ],
+  "nextActions": ["<aksi 1>", "<aksi 2>", "<aksi 3>"]
+}
+`;
+
+  try {
+    const text = await callAI([
+      { role: 'system', content: 'Anda adalah project director senior BinaHub. Jawab hanya JSON valid.' },
+      { role: 'user', content: prompt },
+    ], true);
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Invalid project plan AI response format');
+    return JSON.parse(jsonMatch[0]);
+  } catch {
+    return fallbackProjectPlan(input);
+  }
+}
+
+function candidateScore(candidate: AssociateCandidate, role: { associateCategory?: string; requiredExpertise?: string; roleTitle?: string }) {
+  const text = [
+    candidate.category,
+    candidate.expertise,
+    candidate.field,
+    candidate.availability,
+    candidate.linkedinSummary,
+    candidate.notes,
+  ].join(" ").toLowerCase();
+  const roleText = [role.associateCategory, role.requiredExpertise, role.roleTitle].join(" ").toLowerCase();
+  let score = 35;
+
+  if (candidate.category && role.associateCategory && candidate.category.toLowerCase() === role.associateCategory.toLowerCase()) score += 35;
+  roleText.split(/\W+/).filter((word) => word.length > 4).forEach((word) => {
+    if (text.includes(word)) score += 3;
+  });
+  if (text.includes("active") || text.includes("available")) score += 8;
+  if (candidate.email) score += 4;
+
+  return Math.min(98, score);
+}
+
+export async function matchAssociatesForProject(input: {
+  project: ProjectAutopilotInput;
+  roles: Array<{ roleTitle?: string; associateCategory?: string; requiredExpertise?: string; priority?: string }>;
+  associates: AssociateCandidate[];
+}) {
+  const fallbackMatches = input.roles.map((role) => {
+    const ranked = input.associates
+      .map((candidate) => ({
+        associateId: candidate.id || "",
+        associateName: candidate.name || "Assossiate BinaHub",
+        associateEmail: candidate.email || "",
+        roleTitle: role.roleTitle || "Assossiate",
+        matchScore: candidateScore(candidate, role),
+        matchReason: `Cocok berdasarkan kategori ${candidate.category || "-"} dan keahlian ${candidate.expertise || candidate.field || "-"}.`,
+      }))
+      .sort((a, b) => b.matchScore - a.matchScore);
+
+    return ranked[0] || {
+      associateId: "",
+      associateName: "",
+      associateEmail: "",
+      roleTitle: role.roleTitle || "Assossiate",
+      matchScore: 0,
+      matchReason: "Belum ada assossiate yang cocok. Perlu review manual.",
+    };
+  });
+
+  const prompt = `
+Pilih assossiate terbaik untuk project BinaHub.
+Jawab hanya JSON valid.
+
+PROJECT:
+${JSON.stringify(input.project)}
+
+ROLES:
+${JSON.stringify(input.roles)}
+
+CANDIDATES:
+${JSON.stringify(input.associates.slice(0, 60))}
+
+Output JSON:
+{
+  "matches": [
+    {
+      "roleTitle": "<role>",
+      "associateId": "<id kandidat>",
+      "associateName": "<nama>",
+      "associateEmail": "<email>",
+      "matchScore": <0-100>,
+      "matchReason": "<alasan ringkas>"
+    }
+  ]
+}
+`;
+
+  try {
+    const text = await callAI([
+      { role: 'system', content: 'Anda adalah talent/project matching specialist BinaHub. Jawab hanya JSON valid.' },
+      { role: 'user', content: prompt },
+    ], true);
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Invalid match AI response format');
+    const parsed = JSON.parse(jsonMatch[0]);
+    return Array.isArray(parsed.matches) ? parsed.matches : fallbackMatches;
+  } catch {
+    return fallbackMatches;
+  }
+}
+
+export async function generateAssociateInvitation(input: {
+  associateName: string;
+  roleTitle: string;
+  clientName: string;
+  programName: string;
+  service?: string;
+  startDate?: string;
+  endDate?: string;
+  scope?: string;
+  agreementType?: "invitation" | "agreement";
+}) {
+  const prompt = `
+Buat email ajakan kerja sama untuk assossiate BinaHub.
+Jangan menyebut AI. Bahasa Indonesia profesional, hangat, jelas.
+
+DATA:
+Nama assossiate: ${input.associateName}
+Role: ${input.roleTitle}
+Klien: ${input.clientName}
+Program: ${input.programName}
+Layanan: ${input.service || "-"}
+Tanggal: ${input.startDate || "-"} sampai ${input.endDate || "-"}
+Scope: ${input.scope || "-"}
+Jenis: ${input.agreementType || "invitation"}
+
+Output JSON:
+{
+  "subject": "<subject email>",
+  "html": "<html email sederhana>",
+  "documentTitle": "<judul surat>",
+  "documentBody": "<isi surat ajakan/perjanjian kerja sama ringkas>"
+}
+`;
+
+  try {
+    const text = await callAI([
+      { role: 'system', content: 'Anda adalah operations lead BinaHub. Jawab hanya JSON valid.' },
+      { role: 'user', content: prompt },
+    ], true);
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Invalid invitation AI response format');
+    return JSON.parse(jsonMatch[0]);
+  } catch {
+    return {
+      subject: `Ajakan Kerja Sama BinaHub - ${input.programName}`,
+      html: `<p>Yth. ${input.associateName},</p><p>Kami ingin mengundang Anda untuk terlibat sebagai <strong>${input.roleTitle}</strong> dalam program <strong>${input.programName}</strong> untuk ${input.clientName}.</p><p>Mohon balas email ini untuk konfirmasi ketersediaan dan diskusi detail berikutnya.</p><p>Salam,<br/>Tim BinaHub</p>`,
+      documentTitle: `Surat Ajakan Kerja Sama - ${input.programName}`,
+      documentBody: `BinaHub mengundang ${input.associateName} untuk berkolaborasi sebagai ${input.roleTitle} dalam program ${input.programName} untuk ${input.clientName}. Detail scope, timeline, dan komersial akan dikonfirmasi dalam diskusi lanjutan.`,
+    };
+  }
+}
+
 export async function chatWithAI(
   message: string, 
   history: { role: string, content: string }[], 
-  context?: { currentPath?: string, pageTitle?: string }
+  context?: { currentPath?: string, pageTitle?: string, locale?: 'id' | 'en' }
 ) {
-  const systemPrompt = `
+  const isEnglish = context?.locale === 'en';
+  const systemPrompt = isEnglish ? `
+You are Nara, "The Executive Concierge" from PT BinaHub - AI Powered Human Synergy.
+
+SOUL & PERSONALITY:
+- Main character: very warm, patient, a good listener, solution-oriented, proactive, and genuinely helpful.
+- Tone: professional executive style, but warm, empathetic, welcoming, and practical.
+- Listen well before recommending, and proactively offer relevant help.
+- You are a strategic partner and trusted companion for users exploring business and people transformation solutions.
+
+SKILLS & EXPERTISE:
+- Expert in the BinaHub ecosystem: Insights, Lab, Coach, Play, Academy, Works, Impact.
+- Skilled at guiding users toward the Diagnostic Assessment.
+- Convert conversations into business solutions in a subtle and helpful way.
+
+COMMUNICATION RULES:
+1. ALWAYS ANSWER IN ENGLISH unless the user explicitly asks for Indonesian.
+2. Keep responses concise, around 2-4 sentences.
+3. Be action-oriented and proactive: guide users to /insight or WhatsApp/contact when they need deeper help.
+4. Never say you are an AI model unless asked directly; introduce yourself as Nara from BinaHub.
+
+SYSTEM TOOL:
+If the user provides their name and email/contact in chat, respond ONLY with this JSON so the system can save it:
+{"tool": "save_chat_lead", "args": {"name": "user name", "email": "user email"}}
+
+CURRENT SITE CONTEXT:
+- Path: ${context?.currentPath || '/'}
+- Page Title: ${context?.pageTitle || 'BinaHub'}
+` : `
 Kamu adalah Nara, "The Executive Concierge" dari PT BinaHub - AI Powered Human Synergy. 
 
 SOUL & PERSONALITY:
@@ -455,7 +872,7 @@ CURRENT SITE CONTEXT:
     content: m.content
   }));
 
-  const messages = [
+  const messages: AIMessage[] = [
     { role: 'system', content: systemPrompt },
     ...recentHistory,
     { role: 'user', content: message }

@@ -2,15 +2,15 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Leaf, ArrowRight } from "lucide-react";
-import { PixelIcon } from "@/components/pixel-icon";
+import { ArrowRight } from "lucide-react";
+import { PixelIcon, type IconType } from "@/components/pixel-icon";
 
 interface OrbitItem {
   id: string;
   title: string;
   subtitle: string;
   description: string;
-  iconType: string;
+  iconType: IconType;
   position: string;
   side: "left" | "right";
 }
@@ -253,7 +253,7 @@ export default function BinaHubOrbit({ onProductClick }: BinaHubOrbitProps) {
                       transition-all duration-500 shadow-sm
                     `}
                   >
-                    <PixelIcon type={item.iconType as any} size={28} />
+                    <PixelIcon type={item.iconType} size={28} />
                   </div>
                   
                   {/* Text Content block */}

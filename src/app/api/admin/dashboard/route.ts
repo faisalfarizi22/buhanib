@@ -161,6 +161,52 @@ type CoachDocumentRow = {
   created_at?: string;
 };
 
+type ProjectRow = {
+  id?: string;
+  client_name?: string;
+  contact_name?: string;
+  contact_email?: string;
+  service?: string;
+  program_name?: string;
+  project_type?: string;
+  scope?: string;
+  budget_note?: string;
+  start_date?: string;
+  end_date?: string;
+  status?: string;
+  ai_summary?: string;
+  automation_mode?: string;
+  created_at?: string;
+};
+
+type ProjectAssignmentSmartRow = {
+  id?: string;
+  project_id?: string;
+  associate_id?: string;
+  associate_name?: string;
+  associate_email?: string;
+  role_title?: string;
+  status?: string;
+  match_score?: number;
+  match_reason?: string;
+  invitation_sent_at?: string;
+  created_at?: string;
+};
+
+type SmartActionRow = {
+  id?: string;
+  action_type?: string;
+  title?: string;
+  description?: string;
+  target_type?: string;
+  target_id?: string;
+  priority?: string;
+  status?: string;
+  mode?: string;
+  due_at?: string;
+  created_at?: string;
+};
+
 function parseJson<T>(value: unknown, fallback: T): T {
   if (!value) return fallback;
   if (typeof value === "string") {
@@ -348,6 +394,24 @@ export async function GET(req: NextRequest) {
     documentRows = (data || []) as CoachDocumentRow[];
   } catch {
     documentRows = [];
+  }
+
+  let projectRows: ProjectRow[] = [];
+  let projectAssignmentRows: ProjectAssignmentSmartRow[] = [];
+  let smartActionRows: SmartActionRow[] = [];
+  try {
+    const [{ data: projects }, { data: projectAssignments }, { data: smartActions }] = await Promise.all([
+      db.from("projects").select("*").order("created_at", { ascending: false }).limit(100),
+      db.from("project_assignments").select("*").order("created_at", { ascending: false }).limit(200),
+      db.from("smart_actions").select("*").order("created_at", { ascending: false }).limit(100),
+    ]);
+    projectRows = (projects || []) as ProjectRow[];
+    projectAssignmentRows = (projectAssignments || []) as ProjectAssignmentSmartRow[];
+    smartActionRows = (smartActions || []) as SmartActionRow[];
+  } catch {
+    projectRows = [];
+    projectAssignmentRows = [];
+    smartActionRows = [];
   }
 
   const leadsById = new Map((leadRows || []).map((lead) => [lead.id, lead as LeadRow]));
@@ -614,5 +678,8 @@ export async function GET(req: NextRequest) {
     coachSessions: sessionRows,
     coachAvailability: availabilityRows,
     coachDocuments: documentRows,
+    projects: projectRows,
+    projectAssignments: projectAssignmentRows,
+    smartActions: smartActionRows,
   });
 }
