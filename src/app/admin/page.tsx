@@ -325,6 +325,8 @@ export default function AdminDashboardPage() {
                     mode="hrm"
                     coaches={data.coaches}
                     assignments={data.coachAssignments || []}
+                    projects={data.projects || []}
+                    projectAssignments={data.projectAssignments || []}
                     sessions={data.coachSessions || []}
                     availability={data.coachAvailability || []}
                     documents={data.coachDocuments || []}

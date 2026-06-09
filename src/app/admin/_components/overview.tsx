@@ -1,24 +1,39 @@
-import { Activity, BarChart3, Mail, Phone, ShieldCheck, Users } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Activity, BarChart3, ChevronDown, Mail, Phone, ShieldCheck, Users } from "lucide-react";
 import { ADMIN_WORKFLOW_STEPS, colors } from "../_lib/constants";
 import type { DashboardData } from "../_lib/types";
 import { MetricBar, Panel, StatCard, WorkflowStrip } from "./shared";
 
 function AdminPlaybook() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <section className="rounded-[14px] border border-[#0B2C6B]/10 bg-[#071B3D] p-6 text-white shadow-[0_18px_60px_-42px_rgba(7,27,61,0.6)]">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-2xl">
+    <section className="overflow-hidden rounded-[14px] border border-[#0B2C6B]/10 bg-[#071B3D] text-white shadow-[0_18px_60px_-42px_rgba(7,27,61,0.6)]">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left md:px-6"
+        aria-expanded={open}
+      >
+        <div className="min-w-0">
           <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#D9A441]">
             <ShieldCheck size={14} /> Admin Playbook
           </p>
-          <h3 className="mt-3 text-2xl font-light tracking-[-0.04em]">
-            Mulai dari prioritas, review sebelum kirim, lalu catat next step.
+          <h3 className="mt-1 text-lg font-light tracking-[-0.03em] md:text-xl">
+            Prioritaskan, review, catat progress.
           </h3>
-          <p className="mt-3 text-sm font-light leading-relaxed text-white/62">
-            Dashboard ini dirancang sebagai ruang kerja internal. Gunakan panduan singkat di setiap modul
-            untuk memahami fungsi tombol, risiko aksi, dan urutan kerja yang disarankan.
-          </p>
         </div>
+        <ChevronDown size={18} className={`shrink-0 text-[#D9A441] transition ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+      <div className="border-t border-white/10 px-5 pb-5 pt-1 md:px-6 md:pb-6">
+        <p className="max-w-2xl text-sm font-light leading-relaxed text-white/62">
+          Dashboard ini dirancang sebagai ruang kerja internal. Gunakan panduan singkat di setiap modul
+          untuk memahami fungsi tombol, risiko aksi, dan urutan kerja yang disarankan.
+        </p>
         <div className="grid gap-3 text-sm md:grid-cols-3 lg:max-w-3xl">
           {[
             ["1", "Cek Prioritas", "Lihat assessment/inquiry baru dan follow-up yang sudah jatuh tempo."],
@@ -33,6 +48,7 @@ function AdminPlaybook() {
           ))}
         </div>
       </div>
+      )}
     </section>
   );
 }

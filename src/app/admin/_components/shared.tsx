@@ -1,7 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, ChevronDown, HelpCircle, Search, ShieldCheck, Trash2, X, type LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  Bell,
+  Bot,
+  BriefcaseBusiness,
+  ChevronDown,
+  HelpCircle,
+  Inbox,
+  Search,
+  ShieldCheck,
+  Trash2,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import type { ConfirmAction } from "../_lib/types";
 
 export function AdminSearch({
@@ -76,7 +89,7 @@ export function HrmItem({
   title: string;
   meta: string;
   detail?: string | null;
-  onDelete: () => void;
+  onDelete?: () => void;
 }) {
   return (
     <div className="rounded-[10px] border border-black/[0.05] bg-[#FCFCFB] p-4">
@@ -85,13 +98,15 @@ export function HrmItem({
           <p className="text-sm font-semibold text-[#0B2C6B]">{title}</p>
           <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-black/34">{meta}</p>
         </div>
-        <button
-          onClick={onDelete}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-[9px] border border-red-100 bg-red-50 text-red-600"
-          aria-label={`Hapus ${title}`}
-        >
-          <Trash2 size={13} />
-        </button>
+        {onDelete && (
+          <button
+            onClick={onDelete}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-[9px] border border-red-100 bg-red-50 text-red-600"
+            aria-label={`Hapus ${title}`}
+          >
+            <Trash2 size={13} />
+          </button>
+        )}
       </div>
       {detail && <p className="mt-3 text-xs leading-relaxed text-black/50">{detail}</p>}
     </div>
@@ -289,26 +304,64 @@ export function ModuleHero({
   description: string;
   stats?: Array<{ label: string; value: string | number }>;
 }) {
+  const statIcons: Record<string, LucideIcon> = {
+    "Assessment baru": Bell,
+    "Inquiry baru": Inbox,
+    "Smart action": Bot,
+    "Project aktif": BriefcaseBusiness,
+  };
+
   return (
-    <section className="rounded-[14px] border border-[#0B2C6B]/10 bg-white p-5 shadow-[0_18px_60px_-48px_rgba(11,44,107,0.28)] md:p-6">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+    <section className="rounded-[14px] border border-[#0B2C6B]/10 bg-white px-5 py-4 shadow-[0_18px_60px_-48px_rgba(11,44,107,0.28)] md:px-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-3xl">
           <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#D9A441]">{eyebrow}</p>
           <h2 className="mt-2 text-2xl font-light tracking-[-0.04em] text-[#0B2C6B] md:text-3xl">{title}</h2>
-          <p className="mt-3 text-sm leading-relaxed text-black/58">{description}</p>
+          <p className="mt-2 text-sm leading-relaxed text-black/58">{description}</p>
         </div>
         {stats.length ? (
-          <div className="grid min-w-full gap-3 sm:grid-cols-2 lg:min-w-[420px]">
+          <div className="flex flex-wrap gap-2 lg:max-w-[430px] lg:justify-end">
             {stats.slice(0, 4).map((stat) => (
-              <div key={stat.label} className="rounded-[12px] border border-black/[0.05] bg-[#F8FAFC] p-4">
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-black/36">{stat.label}</p>
-                <p className="mt-2 text-2xl font-light tracking-[-0.04em] text-[#0B2C6B]">{stat.value}</p>
-              </div>
+              <CompactStatusPill key={stat.label} label={stat.label} value={stat.value} icon={statIcons[stat.label] || ShieldCheck} />
             ))}
           </div>
         ) : null}
       </div>
     </section>
+  );
+}
+
+export function CompactStatusPill({
+  label,
+  value,
+  icon: Icon,
+  tone = "default",
+}: {
+  label: string;
+  value: string | number;
+  icon: LucideIcon;
+  tone?: "default" | "gold" | "danger" | "success";
+}) {
+  const hasValue = Number(value) > 0;
+  const toneClass = {
+    default: "border-[#0B2C6B]/10 bg-[#F8FAFC] text-[#0B2C6B]",
+    gold: "border-[#D9A441]/24 bg-[#FFF8EA] text-[#9B6C17]",
+    danger: "border-red-200 bg-red-50 text-red-700",
+    success: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  }[tone];
+
+  return (
+    <div className={`relative flex h-11 items-center gap-2 rounded-[12px] border px-3 ${toneClass}`}>
+      <Icon size={16} />
+      <span className="hidden text-[10px] font-bold uppercase tracking-[0.12em] opacity-65 sm:inline">{label}</span>
+      {hasValue ? (
+        <span className="absolute -right-1.5 -top-1.5 min-w-5 rounded-full bg-[#D9A441] px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-[#071B3D] shadow-[0_8px_18px_-10px_rgba(217,164,65,0.9)]">
+          {Number(value) > 99 ? "99+" : value}
+        </span>
+      ) : (
+        <span className="text-xs font-bold opacity-45">0</span>
+      )}
+    </div>
   );
 }
 
@@ -476,6 +529,42 @@ export function AdminNotice({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-5 rounded-[10px] border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
       {children}
+    </div>
+  );
+}
+
+export function AdminModal({
+  title,
+  eyebrow,
+  children,
+  onClose,
+  maxWidth = "max-w-6xl",
+}: {
+  title: string;
+  eyebrow?: string;
+  children: React.ReactNode;
+  onClose: () => void;
+  maxWidth?: string;
+}) {
+  return (
+    <div className="fixed inset-0 z-[55] bg-[#071B3D]/55 px-4 py-6 backdrop-blur-sm">
+      <div className={`mx-auto flex h-full w-full ${maxWidth} flex-col overflow-hidden rounded-[16px] bg-white shadow-[0_36px_90px_-38px_rgba(7,27,61,0.65)]`}>
+        <div className="flex items-start justify-between gap-4 border-b border-black/[0.06] bg-[#FAFAF8] px-5 py-4">
+          <div>
+            {eyebrow && <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#D9A441]">{eyebrow}</p>}
+            <h3 className="mt-1 text-xl font-semibold tracking-[-0.03em] text-[#0B2C6B]">{title}</h3>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-[10px] border border-black/10 bg-white text-[#0B2C6B]"
+            aria-label="Tutup modal"
+          >
+            <X size={16} />
+          </button>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-5 md:p-6">{children}</div>
+      </div>
     </div>
   );
 }

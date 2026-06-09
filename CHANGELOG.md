@@ -3,6 +3,27 @@
 Semua perubahan yang signifikan pada proyek ini akan didokumentasikan di file ini.
 Format yang digunakan berdasarkan [Keep a Changelog](https://keepachangelog.com/id/1.0.0/), dan proyek ini mematuhi aturan [Semantic Versioning](https://semver.org/).
 
+## [0.2.9]
+### Added
+- Menambahkan komponen `AdminModal` reusable untuk form admin besar agar input operasional bisa dibuka sebagai pop-up dan tidak memenuhi dashboard utama.
+- Menambahkan compact status pill berbasis icon dan badge angka untuk status penting dashboard seperti assessment baru, inquiry baru, smart action, project aktif, assignment aktif, invitation terkirim, autopilot running, dan invitation bermasalah.
+- Menambahkan flip card compact untuk riwayat assignment project selesai sehingga detail matching, email, tanggal kirim, dan email id muncul saat hover/focus tanpa membuat card default terlalu besar.
+- Menambahkan riwayat smart action per project selesai agar action history tidak lagi tampil sebagai daftar global yang membingungkan.
+- Menambahkan aliran data Automation Center ke Project Assignment, termasuk ringkasan project dan assignment AI yang sudah dibuat autopilot.
+
+### Changed
+- Mengubah Automation Center agar form Project Autopilot tersembunyi di balik tombol `+ Buat Project` dan dibuka melalui modal.
+- Mengubah Associate Network agar form tambah/edit associate tersembunyi di balik tombol `Tambah Associate`; tombol edit associate sekarang membuka modal yang sama.
+- Mengubah Project Assignment agar form assignment, availability, histori sesi, dan dokumen/kontrak tersembunyi di balik tombol `Tambah Data Assignment`.
+- Mengubah Automation Center agar dashboard utama hanya menampilkan project aktif, smart action aktif, serta metric aktif; riwayat assignment dan smart action dipindahkan ke masing-masing project selesai.
+- Mengubah `Workspace context`, guidance, workflow, metric cards, dan guardrail Automation Center menjadi compact strip berbasis icon badge agar area atas dashboard lebih minimalis dan hemat ruang.
+- Mengubah Admin Playbook di Overview menjadi collapsible default tertutup agar halaman ringkasan lebih pendek dan fokus pada data utama.
+- Menyelaraskan validasi Project Autopilot frontend dengan backend: nama klien, nama program, email kontak valid, dan layanan wajib diisi sebelum aksi bisa dijalankan.
+- Memperkuat guard frontend Automation Center agar smart action tidak ditandai selesai jika autopilot gagal, serta memblokir pengiriman ulang invitation yang sudah tercatat terkirim.
+- Menambahkan konteks project dan status agreement/email id pada tampilan riwayat assignment untuk membantu audit tanpa membuka database.
+- Menggabungkan assignment manual dan project dari Automation Center di Project Assignment dengan dedupe berdasarkan klien, program, dan layanan agar project tidak tampil dobel.
+- Memfilter Project Assignment agar project Automation Center dan assignment manual yang sudah selesai tidak tampil lagi di panel `Assignment Aktif`.
+
 ## [0.2.8]
 ### Added
 - Menambahkan fondasi bilingual Indonesia/English berbasis Next.js App Router i18n dengan locale subpath `/id` dan `/en`.

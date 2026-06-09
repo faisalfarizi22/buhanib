@@ -177,7 +177,9 @@ export type ProjectAssignmentSmartRecord = {
   status?: string;
   match_score?: number;
   match_reason?: string;
+  invitation_email_id?: string | null;
   invitation_sent_at?: string;
+  agreement_status?: string | null;
   created_at?: string;
 };
 

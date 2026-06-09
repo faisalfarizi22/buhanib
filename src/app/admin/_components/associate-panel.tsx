@@ -5,6 +5,7 @@ import { AlertCircle, BriefcaseBusiness, CheckCircle2, Eye, Layers3, Mail, Plus,
 import { supabase } from "@/lib/supabase";
 import {
   AdminInput,
+  AdminModal,
   AdminNotice,
   AdminSearch,
   AdminSelect,
@@ -31,7 +32,7 @@ import {
   NOTE_PRESETS,
   TIME_WINDOW_OPTIONS,
 } from "../_lib/constants";
-import { uniqueOptions } from "../_lib/utils";
+import { isProjectCompleted, uniqueOptions } from "../_lib/utils";
 import type {
   CoachAssignmentRecord,
   CoachAvailabilityRecord,
@@ -39,12 +40,33 @@ import type {
   CoachRecord,
   CoachSessionRecord,
   ConfirmAction,
+  ProjectAssignmentSmartRecord,
+  ProjectRecord,
 } from "../_lib/types";
+
+type DeliveryAssignmentRecord = {
+  id?: string;
+  source: "manual" | "automation" | "mixed";
+  coach_id?: string;
+  client_name?: string;
+  program_name?: string;
+  service?: string;
+  status?: string;
+  start_date?: string;
+  end_date?: string;
+  notes?: string;
+  project_id?: string;
+  assignment_count?: number;
+  associate_names?: string[];
+  source_label: string;
+};
 
 export function AssociatePanel({
   mode,
   coaches,
   assignments = [],
+  projects = [],
+  projectAssignments = [],
   sessions = [],
   availability = [],
   documents = [],
@@ -54,6 +76,8 @@ export function AssociatePanel({
   mode: "coach" | "hrm";
   coaches: CoachRecord[];
   assignments?: CoachAssignmentRecord[];
+  projects?: ProjectRecord[];
+  projectAssignments?: ProjectAssignmentSmartRecord[];
   sessions?: CoachSessionRecord[];
   availability?: CoachAvailabilityRecord[];
   documents?: CoachDocumentRecord[];
@@ -78,6 +102,8 @@ export function AssociatePanel({
   };
   const [form, setForm] = useState(emptyCoach);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [associateModalOpen, setAssociateModalOpen] = useState(false);
+  const [opsModalOpen, setOpsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [actionError, setActionError] = useState("");
   const [uploadingCv, setUploadingCv] = useState(false);
@@ -165,6 +191,81 @@ export function AssociatePanel({
       assignment.id || "",
       `${assignment.program_name || "Program"} - ${assignment.client_name || "Klien"}`,
     ]);
+  const normalizedDeliveryAssignments = useMemo(() => {
+    const normalize = (value?: string | null) => (value || "").trim().toLowerCase().replace(/\s+/g, " ");
+    const makeKey = (item: Pick<DeliveryAssignmentRecord, "client_name" | "program_name" | "service" | "id" | "project_id">) => {
+      const client = normalize(item.client_name);
+      const program = normalize(item.program_name);
+      const service = normalize(item.service);
+      if (client || program) return [client, program, service].join("|");
+      return item.project_id ? `project:${item.project_id}` : `assignment:${item.id || "unknown"}`;
+    };
+
+    const byProject = new Map<string, ProjectAssignmentSmartRecord[]>();
+    projectAssignments.forEach((assignment) => {
+      if (!assignment.project_id) return;
+      const current = byProject.get(assignment.project_id) || [];
+      byProject.set(assignment.project_id, [...current, assignment]);
+    });
+
+    const automationItems: DeliveryAssignmentRecord[] = projects.filter((project) => !isProjectCompleted(project)).map((project) => {
+      const relatedAssignments = project.id ? byProject.get(project.id) || [] : [];
+      const associateNames = Array.from(
+        new Set(relatedAssignments.map((assignment) => assignment.associate_name).filter(Boolean) as string[])
+      );
+      const sentCount = relatedAssignments.filter((assignment) => assignment.invitation_sent_at).length;
+      const draftCount = relatedAssignments.filter((assignment) => (assignment.status || "").toLowerCase() === "draft").length;
+      const status =
+        project.status ||
+        (sentCount ? "Invitation Sent" : draftCount ? "Draft" : relatedAssignments[0]?.status || "Automation");
+
+      return {
+        id: project.id,
+        source: "automation",
+        client_name: project.client_name,
+        program_name: project.program_name,
+        service: project.service || project.project_type,
+        status,
+        start_date: project.start_date,
+        end_date: project.end_date,
+        notes: project.ai_summary || relatedAssignments[0]?.match_reason || project.scope,
+        project_id: project.id,
+        assignment_count: relatedAssignments.length,
+        associate_names: associateNames,
+        source_label: "Automation Center",
+      };
+    });
+
+    const manualItems: DeliveryAssignmentRecord[] = assignments
+      .filter((assignment) => !isProjectCompleted({ status: assignment.status }))
+      .map((assignment) => ({
+        ...assignment,
+        source: "manual",
+        assignment_count: 1,
+        source_label: "Manual",
+      }));
+
+    return [...automationItems, ...manualItems].reduce<DeliveryAssignmentRecord[]>((items, item) => {
+      const key = makeKey(item);
+      const existingIndex = items.findIndex((existing) => makeKey(existing) === key);
+      if (existingIndex === -1) return [...items, item];
+
+      const existing = items[existingIndex];
+      const merged: DeliveryAssignmentRecord = {
+        ...existing,
+        ...Object.fromEntries(
+          Object.entries(item).filter(([, value]) => value !== undefined && value !== null && value !== "")
+        ),
+        id: existing.id || item.id,
+        source: existing.source === item.source ? existing.source : "mixed",
+        source_label: existing.source === item.source ? existing.source_label : "Manual + Automation Center",
+        assignment_count: Math.max(existing.assignment_count || 0, item.assignment_count || 0),
+        associate_names: Array.from(new Set([...(existing.associate_names || []), ...(item.associate_names || [])])),
+        notes: existing.notes || item.notes,
+      };
+      return items.map((existingItem, index) => (index === existingIndex ? merged : existingItem));
+    }, []);
+  }, [assignments, projectAssignments, projects]);
   const coachName = (id?: string) => coaches.find((coach) => coach.id === id)?.name || "Associate";
   const activeAssociateCount = coaches.filter((coach) => (coach.status || "").toLowerCase() === "active").length;
   const prospectAssociateCount = coaches.filter((coach) => (coach.status || "").toLowerCase() === "prospect").length;
@@ -179,6 +280,7 @@ export function AssociatePanel({
         method: "POST",
         body: JSON.stringify(payload),
       });
+      setOpsModalOpen(false);
       await onRefresh();
     } catch (error) {
       setOpsError(error instanceof Error ? error.message : "Gagal menyimpan data Project Assignment.");
@@ -218,6 +320,7 @@ export function AssociatePanel({
       });
       setForm(emptyCoach);
       setEditingId(null);
+      setAssociateModalOpen(false);
       await onRefresh();
     } catch (error) {
       setActionError(error instanceof Error ? error.message : "Gagal menyimpan data associate.");
@@ -283,6 +386,7 @@ export function AssociatePanel({
 
   const editCoach = (coach: CoachRecord) => {
     setEditingId(coach.id || null);
+    setAssociateModalOpen(true);
     setForm({
       name: coach.name || "",
       email: coach.email || "",
@@ -351,7 +455,7 @@ export function AssociatePanel({
         <StatCard label="Prospect" value={prospectAssociateCount} icon={AlertCircle} tone="gold" />
         <StatCard
           label={mode === "coach" ? "Filter aktif" : "Data assignment"}
-          value={mode === "coach" ? filteredCoaches.length : assignments.length + sessions.length + availability.length + documents.length}
+          value={mode === "coach" ? filteredCoaches.length : normalizedDeliveryAssignments.length + sessions.length + availability.length + documents.length}
           icon={Layers3}
         />
       </div>
@@ -374,7 +478,40 @@ export function AssociatePanel({
       />
 
       {mode === "coach" && (
-      <Panel title={editingId ? "Edit Data Associate" : "Tambah Associate Manual"} action="Associate input">
+      <div className="rounded-[14px] border border-[#0B2C6B]/10 bg-white p-5 shadow-[0_16px_50px_-44px_rgba(11,44,107,0.28)] md:p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D9A441]">Associate Input</p>
+            <h3 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-[#0B2C6B]">Tambah associate dari modal.</h3>
+            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-black/52">
+              Form profil, CV, LinkedIn, dan catatan disimpan di pop-up agar daftar associate tetap mudah discan.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setEditingId(null);
+              setForm(emptyCoach);
+              setAssociateModalOpen(true);
+            }}
+            className="flex h-11 items-center justify-center gap-2 rounded-[10px] bg-[#0B2C6B] px-4 text-xs font-bold uppercase tracking-[0.14em] text-white"
+          >
+            <Plus size={15} /> Tambah Associate
+          </button>
+        </div>
+      </div>
+      )}
+
+      {mode === "coach" && associateModalOpen && (
+      <AdminModal
+        title={editingId ? "Edit Data Associate" : "Tambah Associate Manual"}
+        eyebrow="Associate input"
+        onClose={() => {
+          setAssociateModalOpen(false);
+          setEditingId(null);
+          setForm(emptyCoach);
+        }}
+      >
         {actionError && <AdminNotice>{actionError}</AdminNotice>}
         <div className="grid gap-4 xl:grid-cols-[1fr_0.9fr]">
           <FormSection
@@ -511,6 +648,7 @@ export function AssociatePanel({
               onClick={() => {
                 setEditingId(null);
                 setForm(emptyCoach);
+                setAssociateModalOpen(false);
               }}
               className="h-11 rounded-[10px] border border-black/10 bg-white px-4 text-xs font-bold uppercase tracking-[0.14em]"
             >
@@ -518,12 +656,36 @@ export function AssociatePanel({
             </button>
           )}
         </div>
-      </Panel>
+      </AdminModal>
       )}
 
       {mode === "hrm" && (
       <>
-      <Panel title="Project Assignment" action="Assignment, availability, session, contract">
+      <div className="rounded-[14px] border border-[#0B2C6B]/10 bg-white p-5 shadow-[0_16px_50px_-44px_rgba(11,44,107,0.28)] md:p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D9A441]">Project Assignment</p>
+            <h3 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-[#0B2C6B]">Tambah data delivery dari modal.</h3>
+            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-black/52">
+              Assignment, availability, sesi, dan dokumen tetap tersedia, tetapi formnya tidak memenuhi dashboard utama.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setOpsModalOpen(true)}
+            className="flex h-11 items-center justify-center gap-2 rounded-[10px] bg-[#0B2C6B] px-4 text-xs font-bold uppercase tracking-[0.14em] text-white"
+          >
+            <Plus size={15} /> Tambah Data Assignment
+          </button>
+        </div>
+      </div>
+
+      {opsModalOpen && (
+      <AdminModal
+        title="Project Assignment"
+        eyebrow="Assignment, availability, session, contract"
+        onClose={() => setOpsModalOpen(false)}
+      >
         {opsError && <AdminNotice>{opsError}</AdminNotice>}
         <div className="grid gap-4 xl:grid-cols-2">
           <CollapsibleModule title="Assignment ke Program" defaultOpen>
@@ -643,19 +805,29 @@ export function AssociatePanel({
             </button>
           </CollapsibleModule>
         </div>
-      </Panel>
+      </AdminModal>
+      )}
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <Panel title="Assignment Aktif" action={`${assignments.length} records`}>
+        <Panel title="Assignment Aktif" action={`${normalizedDeliveryAssignments.length} project`}>
           <HrmList
-            items={assignments}
+            items={normalizedDeliveryAssignments}
             empty="Belum ada assignment."
             render={(item) => (
               <HrmItem
                 title={`${item.program_name || "Program"} - ${item.client_name || "Klien"}`}
-                meta={`${coachName(item.coach_id)} / ${item.service || "Layanan"} / ${item.status || "Planned"}`}
-                detail={item.notes}
-                onDelete={() => deleteCoachOp("assignments", item.id)}
+                meta={[
+                  item.source_label,
+                  item.source === "manual" ? coachName(item.coach_id) : `${item.assignment_count || 0} assignment AI`,
+                  item.service || "Layanan",
+                  item.status || "Planned",
+                ].join(" / ")}
+                detail={
+                  item.associate_names?.length
+                    ? `${item.notes || "Project dari Automation Center."} Associate: ${item.associate_names.join(", ")}.`
+                    : item.notes
+                }
+                onDelete={item.source === "manual" ? () => deleteCoachOp("assignments", item.id) : undefined}
               />
             )}
           />
