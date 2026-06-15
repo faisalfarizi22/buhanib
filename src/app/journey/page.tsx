@@ -149,6 +149,36 @@ const chaptersEn: typeof chapters = [
   },
 ];
 
+const BDN_LOGOS = [
+  { name: "Acer", src: "/partner/acer.png" },
+  { name: "Astra Honda Motor", src: "/partner/AHM.svg" },
+  { name: "AirNav Indonesia", src: "/partner/airnav.webp" },
+  { name: "Aldena", src: "/partner/Aldena.png" },
+  { name: "Alkagra", src: "/partner/alkagra.png" },
+  { name: "Castrol", src: "/partner/castrol.png" },
+  { name: "Chandra Asri", src: "/partner/chandraasri.png" },
+  { name: "Ciputra", src: "/partner/ciputra.png" },
+  { name: "Dattabot", src: "/partner/dattabot.png" },
+  { name: "DDI", src: "/partner/ddi.png" },
+  { name: "Holcim", src: "/partner/holcim.png" },
+  { name: "IBCSD", src: "/partner/ibcsd.png" },
+  { name: "Indosat", src: "/partner/indosat.png" },
+  { name: "Kiroyan", src: "/partner/kiroyan.png" },
+  { name: "MS Coal", src: "/partner/mscoal.png" },
+  { name: "Prowell Energy", src: "/partner/prowellenergy.png" },
+  { name: "Safran", src: "/partner/safran.svg" },
+  { name: "Sampoerna", src: "/partner/sampurna.png" },
+  { name: "Sarana Jaya", src: "/partner/saranajaya.webp" },
+  { name: "Siap Siaga", src: "/partner/siapsiaga.png" },
+  { name: "Sqiva", src: "/partner/Sqiva.png" },
+  { name: "Swisscontact", src: "/partner/swisscontact.png" },
+  { name: "Syngenta", src: "/partner/syngenta.png" },
+  { name: "Telin", src: "/partner/Telin.png" },
+  { name: "Telkom Infra", src: "/partner/Telkomimetra.png" },
+  { name: "Transcorp", src: "/partner/transcorp.svg" },
+  { name: "Umira", src: "/partner/umira.png" },
+];
+
 const COPY = {
   id: {
     tag: "TENTANG KAMI",
@@ -158,6 +188,14 @@ const COPY = {
     meta: "Sister company of PT Bina Daya Nugraha - Est 2010",
     quote: "Masa depan tidak hanya membutuhkan organisasi yang lebih cerdas secara teknologi, tetapi juga organisasi yang jauh lebih matang secara manusiawi.",
     cite: "BinaHub Filosofi Transformasi",
+    proofEyebrow: "Arsip Rekam Jejak BDN",
+    proofTitle: "Pengalaman yang menjadi fondasi lahirnya BinaHub.",
+    proofDesc: "Selama lebih dari 15 tahun, Bina Daya Nugraha telah mendampingi berbagai organisasi dalam perjalanan pembelajaran, pengembangan kepemimpinan, dan transformasi organisasi. Sebagian organisasi berikut menjadi bagian dari perjalanan tersebut.",
+    proofStats: [
+      { value: "15+", label: "Tahun Pengalaman" },
+      { value: "10.000+", label: "Peserta" },
+      { value: "80+", label: "Organisasi Nasional" },
+    ],
     chapters,
   },
   en: {
@@ -168,6 +206,14 @@ const COPY = {
     meta: "Sister company of PT Bina Daya Nugraha - Est 2010",
     quote: "The future does not only need organizations that are more technologically intelligent, but also organizations that are far more humanly mature.",
     cite: "BinaHub Transformation Philosophy",
+    proofEyebrow: "BDN Track Record Archive",
+    proofTitle: "Experience that became the foundation for BinaHub.",
+    proofDesc: "For more than 15 years, Bina Daya Nugraha has accompanied organizations through learning, leadership development, and organizational transformation journeys. The organizations below became part of that journey.",
+    proofStats: [
+      { value: "15+", label: "Years of Experience" },
+      { value: "10,000+", label: "Participants" },
+      { value: "80+", label: "National Organizations" },
+    ],
     chapters: chaptersEn,
   },
 };
@@ -214,12 +260,22 @@ export default function JourneyPage() {
       </section>
 
       <section className="px-6 py-16 md:px-12 md:py-24 lg:px-20">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-[1360px]">
           <div className="relative">
             <div className="absolute left-[12px] top-10 hidden h-[calc(100%-5rem)] w-px bg-[#D9A441]/28 lg:block" />
             <div className="space-y-16 md:space-y-24">
               {copy.chapters.map((chapter, index) => (
-                <ChapterBlock key={chapter.label} chapter={chapter} index={index} />
+                <div key={chapter.label} className="space-y-16 md:space-y-24">
+                  <ChapterBlock chapter={chapter} index={index} />
+                  {index === 1 && (
+                    <BdnArchiveWall
+                      eyebrow={copy.proofEyebrow}
+                      title={copy.proofTitle}
+                      description={copy.proofDesc}
+                      stats={copy.proofStats}
+                    />
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -243,6 +299,81 @@ export default function JourneyPage() {
   );
 }
 
+function BdnArchiveWall({
+  eyebrow,
+  title,
+  description,
+  stats,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  stats: { value: string; label: string }[];
+}) {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.65 }}
+      className="relative overflow-hidden border border-[#0B2C6B]/10 bg-[#071A33] text-white shadow-[0_28px_90px_-70px_rgba(7,26,51,0.82)] lg:ml-12"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(217,164,65,0.18),transparent_30%),linear-gradient(120deg,rgba(255,255,255,0.06),transparent_42%)]" />
+      <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.08)_0_1px,transparent_1px_42px)] opacity-20" />
+
+      <div className="relative z-10 grid gap-7 p-6 md:p-8 lg:grid-cols-[0.34fr_0.66fr] lg:gap-10 lg:p-10">
+        <div className="flex flex-col justify-between">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D9A441]">
+              {eyebrow}
+            </p>
+            <h3 className="mt-4 max-w-md text-3xl font-light leading-[1.08] tracking-[-0.04em] md:text-[42px]">
+              {title}
+            </h3>
+            <p className="mt-5 max-w-lg text-sm font-light leading-[1.75] text-white/66 md:text-[15px]">
+              {description}
+            </p>
+          </div>
+          <div className="mt-7 grid grid-cols-3 gap-3 border-t border-white/10 pt-5">
+            {stats.map((stat) => (
+              <div key={stat.label}>
+                <p className="text-2xl font-light leading-none tracking-[-0.04em] text-[#D9A441] md:text-3xl">
+                  {stat.value}
+                </p>
+                <p className="mt-2 text-[9px] font-bold uppercase leading-snug tracking-[0.15em] text-white/36">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-px bg-white/10 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
+          {BDN_LOGOS.map((logo, index) => (
+            <motion.div
+              key={logo.name}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: Math.min(index * 0.025, 0.45), duration: 0.42 }}
+              className="group flex h-[74px] items-center justify-center bg-[#081E3B]/88 px-5 transition-colors duration-300 hover:bg-white md:h-20"
+            >
+              <Image
+                src={logo.src}
+                alt={logo.name}
+                width={138}
+                height={52}
+                sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 180px"
+                className="max-h-9 w-auto max-w-full object-contain grayscale invert opacity-48 transition duration-300 group-hover:invert-0 group-hover:grayscale-0 group-hover:opacity-95"
+              />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </motion.section>
+  );
+}
+
 function ChapterBlock({
   chapter,
   index,
@@ -251,6 +382,10 @@ function ChapterBlock({
   index: number;
 }) {
   const imageFirst = index % 2 === 1;
+  const isGlobalSimulation = index === 2;
+  const textColumn = isGlobalSimulation ? "lg:col-span-5" : "lg:col-span-6";
+  const imageColumn = isGlobalSimulation ? "lg:col-span-7" : "lg:col-span-6";
+  const imageHeight = isGlobalSimulation ? "lg:h-[560px]" : "lg:h-[520px]";
 
   return (
     <article className="relative grid gap-10 lg:grid-cols-12 lg:gap-16 lg:pl-12">
@@ -261,7 +396,7 @@ function ChapterBlock({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.55 }}
-        className={`lg:col-span-6 ${imageFirst ? "lg:order-2" : ""}`}
+        className={`${textColumn} ${imageFirst ? "lg:order-2" : ""}`}
       >
         <div className="mb-8 flex items-center justify-between gap-5 border-b border-black/[0.06] pb-5">
           <div>
@@ -297,9 +432,9 @@ function ChapterBlock({
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.65 }}
-        className={`lg:col-span-6 ${imageFirst ? "lg:order-1" : ""}`}
+        className={`${imageColumn} ${imageFirst ? "lg:order-1" : ""}`}
       >
-        <div className="group relative h-[280px] overflow-hidden rounded-[16px] border border-black/[0.06] bg-white shadow-[0_22px_70px_-56px_rgba(11,44,107,0.42)] sm:h-[360px] lg:h-[520px]">
+        <div className={`group relative h-[280px] overflow-hidden rounded-[16px] border border-black/[0.06] bg-white shadow-[0_22px_70px_-56px_rgba(11,44,107,0.42)] sm:h-[360px] ${imageHeight}`}>
           <div className="absolute right-5 top-5 z-20 rounded-full border border-black/[0.06] bg-white/88 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#0B2C6B]/52 backdrop-blur">
             {chapter.kicker}
           </div>

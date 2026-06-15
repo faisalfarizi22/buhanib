@@ -7,6 +7,8 @@ Format yang digunakan berdasarkan [Keep a Changelog](https://keepachangelog.com/
 ### Added
 - Menambahkan background poster statis `bg-hero-nodes-poster-crop.jpg` untuk section Misi Kami agar visualnya konsisten dengan atmosfer hero Home tanpa harus memutar video di area carousel.
 - Menambahkan deskripsi singkat pada setiap poin Misi Kami di carousel Home, mengambil substansi dari section misi halaman Tentang Kami agar kartu tidak hanya berisi label.
+- Menambahkan section rekam jejak BDN pada halaman About dengan statistik `15+`, `10k+`, dan `80+` sebagai social proof utama serta marquee logo organisasi sebagai penguat visual.
+- Menambahkan archive wall rekam jejak BDN pada halaman Perjalanan Kami dengan treatment grid gelap yang berbeda dari halaman About.
 
 ### Changed
 - Meredesain hero Home menjadi komposisi light executive berbasis video globe nodes, headline animasi, CTA compact, dan background line gold yang lebih ringan.
@@ -17,6 +19,9 @@ Format yang digunakan berdasarkan [Keep a Changelog](https://keepachangelog.com/
 - Menyesuaikan responsive hero Home pada mobile: headline tidak lagi memotong kata, blok konten diturunkan, CTA diperkecil, dan tinggi section dipadatkan agar tidak menyisakan ruang kosong berlebihan.
 - Menyamakan tinggi dan skala teks hero halaman Tentang dan Layanan dengan hero Home hanya pada breakpoint mobile, sementara ukuran desktop/laptop tetap mengikuti desain halaman masing-masing.
 - Merapikan section Siapa Kami di halaman Tentang agar tetap fokus pada narasi utama tanpa mengembalikan daftar poin tantangan yang sudah dihapus.
+- Mengubah framing logo organisasi menjadi narasi rekam jejak pembelajaran BDN yang membentuk fondasi BinaHub, tanpa memakai disclaimer eksplisit yang terasa defensif.
+- Memindahkan penekanan statistik `15+ tahun`, `10k+ peserta`, dan `80+ organisasi` ke section rekam jejak BDN agar tidak berulang di section Legacy & Perjalanan.
+- Memadatkan archive wall Perjalanan Kami, memperlebar container timeline, dan memperbesar visual BSKSims pada chapter simulasi global agar ritme halaman lebih editorial.
 
 ### Fixed
 - Memperbaiki hamburger menu yang tidak muncul konsisten di halaman Kontak dengan menjaga navbar mobile tetap terlihat saat halaman berada pada posisi scroll berbeda.

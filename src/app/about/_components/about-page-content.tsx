@@ -8,7 +8,6 @@ import Image from "next/image"
 import { localizePath } from "@/i18n/config"
 import { useLocale } from "@/i18n/use-locale"
 import { Tag } from "@/components/ui/tag"
-import { Counter } from "@/components/ui/counter"
 import { CoreValuesSection } from "@/components/core-values-section"
 
 const CAPABILITY_TEXTURES = [
@@ -68,10 +67,34 @@ const CAPABILITIES = [
   { title: "Kesiapan Era AI", icon: <Cpu size={20} />, desc: "Tetap relevan di tengah disrupsi teknologi." }
 ];
 
-const HERO_STATS = [
-  { value: 15, label: "Tahun Kiprah", suffix: "+" },
-  { value: 10, label: "Ribu Peserta", suffix: "k+" },
-  { value: 80, label: "Organisasi Mitra", suffix: "+" },
+const PARTNER_LOGOS = [
+  { name: "Acer", src: "/partner/acer.png" },
+  { name: "Astra Honda Motor", src: "/partner/AHM.svg" },
+  { name: "AirNav Indonesia", src: "/partner/airnav.webp" },
+  { name: "Aldena", src: "/partner/Aldena.png" },
+  { name: "Alkagra", src: "/partner/alkagra.png" },
+  { name: "Castrol", src: "/partner/castrol.png" },
+  { name: "Chandra Asri", src: "/partner/chandraasri.png" },
+  { name: "Ciputra", src: "/partner/ciputra.png" },
+  { name: "Dattabot", src: "/partner/dattabot.png" },
+  { name: "DDI", src: "/partner/ddi.png" },
+  { name: "Holcim", src: "/partner/holcim.png" },
+  { name: "IBCSD", src: "/partner/ibcsd.png" },
+  { name: "Indosat", src: "/partner/indosat.png" },
+  { name: "Kiroyan", src: "/partner/kiroyan.png" },
+  { name: "MS Coal", src: "/partner/mscoal.png" },
+  { name: "Prowell Energy", src: "/partner/prowellenergy.png" },
+  { name: "Safran", src: "/partner/safran.svg" },
+  { name: "Sampoerna", src: "/partner/sampurna.png" },
+  { name: "Sarana Jaya", src: "/partner/saranajaya.webp" },
+  { name: "Siap Siaga", src: "/partner/siapsiaga.png" },
+  { name: "Sqiva", src: "/partner/Sqiva.png" },
+  { name: "Swisscontact", src: "/partner/swisscontact.png" },
+  { name: "Syngenta", src: "/partner/syngenta.png" },
+  { name: "Telin", src: "/partner/Telin.png" },
+  { name: "Telkom Infra", src: "/partner/Telkomimetra.png" },
+  { name: "Transcorp", src: "/partner/transcorp.svg" },
+  { name: "Umira", src: "/partner/umira.png" },
 ];
 
 const ABOUT_COPY = {
@@ -95,9 +118,16 @@ const ABOUT_COPY = {
     journeyTitle: <>Berakar pada{" "}<span className="font-medium italic text-[#D9A441]">Pengembangan Manusia.</span></>,
     journeyP1: <>BinaHub lahir sebagai <i>sister company</i> dari{" "}<strong className="font-medium text-black/80">BDN (Bina Daya Nugraha)</strong>{" "}-- spesialis pelatihan berbasis pengalaman yang telah berkiprah sejak tahun 2010 dan menjangkau lebih dari 10.000+ peserta dari 80+ organisasi nasional.</>,
     journeyP2: <>Sebagai kelanjutan strategis, BinaHub melangkah lebih jauh untuk mendampingi organisasi menghadapi era otomatisasi dan disrupsi kecerdasan buatan (AI). Kami memadukan pengembangan SDM, simulasi keputusan global bersama{" "}<strong className="font-medium text-black/80">BSKSims</strong>{" "}asal Amerika Serikat, kepemimpinan adaptif, dan teknologi canggih dalam satu ekosistem transformasi yang utuh.</>,
-    stats: ["Tahun Kiprah", "Ribu Peserta", "Organisasi Mitra"],
     journeyCta: "Perjalanan Kami",
     bdnCta: "Dari BDN ke BinaHub",
+    proofEyebrow: "Rekam Jejak BDN",
+    proofTitle: "Pengalaman yang menjadi fondasi lahirnya BinaHub",
+    proofDesc: "Sebelum BinaHub hadir, tim kami telah mendampingi berbagai organisasi melalui Bina Daya Nugraha sejak 2010. Pengalaman tersebut menjadi salah satu fondasi lahirnya BinaHub.",
+    proofStats: [
+      { value: "15+", label: "Tahun Pengalaman" },
+      { value: "10k+", label: "Peserta" },
+      { value: "80+", label: "Organisasi Nasional" },
+    ],
     positionTag: "POSISI KAMI",
     positionTitle: <>Mitra transformasi<span className="block">& kapabilitas</span><span className="block font-medium">masa depan.</span></>,
     positionDesc: "Peran kami adalah membantu organisasi menghubungkan arah bisnis, kapabilitas manusia, budaya kerja, dan kesiapan teknologi dalam satu sistem transformasi yang dapat dijalankan.",
@@ -141,9 +171,16 @@ const ABOUT_COPY = {
     journeyTitle: <>Rooted in{" "}<span className="font-medium italic text-[#D9A441]">Human Development.</span></>,
     journeyP1: <>BinaHub was born as a <i>sister company</i> of{" "}<strong className="font-medium text-black/80">BDN (Bina Daya Nugraha)</strong>{" "}-- an experience-based training specialist active since 2010, reaching more than 10,000 participants across 80+ national organizations.</>,
     journeyP2: <>As a strategic continuation, BinaHub goes further in helping organizations face automation and artificial intelligence disruption. We combine people development, global decision simulation with{" "}<strong className="font-medium text-black/80">BSKSims</strong>{" "}from the United States, adaptive leadership, and advanced technology into one complete transformation ecosystem.</>,
-    stats: ["Years of Work", "Thousand Participants", "Partner Organizations"],
     journeyCta: "Our Journey",
     bdnCta: "From BDN to BinaHub",
+    proofEyebrow: "BDN Track Record",
+    proofTitle: "Experience that became the foundation for BinaHub",
+    proofDesc: "Before BinaHub was established, our team accompanied diverse organizations through Bina Daya Nugraha since 2010. That experience became one of the foundations for BinaHub.",
+    proofStats: [
+      { value: "15+", label: "Years of Experience" },
+      { value: "10k+", label: "Participants" },
+      { value: "80+", label: "National Organizations" },
+    ],
     positionTag: "OUR POSITION",
     positionTitle: <>Transformation partner<span className="block">& future</span><span className="block font-medium">capability builder.</span></>,
     positionDesc: "Our role is to help organizations connect business direction, human capability, work culture, and technology readiness into one executable transformation system.",
@@ -170,6 +207,87 @@ const ABOUT_COPY = {
 };
 
 const premiumEase = [0.22, 1, 0.36, 1] as const;
+
+function BdnProofLogos({
+  eyebrow,
+  title,
+  description,
+  stats,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  stats: { value: string; label: string }[];
+}) {
+  const midpoint = Math.ceil(PARTNER_LOGOS.length / 2);
+  const topLogos = PARTNER_LOGOS.slice(0, midpoint);
+  const bottomLogos = PARTNER_LOGOS.slice(midpoint);
+  const marqueeRows = [
+    { logos: [...topLogos, ...topLogos], direction: ["0%", "-50%"], duration: 42 },
+    { logos: [...bottomLogos, ...bottomLogos], direction: ["-50%", "0%"], duration: 48 },
+  ];
+
+  return (
+    <div className="mt-14 border-y border-[#0B2C6B]/8 py-8 md:mt-[72px] md:py-10">
+      <div className="grid gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-center lg:gap-12">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-[#D9A441]">
+            {eyebrow}
+          </p>
+          <h3 className="mt-4 max-w-xl text-3xl font-light leading-[1.08] tracking-[-0.04em] text-[#0B2C6B] md:text-4xl lg:text-[42px]">
+            {title}
+          </h3>
+          <p className="mt-5 max-w-xl text-[15px] font-light leading-[1.75] text-black/62 md:text-lg">
+            {description}
+          </p>
+          <div className="mt-7 grid grid-cols-3 gap-3 border-t border-[#0B2C6B]/8 pt-5">
+            {stats.map((stat) => (
+              <div key={stat.label}>
+                <p className="text-2xl font-light leading-none tracking-[-0.04em] text-[#0B2C6B] md:text-3xl">
+                  {stat.value}
+                </p>
+                <p className="mt-2 text-[9px] font-bold uppercase leading-snug tracking-[0.16em] text-black/36">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden py-1">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#FAFAF8] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#FAFAF8] to-transparent" />
+          <div className="space-y-4">
+            {marqueeRows.map((row, rowIndex) => (
+              <motion.div
+                key={rowIndex}
+                className="flex w-max items-center gap-5 md:gap-6"
+                animate={{ x: row.direction }}
+                transition={{ duration: row.duration, repeat: Infinity, ease: "linear" }}
+              >
+                {row.logos.map((logo, index) => (
+                  <div
+                    key={`${logo.name}-${rowIndex}-${index}`}
+                    className="group flex h-14 w-28 shrink-0 items-center justify-center border border-black/[0.035] bg-white/54 px-4 transition-colors duration-300 hover:bg-white md:h-16 md:w-32"
+                  >
+                    <Image
+                      src={logo.src}
+                      alt={logo.name}
+                      width={132}
+                      height={48}
+                      sizes="144px"
+                      className="max-h-8 w-auto max-w-full object-contain grayscale opacity-38 transition duration-300 group-hover:grayscale-0 group-hover:opacity-90"
+                    />
+                  </div>
+                ))}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function AboutPage() {
   const locale = useLocale();
@@ -316,21 +434,8 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              <div className="mt-14 pt-10 border-t border-black/7">
-                <div className="grid grid-cols-3 gap-4 md:gap-10 overflow-hidden">
-                  {HERO_STATS.map((stat, i) => (
-                    <div key={i} className="min-w-0">
-                      <div className="text-3xl sm:text-4xl md:text-5xl text-[#0B2C6B] font-light tracking-[-0.04em] leading-none">
-                        <Counter end={stat.value} suffix={stat.suffix} trigger />
-                      </div>
-                      <div className="mt-3 text-[10px] md:text-[11px] text-black/42 tracking-[0.18em] uppercase font-semibold">
-                        {copy.stats[i] ?? stat.label}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-10 flex flex-wrap gap-3">
+              <div className="mt-10 border-t border-black/7 pt-8">
+                <div className="flex flex-wrap gap-3">
                   <Link
                     href={localizePath("/journey", locale)}
                     className="inline-flex items-center gap-3 rounded-full border border-[#D9A441]/35 px-5 py-3 text-[11px] font-semibold text-[#B8841F] hover:border-[#0B2C6B]/30 hover:text-[#0B2C6B] hover:bg-white transition-all duration-300 tracking-[0.18em] uppercase group"
@@ -379,6 +484,13 @@ export default function AboutPage() {
               </div>
             </motion.div>
           </div>
+
+          <BdnProofLogos
+            eyebrow={copy.proofEyebrow}
+            title={copy.proofTitle}
+            description={copy.proofDesc}
+            stats={copy.proofStats}
+          />
         </div>
       </section>
 
