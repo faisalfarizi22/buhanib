@@ -34,6 +34,7 @@ export function IntroAnimation({ onDone }: { onDone: () => void }) {
 
     // Play the intro only once per browser session so internal navigation feels instant.
     if (alreadySeen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPhase("done")
       onDone()
       return
