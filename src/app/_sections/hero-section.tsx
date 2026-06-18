@@ -29,13 +29,13 @@ interface HeroSectionProps {
 
 const ORBIT_ICONS = [
   { src: "/asset/insights.png", label: "BinaInsight", angle: 0 },
-  { src: "/asset/academy.png", label: "BinaAcademy", angle: 45 },
-  { src: "/asset/coach.png", label: "BinaCoach", angle: 90 },
-  { src: "/asset/lab.png", label: "BinaLab", angle: 135 },
-  { src: "/asset/play.png", label: "BinaPlay", angle: 180 },
-  { src: "/asset/impact.png", label: "BinaImpact", angle: 225 },
-  { src: "/asset/journey.png", label: "BinaJourney", angle: 270 },
-  { src: "/asset/works.png", label: "BinaWorks", angle: 315 },
+  { src: "/asset/Academy.png", label: "BinaAcademy", angle: 45 },
+  { src: "/asset/Coach.png", label: "BinaCoach", angle: 90 },
+  { src: "/asset/Lab.png", label: "BinaLab", angle: 135 },
+  { src: "/asset/Play.png", label: "BinaPlay", angle: 180 },
+  { src: "/asset/Impact.png", label: "BinaImpact", angle: 225 },
+  { src: "/asset/Journey.png", label: "BinaJourney", angle: 270 },
+  { src: "/asset/Works.png", label: "BinaWorks", angle: 315 },
 ] as const;
 
 function AnimatedHeading({ text, ready }: { text: string; ready: boolean }) {
