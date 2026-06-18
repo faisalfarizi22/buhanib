@@ -7,13 +7,15 @@ Format yang digunakan berdasarkan [Keep a Changelog](https://keepachangelog.com/
 ### Added
 - Menambahkan route URL-based locale `/id` dan `/en` untuk seluruh halaman publik utama, termasuk About, Contact, Ecosystem, Insight, Journey, Gallery, Perspektif, dan Transformation Signals.
 - Menambahkan endpoint publik `/api/chat` dan `/api/contact` di repo `app-binahub` lengkap dengan CORS untuk konsumsi dari `binahub.id`.
+- Memperluas header CORS endpoint publik agar preflight menerima `Content-Type`, `Authorization`, dan `X-Requested-With`.
 
 ### Changed
 - Memisahkan ulang `website-prod` sebagai company profile publik static, sementara fungsi chatbot dan kontak tetap aktif melalui API di `app-binahub`.
 - Mengubah halaman `/insight` di `binahub.id` menjadi bridge ringan menuju `https://app.binahub.id/insight`, agar flow diagnostik utama berjalan langsung di aplikasi operasional.
 - Menghapus dependency operasional yang tidak lagi dipakai di company profile, termasuk PDF generation, image processing server-side, bundle analyzer, dan tipe terkait.
 - Mengubah sistem language switcher dari DOM translator/localStorage preference menjadi URL-based locale agar bahasa memiliki single source of truth dan tidak lagi tercampur saat toggle ID/EN.
-- Mengubah chatbot dan contact form di `website-prod` agar mengirim request ke `https://app.binahub.id/api/chat` dan `https://app.binahub.id/api/contact`.
+- Mengubah chatbot dan contact form di `website-prod` agar mengirim request ke base URL API publik `https://app-binahub.vercel.app`.
+- Memakai domain Vercel untuk API sementara karena `app.binahub.id` masih dilindungi HCDN browser challenge yang memblokir request API/fetch.
 - Mengaktifkan `output: "export"` pada `website-prod` sehingga hasil build menghasilkan folder `out/` untuk static hosting.
 - Mengubah sitemap agar menghasilkan URL terpisah untuk `/id` dan `/en`.
 - Menambahkan `turbopack.root` pada konfigurasi Next.js untuk menghilangkan warning workspace root akibat lockfile di parent directory.
