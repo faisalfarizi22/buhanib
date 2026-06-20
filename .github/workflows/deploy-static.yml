@@ -25,7 +25,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: 145.223.108.154
-          username: ${{ secrets.FTP_USERNAME }}
+          username: u121546743.indigo-quetzal-137652.hostingersite.com
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           protocol: ftp
