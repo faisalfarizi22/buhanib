@@ -26,7 +26,7 @@ jobs:
         with:
           server: 145.223.108.154
           username: u121546743.indigo-quetzal-137652.hostingersite.com
-          password: ${{ secrets.FTP_PASSWORD }}
+          password: Admin1@binahub.idAdmin1@binahub.id
           port: 21
           protocol: ftp
           local-dir: out/
