@@ -1,0 +1,14 @@
+Options -Indexes
+RewriteEngine On
+
+# Next static export creates extensionless routes as .html files, while
+# some incoming links can include a trailing slash. On Apache/Hostinger,
+# /insight/ may hit the exported data folder instead of insight.html.
+RewriteCond %{REQUEST_URI} !^/(?:_next|asset|icon|gallery|partner|evidence)(?:/|$)
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+)$ /$1.html [L]
