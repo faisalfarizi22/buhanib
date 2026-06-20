@@ -39,14 +39,14 @@ interface PixelIconProps {
 }
 
 const PNG_ICON_SRC: Partial<Record<IconType, string>> = {
-  insights: "/asset/insights.png",
-  lab: "/asset/lab.png",
-  coach: "/asset/coach.png",
-  journey: "/asset/journey.png",
-  play: "/asset/play.png",
-  academy: "/asset/academy.png",
-  impact: "/asset/impact.png",
-  works: "/asset/works.png",
+  insights: "/icon/iconinsight.png",
+  lab: "/icon/iconlab.png",
+  coach: "/icon/iconcoach.png",
+  journey: "/icon/iconjourney.png",
+  play: "/icon/iconplay.png",
+  academy: "/icon/iconacademy.png",
+  impact: "/icon/iconimpact.png",
+  works: "/icon/iconworks.png",
 };
 
 export function PixelIcon({ type, size = 40 }: PixelIconProps) {
