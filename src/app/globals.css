@@ -208,10 +208,22 @@
 
 .hero-orbit-icons {
   animation: heroOrbitSpin 52s linear infinite;
+  --orbit-radius: min(16.5vw, 127px);
+}
+
+@media (min-width: 1024px) {
+  .hero-orbit-icons {
+    --orbit-radius: min(24vw, 228px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-orbit-icons {
+    --orbit-radius: min(23vw, 266px);
+  }
 }
 
 .hero-orbit-icon-slot {
-  --orbit-radius: min(39vw, 302px);
   transform: rotate(var(--orbit-angle)) translateX(var(--orbit-radius)) rotate(calc(var(--orbit-angle) * -1));
   transform-origin: center;
 }
@@ -395,4 +407,10 @@
     
     0 0px 0px #D9A441,
     0 6px 0px #A06F12;
+}
+
+@media (min-width: 1441px) {
+  .orbit-shift-right {
+    margin-left: 95px;
+  }
 }

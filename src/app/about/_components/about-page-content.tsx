@@ -462,7 +462,7 @@ export default function AboutPage() {
               <div className="relative aspect-[5/4] overflow-hidden rounded-[14px] border border-black/5 bg-[#0B1F46] shadow-[0_40px_120px_-30px_rgba(11,44,107,0.18)]">
 
                 <Image
-                  src="/asset/bsksims2.png"
+                  src="/asset/bsksims-representatives.webp"
                   alt="Perjalanan Kami BinaHub"
                   fill
                   className="object-cover object-[60%_center] scale-[1.02]"

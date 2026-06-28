@@ -3,6 +3,18 @@
 Semua perubahan yang signifikan pada proyek ini akan didokumentasikan di file ini.
 Format yang digunakan berdasarkan [Keep a Changelog](https://keepachangelog.com/id/1.0.0/), dan proyek ini mematuhi aturan [Semantic Versioning](https://semver.org/).
 
+## [0.2.14]
+
+### Changed
+- Mengganti gambar section "Perjalanan Kami" (About) dan Chapter 03 Journey dari `bsksims2.png` menjadi `bsksims-representatives.webp`.
+- Meredesain responsive hero Home: single column (logo atas + teks bawah) untuk mobile hingga md (768-990px), dua kolom untuk lg (1024px+).
+- Menambahkan orbit rings dan icons pada breakpoint md (768-990px) dengan stage 320px.
+- Menyesuaikan font headline: mobile `clamp(1.75rem,7vw,2.5rem)`, lg `clamp(3rem,4.5vw,4.5rem)`.
+- Menggeser orbit 2.5cm ke kanan pada layar 1441px+.
+- Menyesuaikan ukuran orbit stage: md 320px, lg 580px, xl 670px.
+- Menyesuaikan orbit icon circles lg dari 76px menjadi 72px.
+- Memperbarui CSS orbit radius untuk md, lg, xl agar sesuai dengan stage size baru.
+
 ## [0.2.13]
 
 ### Added

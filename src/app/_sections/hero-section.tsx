@@ -47,7 +47,7 @@ function AnimatedHeading({ title, accent, ready }: { title: string; accent: stri
   let charOffset = 0;
 
   return (
-    <h1 className="max-w-[780px] text-center text-[clamp(1.85rem,8.6vw,2.45rem)] font-normal leading-[1.04] tracking-[-0.025em] text-[#071A33] md:text-left md:text-[clamp(3.25rem,4.75vw,4.85rem)] md:tracking-[-0.035em]">
+    <h1 className="mx-auto max-w-[560px] text-center text-[clamp(1.75rem,7vw,2.5rem)] font-normal leading-[1.1] tracking-[-0.025em] text-[#071A33] lg:mx-0 lg:max-w-[900px] lg:text-left lg:text-[clamp(3rem,4.5vw,4.5rem)] lg:tracking-[-0.035em]">
       {lines.map((line, lineIndex) => {
         const currentOffset = charOffset;
         charOffset += line.length;
@@ -55,12 +55,12 @@ function AnimatedHeading({ title, accent, ready }: { title: string; accent: stri
         return (
           <span
             key={lineIndex}
-            className={lineIndex === 1 ? "mt-1 block whitespace-nowrap font-light italic text-[#D9A441] md:mt-2" : "block whitespace-nowrap"}
+            className={lineIndex === 1 ? "mt-2 block font-light italic text-[#D9A441] md:mt-1 md:whitespace-nowrap" : "block md:whitespace-nowrap"}
           >
             {line.split(" ").map((word, wordIndex) => (
               <span
                 key={`${lineIndex}-${wordIndex}`}
-                className="mr-[0.22em] inline-block whitespace-nowrap last:mr-0"
+                className="mr-[0.22em] inline-block last:mr-0 md:whitespace-nowrap"
               >
                 {word.split("").map((char, charIndex) => (
                   <span
@@ -187,8 +187,9 @@ function HeroOrbitVisual() {
   }
 
   return (
-    <div className="hero-orbit-stage relative mx-auto aspect-square w-full max-w-[410px] sm:max-w-[470px] md:max-w-[620px] lg:max-w-[720px] xl:max-w-[780px]">
-      <svg className="hero-orbit-rings absolute inset-0 h-full w-full" viewBox="0 0 640 640" aria-hidden="true">
+    <div className="hero-orbit-stage relative mx-auto aspect-square w-full max-w-[280px] sm:max-w-[410px] md:max-w-[320px] lg:max-w-[580px] xl:max-w-[670px]">
+      {/* Rings - hidden on mobile (<768px) */}
+      <svg className="hidden md:block hero-orbit-rings absolute inset-0 h-full w-full" viewBox="0 0 640 640" aria-hidden="true">
         <defs>
           <linearGradient id="heroOrbitGold" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#F8E6B2" stopOpacity="0.08" />
@@ -197,22 +198,23 @@ function HeroOrbitVisual() {
           </linearGradient>
         </defs>
         <g className="hero-orbit-ring-spin">
-          <circle cx="320" cy="320" r="254" fill="none" stroke="url(#heroOrbitGold)" strokeDasharray="160 80 28 48" strokeWidth="1.2" />
-          <circle cx="320" cy="320" r="224" fill="none" stroke="url(#heroOrbitGold)" strokeDasharray="18 12" strokeOpacity="0.55" strokeWidth="1" />
+          <circle cx="320" cy="320" r="254" fill="none" stroke="url(#heroOrbitGold)" strokeDasharray="160 80 28 48" strokeWidth="2.4" />
+          <circle cx="320" cy="320" r="224" fill="none" stroke="url(#heroOrbitGold)" strokeDasharray="18 12" strokeOpacity="0.55" strokeWidth="2" />
         </g>
         <g className="hero-orbit-ring-spin hero-orbit-ring-spin-reverse">
-          <circle cx="320" cy="320" r="278" fill="none" stroke="url(#heroOrbitGold)" strokeDasharray="220 72 12 34" strokeOpacity="0.6" strokeWidth="0.85" />
-          <circle cx="320" cy="320" r="196" fill="none" stroke="url(#heroOrbitGold)" strokeDasharray="80 52" strokeOpacity="0.42" strokeWidth="0.8" />
+          <circle cx="320" cy="320" r="278" fill="none" stroke="url(#heroOrbitGold)" strokeDasharray="220 72 12 34" strokeOpacity="0.6" strokeWidth="1.7" />
+          <circle cx="320" cy="320" r="196" fill="none" stroke="url(#heroOrbitGold)" strokeDasharray="80 52" strokeOpacity="0.42" strokeWidth="1.6" />
         </g>
         {[0, 60, 126, 188, 244, 306].map((angle) => {
           const radians = (angle * Math.PI) / 180;
           const x = 320 + Math.cos(radians) * 254;
           const y = 320 + Math.sin(radians) * 254;
-          return <circle key={angle} cx={x} cy={y} r="5" fill="#F7D982" opacity="0.8" />;
+          return <circle key={angle} cx={x} cy={y} r="8" fill="#F7D982" opacity="0.8" />;
         })}
       </svg>
 
-      <div className="hero-orbit-icons absolute inset-0">
+      {/* Icons - hidden on mobile (<768px) */}
+      <div className="hidden md:block hero-orbit-icons absolute inset-0">
         {ORBIT_ICONS.map((icon, index) => (
           <div
             key={icon.label}
@@ -223,13 +225,13 @@ function HeroOrbitVisual() {
             }}
           >
             <div className="hero-orbit-icon-counter">
-              <div className="group/icon flex h-12 w-12 items-center justify-center rounded-full border border-white/80 bg-white/88 shadow-[0_18px_42px_-28px_rgba(11,44,107,0.4)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-[#D9A441]/60 hover:bg-white hover:shadow-[0_0_34px_rgba(217,164,65,0.5)] md:h-15 md:w-15 lg:h-[76px] lg:w-[76px]">
+              <div className="group/icon flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/88 shadow-[0_18px_42px_-28px_rgba(11,44,107,0.4)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-[#D9A441]/60 hover:bg-white hover:shadow-[0_0_34px_rgba(217,164,65,0.5)] md:h-10 md:w-10 lg:h-[72px] lg:w-[72px]">
                 <Image
                   src={icon.src}
                   alt=""
                   width={36}
                   height={36}
-                  className="h-6 w-6 object-contain opacity-90 transition duration-300 group-hover/icon:scale-110 group-hover/icon:opacity-100 md:h-7 md:w-7 lg:h-9 lg:w-9"
+                  className="h-5 w-5 object-contain opacity-90 transition duration-300 group-hover/icon:scale-110 group-hover/icon:opacity-100 md:h-5 md:w-5 lg:h-9 lg:w-9"
                   loading="eager"
                 />
                 <span className="sr-only">{icon.label}</span>
@@ -239,9 +241,10 @@ function HeroOrbitVisual() {
         ))}
       </div>
 
+      {/* 3D Logo - always present, responsive sizing */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div
-          className="hero-tilt-logo relative h-[52%] w-[52%] min-w-[188px] max-w-[410px]"
+          className="hero-tilt-logo relative h-[70%] w-[70%] min-w-[180px] max-w-[280px] md:h-[52%] md:w-[52%] md:min-w-[135px] md:max-w-[165px] lg:min-w-[225px] lg:max-w-[490px]"
           onPointerMove={handleLogoMove}
           onPointerLeave={handleLogoLeave}
         >
@@ -249,7 +252,7 @@ function HeroOrbitVisual() {
             src="/3D-logo-2.webp"
             alt="Logo 3D BinaHub"
             fill
-            sizes="(min-width: 1280px) 410px, (min-width: 1024px) 374px, (min-width: 768px) 322px, 210px"
+            sizes="(min-width: 1024px) 490px, (min-width: 768px) 165px, 280px"
             className="relative z-10 h-full w-full object-contain drop-shadow-[0_44px_34px_rgba(7,26,51,0.28)]"
             priority
           />
@@ -291,23 +294,23 @@ export function HeroSection({ heroReady }: HeroSectionProps) {
   const copy = COPY[locale];
 
   return (
-    <section id="home-hero" className="relative z-0 -mt-24 w-full overflow-x-hidden bg-white md:-mt-28">
-      <div className="relative min-h-[calc(100svh+6rem)] overflow-hidden bg-white text-[#071A33] md:min-h-[112svh]">
+    <section id="home-hero" className="relative z-0 -mt-24 w-full overflow-x-hidden bg-white">
+      <div className="relative min-h-[calc(100svh+6rem)] overflow-hidden bg-white text-[#071A33]">
         <HeroImageBackground />
 
-        <div className="relative z-10 flex min-h-[calc(100svh+6rem)] flex-col items-center justify-start px-6 pb-20 pt-[16rem] text-center md:min-h-[112svh] md:justify-center md:px-12 md:pb-8 md:pt-48 md:text-left lg:px-20 xl:px-28">
-          <div className="grid w-full max-w-[1580px] items-center gap-8 md:grid-cols-[minmax(0,0.82fr)_minmax(500px,1.18fr)] md:gap-8 lg:gap-10 xl:gap-12">
-            <div className="relative z-10 flex w-full max-w-[780px] flex-col items-center md:items-start">
+        <div className="relative z-10 flex min-h-[calc(100svh+6rem)] flex-col items-center justify-start px-6 pb-20 pt-[8.25rem] text-center md:pt-[14.75rem] lg:items-start lg:px-20 lg:text-left xl:px-28">
+          <div className="grid w-full max-w-[1580px] items-center gap-8 lg:grid-cols-[1fr_580px] lg:gap-10 xl:grid-cols-[1fr_670px] xl:gap-12">
+            <div className="order-2 lg:order-1 relative z-10 flex w-full max-w-[780px] flex-col items-center lg:items-start">
               <AnimatedHeading title={copy.title} accent={copy.accent} ready={heroReady} />
 
               <FadeIn ready={heroReady} delay={850}>
-                <p className="mx-auto mt-8 max-w-[690px] text-balance text-center text-[14px] font-normal leading-[1.65] tracking-[-0.005em] text-[#30405C] md:mx-0 md:mt-6 md:text-left md:text-lg lg:text-[19px]">
+                <p className="mx-auto mt-8 max-w-[690px] text-balance text-center text-[14px] font-normal leading-[1.65] tracking-[-0.005em] text-[#30405C] lg:mx-0 lg:text-left lg:text-[19px]">
                   {copy.desc}
                 </p>
               </FadeIn>
 
               <FadeIn ready={heroReady} delay={1150}>
-                <div className="mt-8 flex w-full flex-wrap items-center justify-center gap-2.5 md:mt-8 md:justify-start md:gap-4">
+                <div className="mt-8 flex items-center justify-center gap-3 lg:justify-start lg:gap-4">
                   <Link
                     href={localizePath("/insight", locale)}
                     className="inline-flex h-10 items-center justify-center gap-2 rounded-[9px] bg-[#0B2C6B] px-5 text-[10px] font-extrabold uppercase tracking-[0.11em] text-white shadow-[0_22px_56px_-30px_rgba(11,44,107,0.95)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#071A33] hover:shadow-[0_28px_64px_-34px_rgba(11,44,107,0.9)] md:h-12 md:gap-3 md:px-8 md:text-[12px] md:tracking-[0.14em]"
@@ -326,7 +329,7 @@ export function HeroSection({ heroReady }: HeroSectionProps) {
               </FadeIn>
             </div>
 
-            <div className="pointer-events-auto absolute inset-x-0 bottom-8 z-0 mx-auto w-full max-w-[430px] px-1 md:static md:z-auto md:max-w-none md:px-0 md:justify-self-end">
+            <div className="order-1 lg:order-2 pointer-events-auto mx-auto w-full max-w-[280px] px-1 sm:max-w-[410px] md:max-w-[320px] md:px-0 lg:max-w-none orbit-shift-right">
               <FadeIn ready={heroReady} delay={650} className="w-full">
                 <HeroOrbitVisual />
               </FadeIn>
