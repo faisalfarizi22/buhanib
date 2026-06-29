@@ -8,11 +8,11 @@ import { localizePath } from "@/i18n/config";
 import { useLocale } from "@/i18n/use-locale";
 
 const HUMAN_VALUES = [
-  { letter: "H", rest: "umanity", word: "Humanity" },
-  { letter: "U", rest: "ncompromising Integrity", word: "Uncompromising Integrity" },
-  { letter: "M", rest: "eaningful Impact", word: "Meaningful Impact" },
-  { letter: "A", rest: "daptive Growth", word: "Adaptive Growth" },
-  { letter: "N", rest: "oble Excellence", word: "Noble Excellence" },
+  { letter: "H", rest: "umanity", word: "Humanity", boldWord: <><strong>H</strong>umanity</> },
+  { letter: "U", rest: "ncompromising Integrity", word: "Uncompromising Integrity", boldWord: <><strong>U</strong>ncompromising Integrity</> },
+  { letter: "M", rest: "eaningful Impact", word: "Meaningful Impact", boldWord: <><strong>M</strong>eaningful Impact</> },
+  { letter: "A", rest: "daptive Growth", word: "Adaptive Growth", boldWord: <><strong>A</strong>daptive Growth</> },
+  { letter: "N", rest: "oble Excellence", word: "Noble Excellence", boldWord: <><strong>N</strong>oble Excellence</> },
 ];
 
 export function HumanCoreValuesSection() {
@@ -65,7 +65,7 @@ export function HumanCoreValuesSection() {
     >
       <div className="sticky top-[calc(50vh-150px)] flex min-h-[300px] items-center overflow-hidden bg-[#F5F7FA] px-4 py-6 md:top-[calc(50vh-150px)] md:min-h-[300px] md:px-0 md:py-0">
         <div
-          className={`relative flex min-h-[240px] w-full items-center overflow-hidden rounded-[18px] border px-5 py-7 shadow-[0_18px_58px_-46px_rgba(11,44,107,0.34)] transition-colors duration-700 md:min-h-[280px] md:rounded-none md:border-x-0 md:px-12 lg:px-16 ${
+          className={`relative flex min-h-[240px] w-full items-center overflow-hidden rounded-[18px] border px-5 py-7 shadow-[0_18px_58px_-46px_rgba(11,44,107,0.34)] transition-colors duration-700 ${
             isFinal
               ? "border-[#D9A441]/22 bg-[#071A33] text-white"
               : "border-[#0B2C6B]/8 bg-white text-[#0B2C6B]"
@@ -150,7 +150,7 @@ export function HumanCoreValuesSection() {
                             textShadow: "none",
                           }}
                         >
-                          {isFinal ? value.letter : value.word}
+                          {isFinal ? value.letter : value.boldWord}
                         </span>
                       </motion.div>
                     );
