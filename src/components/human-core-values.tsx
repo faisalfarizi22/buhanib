@@ -8,11 +8,11 @@ import { localizePath } from "@/i18n/config";
 import { useLocale } from "@/i18n/use-locale";
 
 const HUMAN_VALUES = [
-  { letter: "H", rest: "umanity", word: "Humanity", boldWord: <><strong>H</strong>umanity</> },
-  { letter: "U", rest: "ncompromising Integrity", word: "Uncompromising Integrity", boldWord: <><strong>U</strong>ncompromising Integrity</> },
-  { letter: "M", rest: "eaningful Impact", word: "Meaningful Impact", boldWord: <><strong>M</strong>eaningful Impact</> },
-  { letter: "A", rest: "daptive Growth", word: "Adaptive Growth", boldWord: <><strong>A</strong>daptive Growth</> },
-  { letter: "N", rest: "oble Excellence", word: "Noble Excellence", boldWord: <><strong>N</strong>oble Excellence</> },
+  { letter: "H", rest: "umanity", word: "Humanity" },
+  { letter: "U", rest: "ncompromising Integrity", word: "Uncompromising Integrity" },
+  { letter: "M", rest: "eaningful Impact", word: "Meaningful Impact" },
+  { letter: "A", rest: "daptive Growth", word: "Adaptive Growth" },
+  { letter: "N", rest: "oble Excellence", word: "Noble Excellence" },
 ];
 
 export function HumanCoreValuesSection() {
@@ -150,7 +150,7 @@ export function HumanCoreValuesSection() {
                             textShadow: "none",
                           }}
                         >
-                          {isFinal ? value.letter : value.boldWord}
+                          {isFinal ? value.letter : value.word}
                         </span>
                       </motion.div>
                     );
