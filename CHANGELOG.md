@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.47] - 2026-10-31
+
+- Patch CVE-2026-118764 / GHSA-g3hv-75wg-m249: replace both legacy/transitive
+  minimatch versions with the official11.0.1 package; retain ESLint9/Next config.
+- Add a lint-process-only adapter for legacy callable CommonJS and the .test()
+  consumer of makeRe. It delegates to v11 matching, not the removed regex
+  compiler; no node_modules file patch, install hook or application runtime hook.
+- Check locked matcher versions and actual React/accessibility/import rule
+  execution in a dependency contract. CI now audits dev dependencies too.
+- No public UI, operational data, pricing, SQL, env or deployment-path change.
+
 ## [0.2.46] - 2026-10-31
 
 - Replace the obsolete static FTP deployment and missing admin quality command
